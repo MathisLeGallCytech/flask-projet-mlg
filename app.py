@@ -1,3 +1,4 @@
+import os
 from flask import Flask, render_template, request, jsonify, send_file, Response
 import math
 import time
@@ -1102,4 +1103,6 @@ def process_volatility_surface_data(all_options_data, symbol, spot_price, span):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Configuration pour la production
+    debug_mode = os.getenv('FLASK_DEBUG', 'False').lower() == 'true'
+    app.run(debug=debug_mode, host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
