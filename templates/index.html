@@ -1,0 +1,182 @@
+{% extends "base_flask.html" %}
+
+{% block title %}Equity Derivatives Dashboard – Accueil{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Navigation</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="{{ url_for('index') }}" class="nav-link active">
+                        <i data-lucide="home"></i>
+                        <span>Accueil</span>
+                    </a>
+                </li>
+                                    <li class="nav-item">
+                        <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
+                            <i data-lucide="user"></i>
+                            <span>CV Mathis Le Gall</span>
+                        </a>
+                    </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('indices_actions') }}" class="nav-link">
+                        <i data-lucide="candlestick-chart"></i>
+                        <span>Indices & Actions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
+                        <i data-lucide="activity"></i>
+                        <span>Analyse Actions & Indices</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('call_put') }}" class="nav-link">
+                        <i data-lucide="line-chart"></i>
+                        <span>Call & Put</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ url_for('volatility_surface') }}" class="nav-link">
+                        <i data-lucide="thermometer"></i>
+                        <span>Volatility Surface</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
+                        <i data-lucide="calculator"></i>
+                        <span>Analyse des Grecques</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('description_app') }}" class="nav-link">
+                        <i data-lucide="info"></i>
+                        <span>Description App</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="main-header-flex">
+                <div class="main-header-left">
+                    <div class="natixis-brand">
+                        <img src="{{ url_for('static', filename='images/logo_natixis.png') }}" alt="Logo Natixis" class="natixis-logo">
+                        <span class="natixis-text">Natixis</span>
+                    </div>
+                </div>
+                <div class="main-header-center">
+                    <!-- Espace pour équilibrer le layout -->
+                </div>
+                <div class="main-header-right">
+                    <h1 class="header-title">HK - Equity Derivatives Dashboard</h1>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content-area">
+            <div class="max-w-7xl mx-auto">
+                <!-- Hero Section -->
+                <section class="hero-section">
+                    <h1 class="hero-title">Equity Derivatives Dashboard</h1>
+                    <p class="hero-subtitle">
+                        Analyse interactive des options vanilles et instruments dérivés
+                    </p>
+                </section>
+
+                <!-- Features Grid -->
+                <section class="cards-grid">
+                    <a href="{{ url_for('cv_mathis_le_gall') }}" class="card-link">
+                        <div class="feature-card">
+                            <div class="card-header">
+                                <i data-lucide="user" class="card-icon"></i>
+                                <h3>CV Mathis Le Gall</h3>
+                            </div>
+                            <p>Consultez mon CV et découvrez mon parcours professionnel</p>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('indices_actions') }}" class="card-link">
+                        <div class="feature-card">
+                            <div class="card-header">
+                                <i data-lucide="candlestick-chart" class="card-icon"></i>
+                                <h3>Indices & Actions</h3>
+                            </div>
+                            <p>Aperçu des indices et actions avec graphiques en temps réel et données de marché</p>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('analyse_actions_indices') }}" class="card-link">
+                        <div class="feature-card">
+                            <div class="card-header">
+                                <i data-lucide="activity" class="card-icon"></i>
+                                <h3>Analyse Actions & Indices</h3>
+                            </div>
+                            <p>Comparaison de performances multi-instruments avec base 100</p>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('call_put') }}" class="card-link">
+                        <div class="feature-card">
+                            <div class="card-header">
+                                <i data-lucide="line-chart" class="card-icon"></i>
+                                <h3>Call & Put</h3>
+                            </div>
+                            <p>Visualisation et calcul des options européennes de type Call et Put</p>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('volatility_surface') }}" class="card-link">
+                        <div class="feature-card">
+                            <div class="card-header">
+                                <i data-lucide="thermometer" class="card-icon"></i>
+                                <h3>Volatility Surface</h3>
+                            </div>
+                            <p>Visualisation 3D de la surface de volatilité implicite</p>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('analyse_greeks') }}" class="card-link">
+                        <div class="feature-card">
+                            <div class="card-header">
+                                <i data-lucide="calculator" class="card-icon"></i>
+                                <h3>Analyse des Grecques</h3>
+                            </div>
+                            <p>Calcul et visualisation des sensibilités des options (Delta, Gamma, Theta, Vega, Rho)</p>
+                        </div>
+                    </a>
+
+                    <a href="{{ url_for('description_app') }}" class="card-link">
+                        <div class="feature-card">
+                            <div class="card-header">
+                                <i data-lucide="info" class="card-icon"></i>
+                                <h3>Description App</h3>
+                            </div>
+                            <p>Découvrez les fonctionnalités et l'architecture de l'application</p>
+                        </div>
+                    </a>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+</script>
+{% endblock %}
+

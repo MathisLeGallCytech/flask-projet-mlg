@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Equity Derivatives Dashboard{% endblock %}</title>
+    <meta name="description" content="Dashboard d'analyse d'options vanilles, surface de volatilité." />
+    <meta name="author" content="Mathis Le Gall" />
+
+    <meta property="og:title" content="Equity Derivatives Dashboard" />
+    <meta property="og:description" content="Analyse interactive des options vanilles: Call & Put, Volatility Surface." />
+    <meta property="og:type" content="website" />
+
+    <link rel="canonical" href="/" />
+    
+    <!-- CSS personnalisé -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Lucide Icons avec fallback -->
+    <script>
+        // Fonction pour charger Lucide avec fallback
+        function loadLucide() {
+            const script = document.createElement('script');
+            script.src = 'https://unpkg.com/lucide@latest/dist/umd/lucide.js';
+            script.onload = function() {
+                console.log('Lucide chargé avec succès depuis CDN');
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            };
+            script.onerror = function() {
+                console.warn('Échec du chargement Lucide depuis CDN, tentative avec jsDelivr...');
+                loadLucideFallback();
+            };
+            document.head.appendChild(script);
+        }
+        
+        function loadLucideFallback() {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.js';
+            script.onload = function() {
+                console.log('Lucide chargé avec succès depuis jsDelivr');
+                if (window.lucide) {
+                    lucide.createIcons();
+                }
+            };
+            script.onerror = function() {
+                console.error('Impossible de charger Lucide depuis tous les CDN');
+            };
+            document.head.appendChild(script);
+        }
+        
+        // Charger Lucide
+        loadLucide();
+    </script>
+    
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

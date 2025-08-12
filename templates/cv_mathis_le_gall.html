@@ -1,0 +1,277 @@
+{% extends "base_flask.html" %}
+
+{% block title %}CV Mathis Le Gall – Equity Derivatives Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Navigation</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="{{ url_for('index') }}" class="nav-link">
+                        <i data-lucide="home"></i>
+                        <span>Accueil</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link active">
+                        <i data-lucide="user"></i>
+                        <span>CV Mathis Le Gall</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('indices_actions') }}" class="nav-link">
+                        <i data-lucide="candlestick-chart"></i>
+                        <span>Indices & Actions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
+                        <i data-lucide="activity"></i>
+                        <span>Analyse Actions & Indices</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('call_put') }}" class="nav-link">
+                        <i data-lucide="line-chart"></i>
+                        <span>Call & Put</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('volatility_surface') }}" class="nav-link">
+                        <i data-lucide="thermometer"></i>
+                        <span>Volatility Surface</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
+                        <i data-lucide="calculator"></i>
+                        <span>Analyse des Grecques</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('description_app') }}" class="nav-link">
+                        <i data-lucide="info"></i>
+                        <span>Description App</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="main-header-flex">
+                <div class="main-header-left">
+                    <div class="natixis-brand">
+                        <img src="{{ url_for('static', filename='images/logo_natixis.png') }}" alt="Logo Natixis" class="natixis-logo">
+                        <span class="natixis-text">Natixis</span>
+                    </div>
+                </div>
+                <div class="main-header-center">
+                    <!-- Espace pour équilibrer le layout -->
+                </div>
+                <div class="main-header-right">
+                    <h1 class="header-title">CV Mathis Le Gall</h1>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content-area">
+            <div class="cv-full-width">
+                <!-- CV Section -->
+                <section class="cv-section">
+                    <div class="cv-container-full">
+                        <!-- Header du CV -->
+                        <div class="cv-header">
+                            <h1 class="cv-name">Mathis Le Gall</h1>
+                            <div class="cv-contact">
+                                <p><i data-lucide="phone" style="width: 16px; height: 16px; margin-right: 8px;"></i>Téléphone : +33 6 68 43 06 66</p>
+                                <p><i data-lucide="mail" style="width: 16px; height: 16px; margin-right: 8px;"></i>Email : mathis_le_gall@outlook.fr</p>
+                                <p><i data-lucide="linkedin" style="width: 16px; height: 16px; margin-right: 8px;"></i>LinkedIn : <a href="https://www.linkedin.com/in/mathislegall" target="_blank" class="linkedin-link">mathislegall</a></p>
+                            </div>
+                        </div>
+
+                        <!-- EXPERIENCE -->
+                        <div class="cv-section-block">
+                            <h2><i data-lucide="briefcase" style="width: 20px; height: 20px; margin-right: 10px;"></i>EXPERIENCE</h2>
+                            
+                            <div class="experience-item">
+                                <div class="experience-header">
+                                    <h3>Natixis Corporate & Investment Bank</h3>
+                                    <span class="experience-role">STRUCTURER - EQUITY DERIVATIVES (INTERNSHIP)</span>
+                                    <span class="experience-location"><i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 6px;"></i>Paris, France</span>
+                                    <span class="experience-date"><i data-lucide="calendar-days" style="width: 14px; height: 14px; margin-right: 6px;"></i>Sep. 2024 - Mar. 2025</span>
+                                </div>
+                                <ul class="experience-details">
+                                    <li>Priced and structured exotic equity derivatives, delivered live prices to European sales teams on notionals from €5 to €10 million.</li>
+                                    <li>Developed and implemented Quantitative Investment Strategies (QIS), enhancing product offerings and driving innovative solutions.</li>
+                                    <li>Improved desk tools by creating 5+ Python programs, including backtesting strategies, decision support tools, and process automation.</li>
+                                    <li>Collaborated with sales, traders and quants to conduct market analysis and product simulations, designing customized derivative solutions.</li>
+                                </ul>
+                            </div>
+
+                            <div class="experience-item">
+                                <div class="experience-header">
+                                    <h3>Credit Agricole Corporate & Investment Bank</h3>
+                                    <span class="experience-role">MARKET RISK ANALYST - INTEREST RATE DERIVATIVES (APPRENTICESHIP)</span>
+                                    <span class="experience-location"><i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 6px;"></i>Paris, France</span>
+                                    <span class="experience-date"><i data-lucide="calendar-days" style="width: 14px; height: 14px; margin-right: 6px;"></i>Sep. 2023 - Sep. 2024</span>
+                                </div>
+                                <ul class="experience-details">
+                                    <li>Monitored two interest rate derivatives trading desks (G10 and JPY), achieving revenues of €70 million and €25 million.</li>
+                                    <li>Analyzed and validated P&L calculations; resolved discrepancies by examining market movements, portfolio exposures, and new deal impacts.</li>
+                                    <li>Collaborated with Risk Managers to produce and analyze risk indicators (VaR, Stressed VaR, Stress), ensured compliance with thresholds.</li>
+                                    <li>Created and improved tools using Excel, enhancing P&L, VaR, and SVaR analyses, saving 30 minutes daily.</li>
+                                </ul>
+                            </div>
+
+                            <div class="experience-item">
+                                <div class="experience-header">
+                                    <h3>Credit Agricole S.A.</h3>
+                                    <span class="experience-role">QUANTITATIVE ANALYST - DATA SCIENTIST IN THE GROUP RISK DEPARTMENT (APPRENTICESHIP)</span>
+                                    <span class="experience-location"><i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 6px;"></i>Paris, France</span>
+                                    <span class="experience-date"><i data-lucide="calendar-days" style="width: 14px; height: 14px; margin-right: 6px;"></i>Sep. 2022 - Sep. 2023</span>
+                                </div>
+                                <ul class="experience-details">
+                                    <li>Led the Semantic Project processing €459M in operational risk, collaborated with Quantitative team and Business pilots to propose solutions.</li>
+                                    <li>Developed Python scripts using NLP and unsupervised learning to analyze and cluster financial events, enhancing the classification framework.</li>
+                                    <li>Trained supervised models to classify new financial losses, achieving 87.5% accuracy and challenging business pilots.</li>
+                                    <li>Created graphical interfaces with Python to visualize data and model results, improving the accuracy of deliverables to Comex.</li>
+                                </ul>
+                            </div>
+
+                            <div class="experience-item">
+                                <div class="experience-header">
+                                    <h3>DeadSneak</h3>
+                                    <span class="experience-role">COLLECTIVE OF ENTREPRENEURS IN THE SNEAKER INDUSTRY</span>
+                                    <span class="experience-location"><i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 6px;"></i>Pau, France</span>
+                                    <span class="experience-date"><i data-lucide="calendar-days" style="width: 14px; height: 14px; margin-right: 6px;"></i>Sep 2020 - Dec 2021</span>
+                                </div>
+                                <ul class="experience-details">
+                                    <li>Launched an e-commerce site, sold over 250 pairs generating €30k+ revenue, optimized sneaker arbitrage through market analysis and scraping.</li>
+                                    <li>Coordinated five entrepreneurs, supervised inventory and cash management, improved accounting processes.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- EDUCATION -->
+                        <div class="cv-section-block">
+                            <h2><i data-lucide="graduation-cap" style="width: 20px; height: 20px; margin-right: 10px;"></i>EDUCATION</h2>
+                            
+                            <div class="education-item">
+                                <div class="education-header">
+                                    <h3>University Paris Dauphine - PSL</h3>
+                                    <span class="education-degree">ECONOMIC AND FINANCIAL ENGINEERING (272) - MASTER 2</span>
+                                    <span class="education-location"><i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 6px;"></i>Paris, France</span>
+                                    <span class="education-date"><i data-lucide="calendar-days" style="width: 14px; height: 14px; margin-right: 6px;"></i>Sep. 2023 - Sep. 2024</span>
+                                </div>
+                                <ul class="education-details">
+                                    <li>Relevant courses: Risk Management and Derivatives Trading, Structured Products, Macro Allocation.</li>
+                                    <li>Quantitative Analysis Project: Developed and backtested a neural network-based medium-frequency Forex trading algorithm executing trades over tens of seconds.</li>
+                                    <li>Swiss Life AM Project: Developed and backtested a short strangle on the Euro Stoxx 50, optimizing strikes and volatility periods to maximize the Sharpe ratio.</li>
+                                </ul>
+                            </div>
+
+                            <div class="education-item">
+                                <div class="education-header">
+                                    <h3>Cy-Tech</h3>
+                                    <span class="education-degree">DEGREE IN ENGINEERING IN FINANCE AND TECHNOLOGY - MASTER 2</span>
+                                    <span class="education-location"><i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 6px;"></i>Cergy, France</span>
+                                    <span class="education-date"><i data-lucide="calendar-days" style="width: 14px; height: 14px; margin-right: 6px;"></i>Sep. 2018 - Sep. 2023</span>
+                                </div>
+                                <ul class="education-details">
+                                    <li>Applied Mathematics in Finance: Stochastic analysis (discrete and continuous time), Ito's Lemma, hedging portfolio optimization, asset and derivative pricing in the Black-Scholes model.</li>
+                                    <li>Computational Finance: Numerical option pricing using Black-Scholes and Monte Carlo methods for exotic options.</li>
+                                </ul>
+                            </div>
+
+                            <div class="education-item">
+                                <div class="education-header">
+                                    <h3>Politecnico Di Milano</h3>
+                                    <span class="education-degree">MATHEMATICS AND COMPUTER SCIENCE ENGINEERING COURSE - EXCHANGE PROGRAM</span>
+                                    <span class="education-location"><i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 6px;"></i>Milano, Italy</span>
+                                    <span class="education-date"><i data-lucide="calendar-days" style="width: 14px; height: 14px; margin-right: 6px;"></i>Jan. 2022 - Sep. 2022</span>
+                                </div>
+                                <ul class="education-details">
+                                    <li>Introduction to Machine Learning: Supervised/Unsupervised, Feature Engineering and Preprocessing, Model Evaluation and Selection.</li>
+                                    <li>Applied Mathematics: Probability, Statistics, Stochastic Processes, Monte Carlo.</li>
+                                    <li>Projects: Option prices prediction using neural networks, Prediction of patient health in collaboration with medical students.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- COMPETENCES -->
+                        <div class="cv-section-block">
+                            <h2><i data-lucide="code" style="width: 20px; height: 20px; margin-right: 10px;"></i>COMPETENCES</h2>
+                            <div class="competences-grid">
+                                <div class="competence-category">
+                                    <h3><i data-lucide="globe" style="width: 16px; height: 16px; margin-right: 8px;"></i>Languages</h3>
+                                    <ul>
+                                        <li><strong>English:</strong> Professional</li>
+                                        <li><strong>French:</strong> Native</li>
+                                    </ul>
+                                </div>
+                                <div class="competence-category">
+                                    <h3><i data-lucide="code" style="width: 16px; height: 16px; margin-right: 8px;"></i>I.T. Languages</h3>
+                                    <ul>
+                                        <li><strong>Python</strong> (current)</li>
+                                        <li><strong>C</strong></li>
+                                        <li><strong>Java</strong></li>
+                                        <li><strong>V.B.A</strong></li>
+                                        <li><strong>LaTeX</strong> (not used recently)</li>
+                                    </ul>
+                                </div>
+                                <div class="competence-category">
+                                    <h3><i data-lucide="monitor" style="width: 16px; height: 16px; margin-right: 8px;"></i>Web Languages</h3>
+                                    <ul>
+                                        <li><strong>HTML/CSS</strong></li>
+                                        <li><strong>PHP</strong></li>
+                                        <li><strong>JS</strong></li>
+                                        <li><strong>Drupal</strong> (not used recently)</li>
+                                    </ul>
+                                </div>
+                                <div class="competence-category">
+                                    <h3><i data-lucide="monitor" style="width: 16px; height: 16px; margin-right: 8px;"></i>Softwares</h3>
+                                    <ul>
+                                        <li><strong>Orchestrade</strong> (trading and risk management platform)</li>
+                                        <li><strong>Office Suite</strong></li>
+                                    </ul>
+                                </div>
+                                <div class="competence-category">
+                                    <h3><i data-lucide="award" style="width: 16px; height: 16px; margin-right: 8px;"></i>Certifications</h3>
+                                    <ul>
+                                        <li><strong>AMF</strong></li>
+                                        <li><strong>Bloomberg Market Concepts (BMC)</strong></li>
+                                    </ul>
+                                </div>
+                                <div class="competence-category">
+                                    <h3><i data-lucide="bike" style="width: 16px; height: 16px; margin-right: 8px;"></i>Sports</h3>
+                                    <ul>
+                                        <li>10 years of regional road bike racing competition</li>
+                                        <li>Running (objective: 10 km in under 40 minutes)</li>
+                                    </ul>
+                                </div>
+                                <div class="competence-category">
+                                    <h3><i data-lucide="users" style="width: 16px; height: 16px; margin-right: 8px;"></i>Associations</h3>
+                                    <ul>
+                                        <li>Member of FORWARD Finance Club (organized conferences at Cy-Tech)</li>
+                                        <li>Head of Running at Cy-Tech Sports Office</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

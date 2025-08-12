@@ -1,0 +1,623 @@
+{% extends "base_flask.html" %}
+
+{% block title %}Indices & Actions – Marchés{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Navigation</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="{{ url_for('index') }}" class="nav-link">
+                        <i data-lucide="home"></i>
+                        <span>Accueil</span>
+                    </a>
+                </li>
+                                    <li class="nav-item">
+                        <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
+                            <i data-lucide="user"></i>
+                            <span>CV Mathis Le Gall</span>
+                            </a>
+                    </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('indices_actions') }}" class="nav-link active">
+                        <i data-lucide="candlestick-chart"></i>
+                        <span>Indices & Actions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
+                        <i data-lucide="activity"></i>
+                        <span>Analyse Actions & Indices</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('call_put') }}" class="nav-link">
+                        <i data-lucide="line-chart"></i>
+                        <span>Call & Put</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ url_for('volatility_surface') }}" class="nav-link">
+                        <i data-lucide="thermometer"></i>
+                        <span>Volatility Surface</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
+                        <i data-lucide="calculator"></i>
+                        <span>Analyse des Grecques</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('description_app') }}" class="nav-link">
+                        <i data-lucide="info"></i>
+                        <span>Description App</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="header-flex">
+                <div class="natixis-brand">
+                    <img src="{{ url_for('static', filename='images/logo_natixis.png') }}" alt="Logo Natixis" class="natixis-logo">
+                    <span class="natixis-text">Natixis</span>
+                </div>
+                                    <div class="header-controls">
+                        <button id="refresh-btn" class="btn btn-primary">
+                            <i data-lucide="refresh-cw"></i>
+                            <span>Actualiser</span>
+                        </button>
+                        <span id="last-update" class="last-update">
+                            <i data-lucide="clock" style="width: 14px; height: 14px; margin-right: 6px;"></i>
+                            Dernière mise à jour: --
+                        </span>
+                        <span id="next-update" class="next-update">
+                            <i data-lucide="zap" style="width: 14px; height: 14px; margin-right: 6px;"></i>
+                            Prochaine mise à jour: --
+                        </span>
+                    </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content-area">
+            <div class="page-header">
+                <div class="header-content">
+                    <div class="header-left">
+                        <h1 class="page-title">
+                            <i data-lucide="candlestick-chart" class="title-icon"></i>
+                            Indices & Actions
+                        </h1>
+                        <p class="page-subtitle">
+                            Données en temps réel des principaux indices et actions
+                        </p>
+                    </div>
+                    
+                    <!-- Indicateur de statut API -->
+                    <div id="api-status" class="api-status-card">
+                        <div class="status-indicator">
+                            <div id="api-status-indicator" class="status-dot"></div>
+                            <span id="api-status-text" class="status-text">Vérification API...</span>
+                        </div>
+                        <div class="status-details">
+                            <div class="api-name">Yahoo Finance API</div>
+                            <div id="api-response-time" class="response-time">--</div>
+                        </div>
+                        <div class="status-meta">
+                            <i data-lucide="database" class="meta-icon"></i>
+                            <span class="meta-text">30 actions</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <main class="main-content-area">
+                <!-- Bandeau indices pleine largeur -->
+                <div class="indices-strip-container">
+                    <h3 class="section-title">
+                        <i data-lucide="trending-up" class="section-icon"></i>
+                        Indices
+                    </h3>
+                    <div id="indices-strip" class="indices-grid"></div>
+                </div>
+
+                <section class="chart-section">
+                    <!-- Colonne centrale: Graphique (max largeur) -->
+                    <div class="indices-actions-chart-container">
+                        <div class="indices-actions-chart-header">
+                            <h3 class="indices-actions-chart-title">
+                                <i data-lucide="bar-chart-3" class="indices-actions-chart-icon"></i>
+                                Graphique du marché
+                            </h3>
+                            <div class="indices-actions-chart-controls">
+                                <div class="indices-actions-chart-info">
+                                    <i data-lucide="activity" style="width: 14px; height: 14px; margin-right: 6px;"></i>
+                                    <span id="current-symbol">CAC 40</span> • 
+                                    <span id="current-timeframe">2 Ans</span>
+                                </div>
+                                <div class="indices-actions-chart-selects">
+                                    <div style="position: relative; display: inline-block;">
+                                        <select id="chart-symbol" class="indices-actions-chart-select">
+                                        <optgroup label="Indices">
+                                            <option value="^FCHI">CAC 40</option>
+                                            <option value="^GSPC">S&P 500</option>
+                                            <option value="^IXIC">NASDAQ</option>
+                                            <option value="^DJI">Dow Jones</option>
+                                            <option value="^FTSE">FTSE 100</option>
+                                            <option value="^N225">Nikkei 225</option>
+                                            <option value="^GDAXI">DAX</option>
+                                            <option value="^STOXX50E">Euro STOXX 50</option>
+                                        </optgroup>
+                                        <optgroup label="Tech US">
+                                            <option value="AAPL">Apple Inc.</option>
+                                            <option value="MSFT">Microsoft Corporation</option>
+                                            <option value="GOOGL">Alphabet Inc.</option>
+                                            <option value="AMZN">Amazon.com Inc.</option>
+                                            <option value="TSLA">Tesla Inc.</option>
+                                            <option value="NVDA">NVIDIA Corporation</option>
+                                            <option value="META">Meta Platforms Inc.</option>
+                                            <option value="NFLX">Netflix Inc.</option>
+                                            <option value="ADBE">Adobe Inc.</option>
+                                            <option value="CRM">Salesforce Inc.</option>
+                                            <option value="INTC">Intel Corporation</option>
+                                            <option value="ORCL">Oracle Corporation</option>
+                                            <option value="CSCO">Cisco Systems Inc.</option>
+                                            <option value="PYPL">PayPal Holdings Inc.</option>
+                                            <option value="AVGO">Broadcom Inc.</option>
+                                            <option value="QCOM">Qualcomm Inc.</option>
+                                            <option value="TXN">Texas Instruments Inc.</option>
+                                            <option value="KLAC">KLA Corporation</option>
+                                            <option value="PANW">Palo Alto Networks Inc.</option>
+                                            <option value="SNPS">Synopsys Inc.</option>
+                                            <option value="CDNS">Cadence Design Systems Inc.</option>
+                                            <option value="FTNT">Fortinet Inc.</option>
+                                        </optgroup>
+                                        <optgroup label="CAC40">
+                                            <option value="LVMH.PA">LVMH Moët Hennessy Louis Vuitton</option>
+                                            <option value="ASML.AS">ASML Holding N.V.</option>
+                                            <option value="SAP.DE">SAP SE</option>
+                                            <option value="NESN.SW">Nestlé S.A.</option>
+                                        </optgroup>
+                                        <optgroup label="Actions Asiatiques">
+                                            <option value="005930.KS">Samsung Electronics Co., Ltd.</option>
+                                            <option value="0700.HK">Tencent Holdings Limited</option>
+                                            <option value="BABA">Alibaba Group Holding Limited</option>
+                                        </optgroup>
+                                    </select>
+                                    <i data-lucide="chevron-down" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; pointer-events: none; color: #9ca3af;"></i>
+                                    </div>
+                                    <div style="position: relative; display: inline-block;">
+                                        <select id="chart-timeframe" class="indices-actions-chart-select">
+                                        <option value="1d">1 Jour</option>
+                                        <option value="5d">5 Jours</option>
+                                        <option value="1mo">1 Mois</option>
+                                        <option value="3mo">3 Mois</option>
+                                        <option value="6mo">6 Mois</option>
+                                        <option value="1y">1 An</option>
+                                        <option value="2y" selected>2 Ans</option>
+                                        <option value="5y">5 Ans</option>
+                                        <option value="max">Max</option>
+                                    </select>
+                                    <i data-lucide="chevron-down" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; pointer-events: none; color: #9ca3af;"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="indices-actions-chart-canvas-container">
+                            <canvas id="market-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Colonne droite: Actions -->
+                    <div class="stocks-sidebar">
+                        <div class="stocks-container">
+                            <h3 class="section-title">
+                                <i data-lucide="building-2" class="section-icon"></i>
+                                Actions
+                            </h3>
+                            <div id="stocks-container" class="stocks-grid">
+                                <div class="loading-spinner">
+                                    <i data-lucide="refresh-cw" style="width: 24px; height: 24px; animation: spin 1s linear infinite; margin-bottom: 8px;"></i>
+                                    <p>Chargement des données...</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Variables globales
+    let marketChart = null;
+    let currentSymbol = '^FCHI';
+    let currentTimeframe = '2y'; // Timeframe par défaut à 2 ans
+    let marketData = null;
+    let nextUpdateTimer = null;
+    let countdownInterval = null;
+
+    // Fonction pour formater les nombres
+    function formatNumber(num, decimals = 2) {
+        if (num === null || num === undefined || isNaN(num)) return '-';
+        return Number(num).toLocaleString('fr-FR', {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals
+        });
+    }
+
+    // Fonction pour formater les pourcentages
+    function formatPercentage(num, decimals = 2) {
+        if (num === null || num === undefined || isNaN(num) || num === 0) return '-';
+        const sign = num >= 0 ? '+' : '';
+        return `${sign}${Number(num).toFixed(decimals)}%`;
+    }
+
+    // Fonction pour mettre à jour le statut de l'API
+    function updateApiStatus(status, responseTime = null) {
+        const indicator = document.getElementById('api-status-indicator');
+        const text = document.getElementById('api-status-text');
+        const responseTimeEl = document.getElementById('api-response-time');
+
+        switch(status) {
+            case 'checking':
+                indicator.className = 'status-dot checking';
+                text.textContent = 'Vérification...';
+                break;
+            case 'connected':
+                indicator.className = 'status-dot connected';
+                text.textContent = 'Connecté';
+                if (responseTime) {
+                    responseTimeEl.textContent = `${responseTime}ms`;
+                }
+                break;
+            case 'error':
+                indicator.className = 'status-dot error';
+                text.textContent = 'Erreur de connexion';
+                break;
+        }
+    }
+
+    // Fonction pour charger les données de marché
+    async function loadMarketData() {
+        try {
+            updateApiStatus('checking');
+            const startTime = performance.now();
+            
+            const response = await fetch('/api/market-data');
+            const data = await response.json();
+            
+            const endTime = performance.now();
+            const responseTime = Math.round(endTime - startTime);
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            marketData = data;
+            updateApiStatus('connected', responseTime);
+            
+            // Afficher les indices
+            displayIndices(data.indices);
+            
+            // Afficher les actions
+            displayStocks(data.stocks);
+            
+            // Charger le graphique initial
+            loadChartData();
+            
+            // Mettre à jour la dernière mise à jour
+            document.getElementById('last-update').textContent = 
+                `Dernière mise à jour: ${new Date().toLocaleTimeString('fr-FR')}`;
+            
+            // Démarrer le compte à rebours si c'est le premier chargement
+            if (!countdownInterval) {
+                startCountdown();
+            }
+                
+        } catch (error) {
+            console.error('Erreur lors du chargement des données:', error);
+            updateApiStatus('error');
+            
+            // Afficher un message d'erreur
+            document.getElementById('indices-strip').innerHTML = 
+                '<div class="error-message"><i data-lucide="alert-circle" style="width: 16px; height: 16px; margin-right: 8px;"></i>Erreur lors du chargement des données</div>';
+            document.getElementById('stocks-container').innerHTML = 
+                '<div class="error-message"><i data-lucide="alert-circle" style="width: 16px; height: 16px; margin-right: 8px;"></i>Erreur lors du chargement des données</div>';
+        }
+    }
+
+    // Fonction pour afficher les indices
+    function displayIndices(indices) {
+        const container = document.getElementById('indices-strip');
+        
+        if (!indices || Object.keys(indices).length === 0) {
+            container.innerHTML = '<div class="no-data"><i data-lucide="info" style="width: 16px; height: 16px; margin-right: 8px;"></i>Aucun indice disponible</div>';
+            return;
+        }
+        
+        const indicesHtml = Object.entries(indices).map(([symbol, data]) => {
+            const change = data.change || 0;
+            const changePercent = data.change_percent || 0; // Correction du nom du champ
+            const isPositive = change >= 0;
+            
+            // Nettoyer le symbole pour l'affichage
+            const cleanSymbol = symbol.replace(/[\^\.]/g, '');
+            
+            // Fonction pour tronquer le nom si nécessaire
+            const truncateName = (name, maxLength = 20) => {
+                if (name.length <= maxLength) return name;
+                return name.substring(0, maxLength) + '...';
+            };
+            
+            return `
+                <div class="market-label ${isPositive ? 'positive' : 'negative'}">
+                    <div class="label-header">
+                        <h4 class="label-name" title="${data.displayName || data.name || symbol}">${truncateName(data.displayName || data.name || symbol)}</h4>
+                        <span class="label-symbol">${cleanSymbol}</span>
+                    </div>
+                    <div class="label-values">
+                        <div class="label-price">${formatNumber(data.price)}</div>
+                        <div class="label-change">
+                            <span class="change-percent">${formatPercentage(changePercent)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        container.innerHTML = indicesHtml;
+    }
+
+    // Fonction pour afficher les actions
+    function displayStocks(stocks) {
+        const container = document.getElementById('stocks-container');
+        
+        if (!stocks || Object.keys(stocks).length === 0) {
+            container.innerHTML = '<div class="no-data"><i data-lucide="info" style="width: 16px; height: 16px; margin-right: 8px;"></i>Aucune action disponible</div>';
+            return;
+        }
+        
+        const stocksHtml = Object.entries(stocks).map(([symbol, data]) => {
+            const change = data.change || 0;
+            const changePercent = data.change_percent || 0; // Correction du nom du champ
+            const isPositive = change >= 0;
+            
+            // Nettoyer le symbole pour l'affichage
+            const cleanSymbol = symbol.replace(/[\^\.]/g, '');
+            
+            // Fonction pour tronquer le nom si nécessaire
+            const truncateName = (name, maxLength = 20) => {
+                if (name.length <= maxLength) return name;
+                return name.substring(0, maxLength) + '...';
+            };
+            
+            return `
+                <div class="market-label ${isPositive ? 'positive' : 'negative'}">
+                    <div class="label-header">
+                        <h4 class="label-name" title="${data.name || symbol}">${truncateName(data.name || symbol)}</h4>
+                        <span class="label-symbol">${cleanSymbol}</span>
+                    </div>
+                    <div class="label-values">
+                        <div class="label-price">${formatNumber(data.price)}</div>
+                        <div class="label-change">
+                            <span class="change-percent">${formatPercentage(changePercent)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        container.innerHTML = stocksHtml;
+    }
+
+    // Fonction pour charger les données du graphique
+    async function loadChartData() {
+        try {
+            const response = await fetch(`/api/chart-data-v2/${currentSymbol}?timeframe=${currentTimeframe}`);
+            const data = await response.json();
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            updateChart(data);
+            
+        } catch (error) {
+            console.error('Erreur lors du chargement du graphique:', error);
+            // Afficher un message d'erreur sur le graphique
+            const canvas = document.getElementById('market-chart');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#666';
+            ctx.font = '16px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Erreur lors du chargement des données', canvas.width / 2, canvas.height / 2);
+        }
+    }
+
+    // Fonction pour mettre à jour le graphique
+    function updateChart(data) {
+        const ctx = document.getElementById('market-chart');
+        
+        if (marketChart) {
+            marketChart.destroy();
+        }
+        
+        if (!data.labels || !data.datasets || data.datasets.length === 0) {
+            ctx.getContext('2d').fillText('Aucune donnée disponible', ctx.width / 2, ctx.height / 2);
+            return;
+        }
+        
+        marketChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: currentSymbol,
+                    data: data.datasets[0].data,
+                    borderColor: 'rgb(59, 130, 246)',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        callbacks: {
+                            label: function(context) {
+                                return `${context.dataset.label}: ${formatNumber(context.parsed.y)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        grid: {
+                            display: true,
+                            color: 'rgba(255, 255, 255, 0.1)',
+                            lineWidth: 1
+                        }
+                    },
+                    y: {
+                        display: true,
+                        title: {
+                            display: true,
+                            text: 'Prix'
+                        },
+                        grid: {
+                            display: true,
+                            color: 'rgba(255, 255, 255, 0.1)',
+                            lineWidth: 1
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return formatNumber(value);
+                            },
+                            color: 'rgba(255, 255, 255, 0.7)'
+                        }
+                    }
+                },
+                interaction: {
+                    mode: 'nearest',
+                    axis: 'x',
+                    intersect: false
+                }
+            }
+        });
+    }
+
+    // Fonction pour formater le temps restant
+    function formatTimeRemaining(seconds) {
+        const minutes = Math.floor(seconds / 60);
+        const remainingSeconds = seconds % 60;
+        return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+    }
+
+    // Fonction pour démarrer le compte à rebours
+    function startCountdown() {
+        const REFRESH_INTERVAL = 300; // 5 minutes en secondes
+        let timeRemaining = REFRESH_INTERVAL;
+        
+        // Mettre à jour immédiatement
+        updateCountdownDisplay(timeRemaining);
+        
+        // Démarrer le compte à rebours
+        countdownInterval = setInterval(() => {
+            timeRemaining--;
+            updateCountdownDisplay(timeRemaining);
+            
+            if (timeRemaining <= 0) {
+                timeRemaining = REFRESH_INTERVAL;
+                // Déclencher le rafraîchissement automatique
+                loadMarketData();
+            }
+        }, 1000);
+    }
+
+    // Fonction pour mettre à jour l'affichage du compte à rebours
+    function updateCountdownDisplay(seconds) {
+        const nextUpdateEl = document.getElementById('next-update');
+        if (nextUpdateEl) {
+            nextUpdateEl.textContent = `Prochaine mise à jour: ${formatTimeRemaining(seconds)}`;
+        }
+    }
+
+    // Fonction pour rafraîchir les données
+    async function refreshData() {
+        await loadMarketData();
+        // Redémarrer le compte à rebours après un rafraîchissement
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+        }
+        startCountdown();
+    }
+
+    // Écouteurs d'événements
+    document.addEventListener('DOMContentLoaded', function() {
+        // Charger les données initiales
+        loadMarketData();
+        
+        // Écouteur pour le bouton de rafraîchissement
+        const refreshBtn = document.getElementById('refresh-btn');
+        if (refreshBtn) {
+            refreshBtn.addEventListener('click', refreshData);
+        }
+        
+        // Écouteurs pour les sélecteurs du graphique
+        const symbolSelect = document.getElementById('chart-symbol');
+        const timeframeSelect = document.getElementById('chart-timeframe');
+        
+        if (symbolSelect) {
+            symbolSelect.addEventListener('change', function() {
+                currentSymbol = this.value;
+                document.getElementById('current-symbol').textContent = this.options[this.selectedIndex].text;
+                loadChartData();
+            });
+        }
+        
+        if (timeframeSelect) {
+            timeframeSelect.addEventListener('change', function() {
+                currentTimeframe = this.value;
+                document.getElementById('current-timeframe').textContent = this.options[this.selectedIndex].text;
+                loadChartData();
+            });
+        }
+        
+        // Le rafraîchissement automatique est maintenant géré par le minuteur
+        // setInterval(refreshData, 300000); // 5 minutes = 300 000 millisecondes
+    });
+</script>
+{% endblock %}

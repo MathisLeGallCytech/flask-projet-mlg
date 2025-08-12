@@ -1,0 +1,668 @@
+{% extends "base_flask.html" %}
+
+{% block title %}Analyse – Comparaison de performances{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Navigation</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="{{ url_for('index') }}" class="nav-link">
+                        <i data-lucide="home"></i>
+                        <span>Accueil</span>
+                    </a>
+                </li>
+                                    <li class="nav-item">
+                        <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
+                            <i data-lucide="user"></i>
+                            <span>CV Mathis Le Gall</span>
+                        </a>
+                    </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('indices_actions') }}" class="nav-link">
+                        <i data-lucide="candlestick-chart"></i>
+                        <span>Indices & Actions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link active">
+                        <i data-lucide="activity"></i>
+                        <span>Analyse Actions & Indices</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('call_put') }}" class="nav-link">
+                        <i data-lucide="line-chart"></i>
+                        <span>Call & Put</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ url_for('volatility_surface') }}" class="nav-link">
+                        <i data-lucide="thermometer"></i>
+                        <span>Volatility Surface</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
+                        <i data-lucide="calculator"></i>
+                        <span>Analyse des Grecques</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('description_app') }}" class="nav-link">
+                        <i data-lucide="info"></i>
+                        <span>Description App</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="main-header-flex">
+                <div class="main-header-left">
+                    <div class="natixis-brand">
+                        <img src="{{ url_for('static', filename='images/logo_natixis.png') }}" alt="Logo Natixis" class="natixis-logo">
+                        <span class="natixis-text">Natixis</span>
+                    </div>
+                </div>
+                <div class="main-header-center">
+                    <!-- Espace pour équilibrer le layout -->
+                </div>
+                <div class="main-header-right">
+                    <h1 class="header-title">Analyse - Comparaison de performances</h1>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content-area">
+            <div class="page-header">
+                <div class="header-content">
+                    <div class="header-left">
+                        <h1 class="page-title">
+                            <i data-lucide="activity" class="title-icon"></i>
+                            Analyse Actions & Indices
+                        </h1>
+                        <p class="page-subtitle">
+                            Comparaison de performances et métriques de risque
+                        </p>
+                    </div>
+                    
+                    <!-- Indicateur de statut API -->
+                    <div id="api-status" class="api-status-card">
+                        <div class="status-indicator">
+                            <div id="api-status-indicator" class="status-dot"></div>
+                            <span id="api-status-text" class="status-text">Vérification API...</span>
+                        </div>
+                        <div class="status-details">
+                            <div class="api-name">Yahoo Finance API</div>
+                            <div id="api-response-time" class="response-time">--</div>
+                        </div>
+                        <div class="status-meta">
+                            <i data-lucide="database" class="meta-icon"></i>
+                            <span class="meta-text">30 actions</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <main class="main-content-area">
+                <section class="analysis-section">
+                <h3>Comparaison de performances (Base 100)</h3>
+                <div class="search-container">
+                    <div class="search-input">
+                        <label>Recherche</label>
+                        <input id="tag-search" type="text" placeholder="Tapez un symbole ou un nom..." />
+                        <div id="tag-suggestions" class="suggestions-dropdown"></div>
+                    </div>
+                    <div class="dropdown-container">
+                        <label>Liste déroulante</label>
+                        <select id="tag-dropdown">
+                            <option value="">Choisir un instrument…</option>
+                        </select>
+                    </div>
+                    <div class="date-input">
+                        <label for="tag-start">Date de départ</label>
+                        <input id="tag-start" type="date" value="2015-01-01" />
+                    </div>
+                    <div class="date-input">
+                        <label for="tag-end">Date de fin</label>
+                        <input id="tag-end" type="date" />
+                    </div>
+                    <div class="scale-container">
+                        <label>Échelle</label>
+                        <div class="scale-toggle">
+                            <input id="perf-log-scale" type="checkbox" />
+                            <span>Logarithmique</span>
+                        </div>
+                    </div>
+                    <div class="action-button">
+                        <button id="tag-plot">Tracer</button>
+                    </div>
+                </div>
+                <div class="selection-container">
+                    <div class="selection-label">Sélection</div>
+                    <div id="tag-selected" class="tag-chips"></div>
+                </div>
+                <div class="analysis-chart-container">
+                    <div class="analysis-chart-canvas-container">
+                        <canvas id="perf-chart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Tableau des métriques de risque -->
+                <div class="risk-metrics-section">
+                    <h3>Métriques de Risque</h3>
+                    <div class="risk-metrics-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Métrique</th>
+                                    <!-- Les en-têtes des colonnes seront générés dynamiquement -->
+                                </tr>
+                            </thead>
+                            <tbody id="risk-table-body" >
+                                <!-- Le contenu sera généré dynamiquement -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+            </main>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+    
+    // Gestion du menu mobile (si l'élément existe)
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    if (mobileMenuBtn) {
+        mobileMenuBtn.addEventListener('click', () => {
+            document.querySelector('.sidebar').classList.toggle('open');
+        });
+        
+        // Fermer le menu en cliquant en dehors
+        document.addEventListener('click', (e) => {
+            const sidebar = document.querySelector('.sidebar');
+            
+            if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+    }
+    
+    // Fonction pour mettre à jour le statut de l'API
+    function updateApiStatus(status, responseTime = null) {
+        const indicator = document.getElementById('api-status-indicator');
+        const statusText = document.getElementById('api-status-text');
+        const responseTimeEl = document.getElementById('api-response-time');
+        
+        // Supprimer toutes les classes de couleur
+        indicator.classList.remove('connected', 'error', 'checking');
+        
+        switch(status) {
+            case 'connected':
+                indicator.classList.add('connected');
+                statusText.textContent = 'API Connectée';
+                if (responseTime) {
+                    responseTimeEl.textContent = `${responseTime}ms`;
+                }
+                break;
+            case 'error':
+                indicator.classList.add('error');
+                statusText.textContent = 'API Hors ligne';
+                responseTimeEl.textContent = 'Erreur';
+                break;
+            case 'checking':
+                indicator.classList.add('checking');
+                statusText.textContent = 'Vérification API...';
+                responseTimeEl.textContent = '--';
+                break;
+        }
+    }
+    let perfChart = null;
+    let availableInstruments = [];
+    let tagSelected = [
+        { symbol: '^GSPC', label: 'S&P 500' },
+        { symbol: '^FCHI', label: 'CAC 40' },
+    ];
+
+    function renderTagSelected() {
+        const sel = document.getElementById('tag-selected');
+        sel.innerHTML = '';
+        tagSelected.forEach((item, idx) => {
+            const chip = document.createElement('div');
+            chip.className = 'flex items-center gap-2 px-2 py-1 rounded-full text-sm';
+            chip.innerHTML = `<span>${item.label}</span><button aria-label="Supprimer" class="h-5 w-5 grid place-items-center rounded-full bg-destructive text-destructive-foreground">×</button>`;
+            chip.querySelector('button').addEventListener('click', () => {
+                tagSelected = tagSelected.filter(s => s.symbol !== item.symbol);
+                renderTagSelected();
+            });
+            sel.appendChild(chip);
+        });
+    }
+
+    function renderTagSuggestions(filter = '') {
+        const sugg = document.getElementById('tag-suggestions');
+        const f = (filter || '').toLowerCase();
+        const filtered = availableInstruments
+            .filter(x => x.symbol.toLowerCase().includes(f) || x.label.toLowerCase().includes(f))
+            .slice(0, 50);
+        if (!f) { sugg.classList.add('hidden'); sugg.innerHTML = ''; return; }
+        sugg.classList.remove('hidden');
+        sugg.innerHTML = '';
+        filtered.forEach(item => {
+            const already = tagSelected.find(s => s.symbol === item.symbol);
+            if (already) return;
+            const row = document.createElement('div');
+            row.className = 'flex items-center justify-between p-2 rounded hover: cursor-pointer';
+            row.innerHTML = `<span class="truncate">${item.label} <span >(${item.symbol})</span></span><button class="px-2 py-1 text-xs   rounded">Ajouter</button>`;
+            row.querySelector('button').addEventListener('click', (e) => {
+                e.stopPropagation();
+                tagSelected.push(item);
+                renderTagSelected();
+                renderTagSuggestions(document.getElementById('tag-search').value);
+            });
+            sugg.appendChild(row);
+        });
+        lucide.createIcons();
+    }
+
+    async function loadMarketData() {
+        try {
+            updateApiStatus('checking');
+            const startTime = performance.now();
+            
+            const resp = await fetch('/api/market-data');
+            const data = await resp.json();
+            
+            const endTime = performance.now();
+            const responseTime = Math.round(endTime - startTime);
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            updateApiStatus('connected', responseTime);
+            
+            availableInstruments = [];
+            Object.entries(data.indices).forEach(([name, idx]) => {
+                availableInstruments.push({ symbol: idx.symbol, label: (idx.displayName || idx.symbol) });
+            });
+            Object.entries(data.stocks).forEach(([symbol, s]) => {
+                availableInstruments.push({ symbol, label: (s.name || symbol) });
+            });
+            const dd = document.getElementById('tag-dropdown');
+            dd.innerHTML = '<option value="">Choisir un instrument…</option>' + availableInstruments
+                .map(x => `<option value="${x.symbol}">${x.label} (${x.symbol})</option>`)
+                .join('');
+        } catch (error) {
+            console.error('Erreur lors du chargement des données:', error);
+            updateApiStatus('error');
+        }
+    }
+
+    async function plotPerformanceComparisonTags() {
+        const start = document.getElementById('tag-start').value;
+        const end = document.getElementById('tag-end').value || new Date().toISOString().split('T')[0];
+        const syms = tagSelected.map(s => s.symbol);
+        if (!syms.length) { alert('Ajoutez au moins un titre'); return; }
+        
+        const qs = start ? `&start=${encodeURIComponent(start)}` : '';
+        const qsEnd = end ? `&end=${encodeURIComponent(end)}` : '';
+        const responses = await Promise.all(syms.map(s => fetch(`/api/chart-data-v2/${s}?timeframe=1y${qs}${qsEnd}`)));
+        const payloads = await Promise.all(responses.map(r => r.json()));
+        
+        const toISO = (label) => {
+            // Si le label est déjà au format YYYY-MM-DD, le retourner tel quel
+            if (label && label.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                return label;
+            }
+            // Sinon, traiter le format DD/MM/YYYY
+            const parts = (label || '').split('/');
+            if (parts.length === 3) {
+                const [dd, mm, yyyy] = parts;
+                return `${yyyy}-${mm}-${dd}`;
+            }
+            return label;
+        };
+        const series = [];
+        syms.forEach((sym, i) => {
+            const p = payloads[i];
+            if (!p || p.error) {
+                return;
+            }
+            const pts = (p.labels || []).map((L, idx) => ({ x: toISO(L), y: Number(p.datasets[0].data[idx]) }));
+            series.push({ symbol: sym, points: pts });
+        });
+        
+        if (series.length === 0) { 
+            alert('Données indisponibles'); 
+            return; 
+        }
+        const masterLabelsISO = Array.from(new Set(series.flatMap(s => s.points.map(pt => pt.x)))).sort();
+        const masterLabelsDisplay = masterLabelsISO.map(iso => {
+            if (iso && iso.match(/^\d{4}-\d{2}-\d{2}$/)) {
+                const [yyyy, mm, dd] = iso.split('-'); 
+                return `${dd}/${mm}/${yyyy}`;
+            }
+            return iso;
+        });
+        const palette = [
+            'rgb(59,130,246)','rgb(234,88,12)','rgb(34,197,94)','rgb(168,85,247)',
+            'rgb(244,63,94)','rgb(20,184,166)','rgb(250,204,21)','rgb(99,102,241)',
+            'rgb(217,119,6)','rgb(16,185,129)'
+        ];
+        const datasets = series.map((s, idx) => {
+            const map = new Map(); 
+            s.points.forEach(pt => map.set(pt.x, Number(pt.y)));
+            
+            // Trouver la première valeur valide pour la base
+            let base = null; 
+            for (let i = 0; i < masterLabelsISO.length; i++) { 
+                const v = map.get(masterLabelsISO[i]); 
+                if (isFinite(v) && v > 0) { 
+                    base = v; 
+                    break; 
+                } 
+            }
+            
+            // Calculer les données normalisées
+            const data = masterLabelsISO.map(iso => { 
+                const v = map.get(iso); 
+                if (!isFinite(v) || base === null || base === 0) return null; 
+                return (v / base) * 100.0; 
+            });
+            
+            // Trouver le nom complet correspondant au symbole
+            const selectedItem = tagSelected.find(item => item.symbol === s.symbol);
+            const displayName = selectedItem ? selectedItem.label : s.symbol;
+            
+            return { 
+                label: displayName, 
+                data, 
+                borderColor: palette[idx % palette.length], 
+                backgroundColor: palette[idx % palette.length].replace('rgb','rgba').replace(')',', 0.08)'), 
+                tension: 0.08, 
+                borderWidth: 1.2, 
+                fill: false 
+            };
+        });
+        if (perfChart) perfChart.destroy();
+        const ctx = document.getElementById('perf-chart').getContext('2d');
+        const isLog = document.getElementById('perf-log-scale')?.checked;
+        perfChart = new Chart(ctx, {
+            type: 'line', data: { labels: masterLabelsDisplay, datasets },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: true, labels: { color: '#ffffff', font: { size: 13 } } } },
+                scales: {
+                    y: {
+                        type: isLog ? 'logarithmic' : 'linear',
+                        title: { display: true, text: 'Base 100', color: '#ffffff', font: { size: 13 } },
+                        ticks: { color: '#ffffff', font: { size: 12 }, callback: (v)=>{ try { return Number(v).toLocaleString('fr-FR'); } catch { return v; } } },
+                        grid: { color: 'rgba(255,255,255,0.12)', lineWidth: 0.6 }
+                    },
+                    x: {
+                        grid: { color: 'rgba(255,255,255,0.10)', lineWidth: 0.6 },
+                        ticks: {
+                            autoSkip: true,
+                            minRotation: 30,
+                            maxRotation: 45,
+                            color: '#ffffff',
+                            font: { size: 12 },
+                            callback: function(value) {
+                                try {
+                                    const label = this.getLabelForValue(value);
+                                    const parts = (label || '').split('/');
+                                    if (parts.length === 3) {
+                                        const [dd, mm, yyyy] = parts;
+                                        const d = new Date(`${yyyy}-${mm}-${dd}T00:00:00Z`);
+                                        return d.toLocaleDateString('fr-FR', { month: 'short', year: 'numeric' });
+                                    }
+                                    return label;
+                                } catch { return value; }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Mettre à jour le tableau des métriques de risque
+        updateRiskMetricsTable(series);
+    }
+
+    function updateRiskMetricsTable(series) {
+        if (!series || series.length === 0) return;
+        
+        const bodyContainer = document.getElementById('risk-table-body');
+        
+        // Générer les en-têtes des colonnes
+        const headerRow = document.querySelector('thead tr');
+        // Supprimer tous les en-têtes existants sauf le premier (Métrique)
+        while (headerRow.children.length > 1) {
+            headerRow.removeChild(headerRow.lastChild);
+        }
+        
+        series.forEach(s => {
+            const th = document.createElement('th');
+            th.className = 'px-4 py-3 text-center text-foreground font-medium border-b ';
+            // Utiliser le label (nom) au lieu du symbole
+            const instrument = availableInstruments.find(i => i.symbol === s.symbol);
+            th.textContent = instrument ? instrument.label : s.symbol;
+            headerRow.appendChild(th);
+        });
+        
+        // Récupérer les métriques depuis le backend Python
+        const start = document.getElementById('tag-start').value;
+        const end = document.getElementById('tag-end').value || new Date().toISOString().split('T')[0];
+        
+        Promise.all(series.map(s => {
+            const url = `/api/risk-metrics/${s.symbol}?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+            return fetch(url).then(r => r.json());
+        })).then(metricsData => {
+            
+            // Générer le contenu du tableau
+            bodyContainer.innerHTML = '';
+            
+            const metricRows = [
+                { key: 'annualized_return', label: 'Rendement Annuel (%)', format: (v) => v.toFixed(2) + '%' },
+                { key: 'volatility', label: 'Volatilité Annuelle (%)', format: (v) => v.toFixed(2) + '%' },
+                { key: 'sharpe_ratio', label: 'Ratio de Sharpe', format: (v) => v.toFixed(3) },
+                { key: 'max_drawdown', label: 'Max Drawdown (%)', format: (v) => v.toFixed(2) + '%' },
+                { key: 'var_95', label: 'VaR 95% (%)', format: (v) => v.toFixed(2) + '%' },
+                { key: 'total_return', label: 'Rendement Total (%)', format: (v) => v.toFixed(2) + '%' }
+            ];
+            
+            metricRows.forEach(metric => {
+                const row = document.createElement('tr');
+                
+                // Cellule métrique
+                const metricCell = document.createElement('td');
+                metricCell.className = 'px-4 py-3 text-foreground font-medium border-b ';
+                metricCell.textContent = metric.label;
+                row.appendChild(metricCell);
+                
+                // Cellules valeurs
+                series.forEach(s => {
+                    const metricData = metricsData.find(m => m.symbol === s.symbol);
+                    const cell = document.createElement('td');
+                    cell.className = 'px-4 py-3 text-center  border-b ';
+                    
+                                         if (metricData && !metricData.error) {
+                         const value = metricData[metric.key];
+                         cell.textContent = metric.format(value);
+                         
+                         // Code couleur amélioré : Vert (bon) / Orange (moyen) / Rouge (mauvais)
+                         if (metric.key === 'volatility') {
+                             // Volatilité : Plus c'est bas, mieux c'est
+                             if (value < 0.15) {
+                                 cell.className += ' text-green-500 font-semibold';
+                                 cell.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                                 cell.style.borderLeft = '3px solid #10b981';
+                             } else if (value < 0.25) {
+                                 cell.className += ' text-orange-500';
+                                 cell.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
+                                 cell.style.borderLeft = '3px solid #f97316';
+                             } else {
+                                 cell.className += ' text-red-500 font-semibold';
+                                 cell.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                                 cell.style.borderLeft = '3px solid #ef4444';
+                             }
+                         } else if (metric.key === 'var_95') {
+                             // VaR : Plus c'est proche de 0, mieux c'est
+                             if (value > -0.02) {
+                                 cell.className += ' text-green-500 font-semibold';
+                                 cell.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                                 cell.style.borderLeft = '3px solid #10b981';
+                             } else if (value > -0.05) {
+                                 cell.className += ' text-orange-500';
+                                 cell.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
+                                 cell.style.borderLeft = '3px solid #f97316';
+                             } else {
+                                 cell.className += ' text-red-500 font-semibold';
+                                 cell.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                                 cell.style.borderLeft = '3px solid #ef4444';
+                             }
+                         } else if (metric.key === 'max_drawdown') {
+                             // Max Drawdown : Plus c'est bas, mieux c'est
+                             if (value < 0.15) {
+                                 cell.className += ' text-green-500 font-semibold';
+                                 cell.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                                 cell.style.borderLeft = '3px solid #10b981';
+                             } else if (value < 0.30) {
+                                 cell.className += ' text-orange-500';
+                                 cell.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
+                                 cell.style.borderLeft = '3px solid #f97316';
+                             } else {
+                                 cell.className += ' text-red-500 font-semibold';
+                                 cell.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                                 cell.style.borderLeft = '3px solid #ef4444';
+                             }
+                         } else if (metric.key === 'sharpe_ratio') {
+                             // Ratio de Sharpe : Plus c'est haut, mieux c'est
+                             if (value > 1.0) {
+                                 cell.className += ' text-green-500 font-semibold';
+                                 cell.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                                 cell.style.borderLeft = '3px solid #10b981';
+                             } else if (value > 0.5) {
+                                 cell.className += ' text-orange-500';
+                                 cell.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
+                                 cell.style.borderLeft = '3px solid #f97316';
+                             } else {
+                                 cell.className += ' text-red-500 font-semibold';
+                                 cell.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                                 cell.style.borderLeft = '3px solid #ef4444';
+                             }
+                         } else if (metric.key === 'total_return') {
+                             // Rendement total : Plus c'est haut, mieux c'est
+                             if (value > 0.20) {
+                                 cell.className += ' text-green-500 font-semibold';
+                                 cell.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                                 cell.style.borderLeft = '3px solid #10b981';
+                             } else if (value > 0.05) {
+                                 cell.className += ' text-orange-500';
+                                 cell.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
+                                 cell.style.borderLeft = '3px solid #f97316';
+                             } else if (value > 0) {
+                                 cell.className += ' text-blue-500';
+                                 cell.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                                 cell.style.borderLeft = '3px solid #3b82f6';
+                             } else {
+                                 cell.className += ' text-red-500 font-semibold';
+                                 cell.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                                 cell.style.borderLeft = '3px solid #ef4444';
+                             }
+                         } else if (metric.key === 'annualized_return') {
+                             // Rendement annuel : Plus c'est haut, mieux c'est
+                             if (value > 0.12) {
+                                 cell.className += ' text-green-500 font-semibold';
+                                 cell.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                                 cell.style.borderLeft = '3px solid #10b981';
+                             } else if (value > 0.06) {
+                                 cell.className += ' text-orange-500';
+                                 cell.style.backgroundColor = 'rgba(249, 115, 22, 0.1)';
+                                 cell.style.borderLeft = '3px solid #f97316';
+                             } else if (value > 0.02) {
+                                 cell.className += ' text-blue-500';
+                                 cell.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                                 cell.style.borderLeft = '3px solid #3b82f6';
+                             } else if (value > 0) {
+                                 cell.className += ' text-gray-400';
+                                 cell.style.backgroundColor = 'rgba(156, 163, 175, 0.1)';
+                                 cell.style.borderLeft = '3px solid #9ca3af';
+                             } else {
+                                 cell.className += ' text-red-500 font-semibold';
+                                 cell.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                                 cell.style.borderLeft = '3px solid #ef4444';
+                             }
+                         }
+                    } else {
+                        cell.textContent = 'N/A';
+                    }
+                    
+                    row.appendChild(cell);
+                });
+                
+                bodyContainer.appendChild(row);
+            });
+        }).catch(error => {
+            bodyContainer.innerHTML = '<tr><td colspan="' + (series.length + 1) + '" class="px-4 py-3 text-center ">Erreur lors du calcul des métriques</td></tr>';
+        });
+    }
+
+    document.getElementById('tag-search').addEventListener('input', (e) => renderTagSuggestions(e.target.value));
+    document.getElementById('tag-dropdown').addEventListener('change', (e) => {
+        const sym = e.target.value; if (!sym) return;
+        const item = availableInstruments.find(x => x.symbol === sym);
+        if (item && !tagSelected.find(s => s.symbol === sym)) { tagSelected.push(item); renderTagSelected(); }
+        e.target.value = '';
+    });
+    document.getElementById('tag-plot').addEventListener('click', (e) => { e.preventDefault(); plotPerformanceComparisonTags(); });
+    document.getElementById('perf-log-scale')?.addEventListener('change', () => plotPerformanceComparisonTags());
+
+    loadMarketData().then(async () => {
+        renderTagSelected();
+        const startEl = document.getElementById('tag-start');
+        if (startEl && !startEl.value) startEl.value = '2015-01-01';
+        const endEl = document.getElementById('tag-end');
+        if (endEl && !endEl.value) endEl.value = new Date().toISOString().split('T')[0];
+        try { await plotPerformanceComparisonTags(); } catch (e) { /* ignore */ }
+    });
+    
+    // Vérification périodique du statut de l'API (toutes les 30 secondes)
+    setInterval(() => {
+        fetch('/api/market-data')
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    updateApiStatus('error');
+                } else {
+                    updateApiStatus('connected');
+                }
+            })
+            .catch(() => {
+                updateApiStatus('error');
+            });
+    }, 30000);
+</script>
+{% endblock %}
+
