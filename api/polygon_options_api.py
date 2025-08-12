@@ -7,12 +7,17 @@ Fournit des données de volatilité implicite de haute qualité
 import requests
 import pandas as pd
 import json
+import os
 from datetime import datetime, timedelta
 import time
 from typing import List, Dict, Optional, Tuple
+from dotenv import load_dotenv
+
+# Charger les variables d'environnement
+load_dotenv()
 
 # Configuration de l'API Polygon.io
-POLYGON_API_KEY = "yoi_pGvtpiF25yOY7RVre6CToiAfFBCn"
+POLYGON_API_KEY = os.getenv("POLYGON_API_KEY", "yoi_pGvtpiF25yOY7RVre6CToiAfFBCn")
 POLYGON_BASE_URL = "https://api.polygon.io"
 
 def get_polygon_options_expirations(ticker: str) -> List[str]:

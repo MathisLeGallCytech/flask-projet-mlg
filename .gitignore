@@ -4,6 +4,11 @@ venv/
 env/
 ENV/
 
+# Variables d'environnement
+.env
+.env.local
+.env.production
+
 # Fichiers Python
 __pycache__/
 *.py[cod]
