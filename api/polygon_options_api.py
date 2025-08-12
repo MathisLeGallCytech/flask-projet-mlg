@@ -666,6 +666,50 @@ def get_polygon_volatility_surface(ticker: str, max_expirations: int = 6, strike
         print(f"❌ Erreur lors de la génération de la surface: {e}")
         return {'error': f'Erreur: {str(e)}'}
 
+def test_polygon_connection() -> bool:
+    """
+    Teste la connexion à l'API Polygon.io
+    
+    Returns:
+        bool: True si la connexion réussit, False sinon
+    """
+    if not POLYGON_API_KEY:
+        print("❌ Clé API Polygon.io non configurée")
+        return False
+    
+    print("🔍 Test de connexion à l'API Polygon.io...")
+    
+    # Test simple avec l'endpoint des contrats
+    url = f"{POLYGON_BASE_URL}/v3/reference/options/contracts"
+    params = {
+        'underlying_ticker': 'AAPL',
+        'limit': 1,
+        'apiKey': POLYGON_API_KEY
+    }
+    
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        
+        data = response.json()
+        
+        if 'results' in data:
+            print("✅ Connexion à l'API Polygon.io réussie")
+            return True
+        else:
+            print("❌ Réponse inattendue de l'API Polygon.io")
+            return False
+            
+    except requests.exceptions.Timeout:
+        print("❌ Timeout lors du test de connexion Polygon.io")
+        return False
+    except requests.exceptions.RequestException as e:
+        print(f"❌ Erreur de connexion Polygon.io: {e}")
+        return False
+    except Exception as e:
+        print(f"❌ Erreur inattendue Polygon.io: {e}")
+        return False
+
 if __name__ == "__main__":
     print("🔍 Test du module Polygon.io Options API")
     print("=" * 50)

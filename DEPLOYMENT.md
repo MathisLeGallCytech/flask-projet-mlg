@@ -1,86 +1,72 @@
-# 🚀 Guide de Déploiement sur Render
+# Guide de Déploiement sur Render
 
-## 📋 Prérequis
+## Configuration des Variables d'Environnement
 
-1. **Compte Render** : Créez un compte sur [render.com](https://render.com)
-2. **Clés API** : Obtenez vos clés gratuites :
-   - [Finnhub API](https://finnhub.io/register) - Clé gratuite
-   - [Polygon.io](https://polygon.io/) - Clé gratuite
+### Variables Requises
 
-## 🔧 Configuration sur Render
+Pour que l'application fonctionne correctement sur Render, vous devez configurer les variables d'environnement suivantes :
 
-### 1. Connecter votre repository GitHub
+#### 1. FINNHUB_API_KEY
+- **Description** : Clé API pour accéder aux données Finnhub
+- **Obtention** : Inscrivez-vous gratuitement sur [https://finnhub.io/register](https://finnhub.io/register)
+- **Utilisation** : Données d'options et de volatilité implicite
 
-1. Allez sur [dashboard.render.com](https://dashboard.render.com)
-2. Cliquez sur "New +" → "Web Service"
-3. Connectez votre repository GitHub
-4. Sélectionnez le repository `flaskProjectNatixisMathisLeGall`
+#### 2. POLYGON_API_KEY (Optionnel)
+- **Description** : Clé API pour accéder aux données Polygon.io
+- **Obtention** : Inscrivez-vous sur [https://polygon.io/](https://polygon.io/)
+- **Utilisation** : Données d'options alternatives
 
-### 2. Configuration du service
+### Configuration sur Render
 
-- **Name** : `flask-natixis-app` (ou nom de votre choix)
-- **Environment** : `Python 3`
-- **Build Command** : `pip install -r requirements.txt`
-- **Start Command** : `gunicorn app:app`
-- **Plan** : `Free`
+1. **Accédez à votre dashboard Render**
+2. **Sélectionnez votre service** `flask-natixis-app`
+3. **Allez dans l'onglet "Environment"**
+4. **Ajoutez les variables suivantes** :
 
-### 3. Variables d'environnement
-
-Dans la section "Environment Variables", ajoutez :
-
-| Variable | Valeur | Description |
-|----------|--------|-------------|
-| `FINNHUB_API_KEY` | `votre_clé_finnhub` | Clé API Finnhub |
-| `POLYGON_API_KEY` | `votre_clé_polygon` | Clé API Polygon.io |
-| `FLASK_ENV` | `production` | Environnement Flask |
-| `FLASK_DEBUG` | `False` | Mode debug désactivé |
-
-### 4. Déploiement automatique
-
-- ✅ **Auto-Deploy** : Activé par défaut
-- ✅ **Branch** : `main` ou `master`
-
-## 🔍 Vérification du déploiement
-
-1. **Logs de build** : Vérifiez que le build se termine sans erreur
-2. **URL de l'application** : Render génère automatiquement une URL
-3. **Test des fonctionnalités** : Testez les pages principales
-
-## 🛠️ Dépannage
-
-### Erreurs courantes
-
-1. **Module not found** : Vérifiez `requirements.txt`
-2. **API keys manquantes** : Vérifiez les variables d'environnement
-3. **Timeout** : Les APIs peuvent être lentes, c'est normal
-
-### Logs utiles
-
-```bash
-# Voir les logs en temps réel
-# Dans le dashboard Render → Logs
+```
+FINNHUB_API_KEY=votre_clé_finnhub_ici
+POLYGON_API_KEY=votre_clé_polygon_ici
+FLASK_ENV=production
+FLASK_DEBUG=false
 ```
 
-## 📊 Monitoring
+### Vérification de la Configuration
 
-- **Uptime** : Surveillé automatiquement par Render
-- **Logs** : Accessibles dans le dashboard
-- **Métriques** : Disponibles dans la version payante
+Après avoir configuré les variables d'environnement :
 
-## 🔄 Mise à jour
+1. **Redéployez votre application** sur Render
+2. **Vérifiez les logs** pour vous assurer qu'il n'y a pas d'erreurs
+3. **Testez l'endpoint** `/api/vol-surface-3d/SPY` pour vérifier que l'API fonctionne
 
-Les mises à jour sont automatiques quand vous poussez sur votre branche principale.
+### Résolution des Problèmes
 
-## 💰 Coûts
+#### Erreur HTTP 502
+- **Cause** : Variables d'environnement manquantes ou clés API invalides
+- **Solution** : Vérifiez que `FINNHUB_API_KEY` est correctement configurée
 
-- **Version gratuite** : 0€/mois
-- **Limitations** :
-  - 512 MB RAM
-  - 0.1 CPU
-  - 750 heures/mois
-  - Pas de domaine personnalisé
+#### Timeout des Requêtes
+- **Cause** : Limites de rate limiting des APIs
+- **Solution** : Attendez quelques secondes et réessayez
 
-## 🆘 Support
+#### Erreur "Clé API non configurée"
+- **Cause** : Variable `FINNHUB_API_KEY` manquante
+- **Solution** : Configurez la variable dans l'interface Render
 
-- [Documentation Render](https://render.com/docs)
-- [Support Render](https://render.com/support)
+### Limites des APIs Gratuites
+
+#### Finnhub (Gratuit)
+- 60 appels par minute
+- Données en temps réel limitées
+- Historique limité
+
+#### Polygon.io (Gratuit)
+- 5 appels par minute
+- Données en temps réel limitées
+- Historique limité
+
+### Recommandations
+
+1. **Utilisez Finnhub** comme provider principal (plus généreux en gratuit)
+2. **Configurez les timeouts** appropriés dans le code
+3. **Implémentez un cache** pour éviter les appels répétés
+4. **Surveillez les logs** pour détecter les problèmes de rate limiting
