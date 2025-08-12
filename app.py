@@ -1,4 +1,6 @@
 import os
+import gc
+import psutil
 from flask import Flask, render_template, request, jsonify, send_file, Response
 import math
 import time
@@ -6,6 +8,19 @@ import pandas as pd
 from datetime import datetime
 from models.options_pricing import OptionPricer
 from models.risk_metrics import risk_calculator
+
+# Fonction pour surveiller l'utilisation mémoire
+def log_memory_usage():
+    """Log l'utilisation mémoire actuelle"""
+    process = psutil.Process()
+    memory_info = process.memory_info()
+    print(f"📊 Utilisation mémoire: {memory_info.rss / 1024 / 1024:.2f} MB")
+
+# Fonction pour nettoyer la mémoire
+def cleanup_memory():
+    """Force le garbage collection pour libérer la mémoire"""
+    gc.collect()
+    log_memory_usage()
 
 # Charger les variables d'environnement AVANT tous les imports
 try:
@@ -32,6 +47,26 @@ from api.finnhub_implied_volatility import get_implied_volatility, get_options_e
 
 app = Flask(__name__)
 pricer = OptionPricer()
+
+# Route de santé pour surveiller l'application
+@app.route('/health')
+def health_check():
+    """Route de santé pour surveiller l'état de l'application"""
+    try:
+        # Vérifier l'utilisation mémoire
+        memory_usage = psutil.Process().memory_info().rss / 1024 / 1024  # MB
+        
+        return jsonify({
+            'status': 'healthy',
+            'memory_usage_mb': round(memory_usage, 2),
+            'timestamp': datetime.now().isoformat()
+        })
+    except Exception as e:
+        return jsonify({
+            'status': 'unhealthy',
+            'error': str(e),
+            'timestamp': datetime.now().isoformat()
+        }), 500
 
 # Approximation rationnelle d'Acklam pour l'inverse de la CDF normale (PPF)
 # Source adaptée: https://web.archive.org/web/20151030215612/http://home.online.no/~pjacklam/notes/invnorm/
@@ -612,6 +647,9 @@ def api_risk_metrics(symbol):
 def api_vol_surface_3d(symbol):
     """API endpoint optimisé pour la surface de volatilité 3D avec fond transparent"""
     try:
+        # Log de l'utilisation mémoire au début
+        log_memory_usage()
+        
         span = float(request.args.get('span', 0.5))
         provider = request.args.get('provider', 'finnhub')
         
@@ -620,7 +658,7 @@ def api_vol_surface_3d(symbol):
             return jsonify({'error': 'span doit être entre 0 et 1'}), 400
             
         if provider not in ['finnhub', 'polygon']:
-            return jsonify({'error': 'provider doit être "finnhub" ou "polygon"'}), 400
+            return jsonify({'error': 'provider doit être "finnhub" ou "polygon"' }), 400
         
         # Vérifier que la clé API est disponible pour Finnhub
         if provider == 'finnhub':
@@ -743,6 +781,9 @@ def api_vol_surface_3d(symbol):
             
         except ImportError:
             print("Classe VolatilitySurface3D non disponible, utilisation des données standard")
+        
+        # Nettoyer la mémoire avant de retourner la réponse
+        cleanup_memory()
         
         return jsonify(result)
         
@@ -1049,6 +1090,9 @@ def api_available_symbols():
 def process_volatility_surface_data(all_options_data, symbol, spot_price, span):
     """Traite les données d'options pour créer une surface de volatilité"""
     try:
+        # Log de l'utilisation mémoire avant traitement
+        log_memory_usage()
+        
         # Combiner toutes les données
         combined_data = pd.concat(all_options_data, ignore_index=True)
         
@@ -1122,6 +1166,9 @@ def process_volatility_surface_data(all_options_data, symbol, spot_price, span):
         total_options = len(combined_data)
         calls_count = len(combined_data[combined_data['type'] == 'call'])
         puts_count = len(combined_data[combined_data['type'] == 'put'])
+        
+        # Nettoyer la mémoire après traitement
+        cleanup_memory()
         
         return {
             'symbol': symbol,
