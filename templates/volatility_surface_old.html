@@ -1,0 +1,646 @@
+{% extends "base.html" %}
+
+{% block title %}Volatility Surface – Volatilité{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex w-full bg-background">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-card border-r border-border flex flex-col">
+        <div class="p-4 border-b border-border">
+            <h2 class="text-lg font-semibold">Navigation</h2>
+        </div>
+        <nav class="flex-1 p-4">
+            <ul class="space-y-2">
+                <li>
+                    <a href="{{ url_for('index') }}" class="flex items-center p-2 rounded-md hover:bg-accent hover:text-accent-foreground">
+                        <i data-lucide="home" class="mr-2 h-4 w-4"></i>
+                        <span>Accueil</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('indices_actions') }}" class="flex items-center p-2 rounded-md hover:bg-accent hover:text-accent-foreground">
+                        <i data-lucide="candlestick-chart" class="mr-2 h-4 w-4"></i>
+                        <span>Indices & Actions</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('analyse_actions_indices') }}" class="flex items-center p-2 rounded-md hover:bg-accent hover:text-accent-foreground">
+                        <i data-lucide="activity" class="mr-2 h-4 w-4"></i>
+                        <span>Analyse Actions & Indices</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('call_put') }}" class="flex items-center p-2 rounded-md hover:bg-accent hover:text-accent-foreground">
+                        <i data-lucide="line-chart" class="mr-2 h-4 w-4"></i>
+                        <span>Call & Put</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{{ url_for('volatility_surface') }}" class="flex items-center p-2 rounded-md bg-primary text-primary-foreground">
+                        <i data-lucide="thermometer" class="mr-2 h-4 w-4"></i>
+                        <span>Volatility Surface</span>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col">
+        <!-- Header -->
+        <header class="h-14 flex items-center border-b border-border px-4 gap-3">
+            <h1 class="text-lg font-semibold">Surface de Volatilité</h1>
+        </header>
+
+        <!-- Content -->
+        <div class="flex-1 p-6">
+            <div class="space-y-8">
+                <header class="space-y-2">
+                    <h1 class="text-3xl md:text-4xl font-bold flex items-center gap-2">
+                        <i data-lucide="thermometer" class="h-6 w-6 text-primary"></i>
+                        Volatility Surface
+                    </h1>
+                    <p class="text-muted-foreground">
+                        Visualisation de la surface de volatilité implicite
+                    </p>
+                </header>
+
+                <main class="space-y-8">
+                    <div class="p-6 bg-card border border-border rounded-lg space-y-4">
+                        <div class="flex items-end gap-3 flex-wrap">
+                            <div>
+                                <label class="block text-sm text-muted-foreground mb-1">Symbole</label>
+                                <select id="vs-symbol-select" class="px-3 py-2 border border-border rounded-md bg-background min-w-[180px]">
+                                    <option value="AAPL" selected>AAPL (Apple)</option>
+                                    <option value="MSFT">MSFT (Microsoft)</option>
+                                    <option value="NVDA">NVDA (NVIDIA)</option>
+                                    <option value="AMZN">AMZN (Amazon)</option>
+                                    <option value="META">META (Meta)</option>
+                                    <option value="GOOGL">GOOGL (Alphabet)</option>
+                                    <option value="TSLA">TSLA (Tesla)</option>
+                                    <option value="SPY">SPY (S&P 500 ETF)</option>
+                                    <option value="QQQ">QQQ (Nasdaq 100 ETF)</option>
+                                    <option value="AMD">AMD (Advanced Micro Devices)</option>
+                                    <option value="JPM">JPM (JPMorgan)</option>
+                                    <option value="XOM">XOM (Exxon Mobil)</option>
+                                    <option value="__custom__">Personnalisé…</option>
+                                </select>
+                            </div>
+                            <div id="vs-custom-wrap" class="hidden">
+                                <label class="block text-sm text-muted-foreground mb-1">Ticker personnalisé</label>
+                                <input id="vs-symbol" type="text" placeholder="ex: AAPL" class="px-3 py-2 border border-border rounded-md bg-background" />
+                            </div>
+                            <div>
+                                <label class="block text-sm text-muted-foreground mb-1">Maturités max</label>
+                                <input id="vs-maxexp" type="number" value="6" min="1" max="12" class="w-24 px-3 py-2 border border-border rounded-md bg-background" />
+                            </div>
+                            <div>
+                                <label class="block text-sm text-muted-foreground mb-1">Bande autour du spot</label>
+                                <select id="vs-span" class="px-3 py-2 border border-border rounded-md bg-background">
+                                    <option value="0.3">±30%</option>
+                                    <option value="0.5" selected>±50%</option>
+                                    <option value="0.7">±70%</option>
+                                </select>
+                            </div>
+                            <button id="vs-load" class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90">Charger</button>
+                        </div>
+
+                        <!-- Indicateur de statut -->
+                        <div id="vs-status" class="flex items-center gap-2 p-3 bg-muted/20 rounded-md">
+                            <div id="vs-status-indicator" class="w-3 h-3 rounded-full bg-gray-400"></div>
+                            <span id="vs-status-text" class="text-sm">Prêt à charger les données</span>
+                        </div>
+
+                        <!-- Graphique 3D -->
+                        <div class="w-full h-[70vh] border border-border rounded-md overflow-hidden bg-background">
+                            <div id="vs-plot" class="w-full h-full"></div>
+                        </div>
+
+                        <!-- Informations -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                            <div class="p-3 bg-muted/20 rounded-md">
+                                <div class="font-medium text-muted-foreground">Prix actuel</div>
+                                <div id="vs-current-price" class="text-lg font-semibold">--</div>
+                            </div>
+                            <div class="p-3 bg-muted/20 rounded-md">
+                                <div class="font-medium text-muted-foreground">Options analysées</div>
+                                <div id="vs-total-options" class="text-lg font-semibold">--</div>
+                            </div>
+                            <div class="p-3 bg-muted/20 rounded-md">
+                                <div class="font-medium text-muted-foreground">Dernière mise à jour</div>
+                                <div id="vs-last-updated" class="text-sm">--</div>
+                            </div>
+                        </div>
+
+                        <!-- Détails de debug -->
+                        <details class="p-3 border border-border rounded-md bg-muted/10">
+                            <summary class="cursor-pointer text-sm text-muted-foreground">Détails techniques</summary>
+                            <pre id="vs-raw" class="mt-2 text-xs whitespace-pre-wrap text-muted-foreground">Cliquez sur "Charger" pour voir les données techniques.</pre>
+                        </details>
+                    </div>
+
+                    <!-- Section 2: Sourire de volatilité à maturité donnée -->
+                    <div class="p-6 bg-card border border-border rounded-lg space-y-4">
+                        <header class="space-y-1">
+                            <h3 class="text-lg font-semibold">Sourire IV à maturité</h3>
+                            <p class="text-muted-foreground text-sm">Choisissez une date d'échéance, puis sélectionnez un ou plusieurs tickers.</p>
+                        </header>
+
+                        <div class="flex items-end gap-3 flex-wrap">
+                            <div>
+                                <label class="block text-sm text-muted-foreground mb-1">Échéance</label>
+                                <select id="smile-tenor" class="px-3 py-2 border border-border rounded-md bg-background">
+                                    <option value="1m" selected>1m</option>
+                                    <option value="2m">2m</option>
+                                    <option value="3m">3m</option>
+                                    <option value="6m">6m</option>
+                                    <option value="9m">9m</option>
+                                    <option value="1y">1y</option>
+                                    <option value="2y">2y</option>
+                                </select>
+                            </div>
+                            <div class="min-w-[320px]">
+                                <label class="block text-sm text-muted-foreground mb-1">Tickers</label>
+                                <div id="smile-chips" class="flex flex-wrap gap-2">
+                                    <!-- chips dynamiques -->
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-muted-foreground mb-1">Ajouter un ticker</label>
+                                <div class="flex gap-2">
+                                    <input id="smile-add" type="text" placeholder="ex: ASML.AS" class="px-3 py-2 border border-border rounded-md bg-background" />
+                                    <button id="smile-add-btn" class="px-3 py-2 border border-border rounded-md hover:bg-accent">Ajouter</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm text-muted-foreground mb-1">Bande autour du spot</label>
+                                <select id="smile-span" class="px-3 py-2 border border-border rounded-md bg-background">
+                                    <option value="0.3">±30%</option>
+                                    <option value="0.5" selected>±50%</option>
+                                    <option value="0.7">±70%</option>
+                                </select>
+                            </div>
+                            <button id="smile-plot-btn" class="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90">Tracer</button>
+                        </div>
+
+                        <div class="aspect-[16/9] w-full border border-border rounded-md overflow-hidden">
+                            <div id="smile-plot" class="w-full h-full"></div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="border-t border-border py-6 text-center text-sm text-muted-foreground">
+            © 2025 – Projet Flask Derivatives
+        </footer>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>
+    lucide.createIcons();
+
+    // Éléments DOM
+    const selectSymbol = document.getElementById('vs-symbol-select');
+    const customWrap = document.getElementById('vs-custom-wrap');
+    const customSymbol = document.getElementById('vs-symbol');
+    const loadBtn = document.getElementById('vs-load');
+    const plotDiv = document.getElementById('vs-plot');
+    const statusIndicator = document.getElementById('vs-status-indicator');
+    const statusText = document.getElementById('vs-status-text');
+    const currentPriceEl = document.getElementById('vs-current-price');
+    const totalOptionsEl = document.getElementById('vs-total-options');
+    const lastUpdatedEl = document.getElementById('vs-last-updated');
+    const rawDataEl = document.getElementById('vs-raw');
+
+    // Fonction pour mettre à jour le statut
+    function updateStatus(status, message) {
+        statusIndicator.className = 'w-3 h-3 rounded-full';
+        
+        switch(status) {
+            case 'loading':
+                statusIndicator.classList.add('bg-yellow-500', 'animate-pulse');
+                statusText.textContent = message || 'Chargement...';
+                break;
+            case 'success':
+                statusIndicator.classList.add('bg-green-500');
+                statusText.textContent = message || 'Données chargées';
+                break;
+            case 'error':
+                statusIndicator.classList.add('bg-red-500');
+                statusText.textContent = message || 'Erreur';
+                break;
+            default:
+                statusIndicator.classList.add('bg-gray-400');
+                statusText.textContent = message || 'Prêt';
+        }
+    }
+
+    // Fonction pour récupérer les données de surface
+    async function fetchVolatilitySurface(symbol) {
+        try {
+            updateStatus('loading', 'Récupération des données Alpha Vantage...');
+            
+            const response = await fetch(`/api/vol-surface/${encodeURIComponent(symbol)}`);
+            const data = await response.json();
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            return data;
+            
+        } catch (error) {
+            throw new Error(`Erreur lors de la récupération: ${error.message}`);
+        }
+    }
+
+    // Fonction pour créer la surface 3D
+    function createVolatilitySurface(data) {
+        const { strikes, expiries, volatility_matrix, current_price, total_options, last_updated, warning } = data;
+        
+        // Préparer les données pour Plotly
+        const x = strikes;  // Strikes
+        const y = expiries; // Expiries
+        const z = volatility_matrix; // Volatilité implicite
+        
+        // Créer la surface 3D
+        const surfaceData = [{
+            type: 'surface',
+            x: x,
+            y: y,
+            z: z,
+            colorscale: 'Viridis',
+            name: 'Volatilité Implicite',
+            showscale: true,
+            colorbar: {
+                title: 'Volatilité',
+                titleside: 'right',
+                tickformat: '.1%',
+                tickmode: 'auto',
+                nticks: 10
+            }
+        }];
+        
+        // Configuration du layout
+        const layout = {
+            title: {
+                text: `Surface de Volatilité - ${data.symbol}`,
+                font: { color: '#ffffff', size: 18 }
+            },
+            scene: {
+                xaxis: {
+                    title: 'Strike Price ($)',
+                    titlefont: { color: '#ffffff' },
+                    tickfont: { color: '#ffffff' },
+                    gridcolor: 'rgba(255,255,255,0.1)',
+                    zerolinecolor: 'rgba(255,255,255,0.3)'
+                },
+                yaxis: {
+                    title: 'Time to Expiry (years)',
+                    titlefont: { color: '#ffffff' },
+                    tickfont: { color: '#ffffff' },
+                    gridcolor: 'rgba(255,255,255,0.1)',
+                    zerolinecolor: 'rgba(255,255,255,0.3)'
+                },
+                zaxis: {
+                    title: 'Implied Volatility',
+                    titlefont: { color: '#ffffff' },
+                    tickfont: { color: '#ffffff' },
+                    tickformat: '.1%',
+                    gridcolor: 'rgba(255,255,255,0.1)',
+                    zerolinecolor: 'rgba(255,255,255,0.3)'
+                },
+                camera: {
+                    eye: { x: 1.5, y: 1.5, z: 1.5 }
+                },
+                bgcolor: 'rgba(0,0,0,0)'
+            },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { color: '#ffffff' },
+            margin: { l: 0, r: 0, t: 50, b: 0 },
+            showlegend: false
+        };
+        
+        // Configuration des options
+        const config = {
+            responsive: true,
+            displayModeBar: true,
+            displaylogo: false,
+            modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d'],
+            toImageButtonOptions: {
+                format: 'png',
+                filename: `volatility_surface_${data.symbol}`,
+                height: 800,
+                width: 1200,
+                scale: 2
+            }
+        };
+        
+        // Afficher le graphique
+        Plotly.newPlot(plotDiv, surfaceData, layout, config);
+        
+        // Mettre à jour les informations
+        currentPriceEl.textContent = `$${current_price.toFixed(2)}`;
+        totalOptionsEl.textContent = total_options;
+        lastUpdatedEl.textContent = new Date(last_updated).toLocaleString('fr-FR');
+        
+        // Afficher un avertissement si données de démonstration
+        if (warning) {
+            updateStatus('success', `Données de démonstration (${warning})`);
+        } else {
+            updateStatus('success', 'Données Alpha Vantage chargées');
+        }
+        
+        // Afficher les données techniques
+        rawDataEl.textContent = JSON.stringify(data, null, 2);
+    }
+
+    // Gestionnaire d'événements
+    selectSymbol.addEventListener('change', function() {
+        if (this.value === '__custom__') {
+            customWrap.classList.remove('hidden');
+        } else {
+            customWrap.classList.add('hidden');
+        }
+    });
+
+    loadBtn.addEventListener('click', async function() {
+        const symbol = selectSymbol.value === '__custom__' ? 
+                      customSymbol.value.trim() : 
+                      selectSymbol.value;
+        
+        if (!symbol) {
+            updateStatus('error', 'Veuillez sélectionner un symbole');
+            return;
+        }
+        
+        try {
+            updateStatus('loading', 'Chargement...');
+            const data = await fetchVolatilitySurface(symbol);
+            createVolatilitySurface(data);
+        } catch (error) {
+            updateStatus('error', error.message);
+            console.error('Erreur:', error);
+        }
+    });
+
+    // Chargement initial
+    document.addEventListener('DOMContentLoaded', function() {
+        updateStatus('success', 'Prêt à charger les données');
+    });
+    const customInput = document.getElementById('vs-symbol');
+
+    function getCurrentSymbol() {
+        return (selectSymbol.value === '__custom__') ? (customInput.value || '').trim() : selectSymbol.value;
+    }
+
+    selectSymbol.addEventListener('change', () => {
+        const show = selectSymbol.value === '__custom__';
+        if (show) {
+            customWrap.classList.remove('hidden');
+            customInput.focus();
+        } else {
+            customWrap.classList.add('hidden');
+        }
+    });
+
+    document.getElementById('vs-load').addEventListener('click', async () => {
+        console.log('Clic sur Charger');
+        try {
+            const symbol = getCurrentSymbol();
+            console.log('Symbole sélectionné:', symbol);
+            if (!symbol) {
+                alert('Veuillez choisir un ticker.');
+                return;
+            }
+            const maxExp = parseInt(document.getElementById('vs-maxexp').value) || 6;
+            const span = parseFloat(document.getElementById('vs-span').value) || 0.5;
+            console.log('Paramètres:', { maxExp, span });
+            
+            console.log('Appel API...');
+            const res = await fetchSurface(symbol, maxExp, span);
+            console.log('Réponse API reçue:', res ? 'OK' : 'Erreur');
+            
+            const pre = document.getElementById('vs-raw');
+            pre.textContent = JSON.stringify(res, null, 2);
+            
+            if (res && !res.error) {
+                console.log('Données valides, construction de la surface...');
+                
+                // Construire surface 3D avec validation dimensions
+                let strikes = Array.isArray(res.strikes) ? res.strikes.slice() : [];
+                let maturities = Array.isArray(res.maturities) ? res.maturities.slice() : [];
+                let zRaw = Array.isArray(res.iv) ? res.iv.slice() : [];
+                const S0 = strikes.length;
+                const M0 = maturities.length;
+                
+                console.log('Dimensions:', { strikes: S0, maturities: M0, ivRows: zRaw.length });
+                
+                if (!S0 || !M0 || !zRaw.length) { 
+                    console.error('Données insuffisantes');
+                    alert('Données insuffisantes pour tracer.'); 
+                    return; 
+                }
+                
+                const rowLengths = zRaw.map(r => Array.isArray(r) ? r.length : 0);
+                const minS = Math.min(S0, ...rowLengths.filter(x => x>0));
+                strikes = strikes.slice(0, minS);
+                let z = zRaw
+                    .filter(r => Array.isArray(r))
+                    .slice(0, M0)
+                    .map(r => r.slice(0, minS).map(v => (v != null && isFinite(v) ? v * 100 : null)));
+                while (z.length < M0) z.push(new Array(minS).fill(null));
+                const xPct = (res.spot && res.spot !== 0)
+                    ? strikes.map(s => (s / res.spot) * 100)
+                    : strikes;
+
+                console.log('Données préparées:', { xPct: xPct.length, maturities: maturities.length, z: z.length });
+
+                // Revenir à la surface 3D qui fonctionnait au début
+                const data = [{
+                    type: 'surface',
+                    x: xPct,
+                    y: maturities,
+                    z: z,
+                    colorscale: 'Viridis',
+                    showscale: true,
+                    hovertemplate: 'Strike: %{x:.1f}%<br>Maturité: %{y:.3f} ans<br>IV: %{z:.2f}%<extra></extra>'
+                }];
+
+                const layout = {
+                    margin: { l: 60, r: 20, t: 40, b: 60 },
+                    scene: {
+                        xaxis: { 
+                            title: 'Strike (% du spot = 100)', 
+                            color: 'white', 
+                            gridcolor: 'rgba(255,255,255,0.15)' 
+                        },
+                        yaxis: { 
+                            title: 'Maturité (années)', 
+                            color: 'white', 
+                            gridcolor: 'rgba(255,255,255,0.15)' 
+                        },
+                        zaxis: { 
+                            title: 'IV (%)', 
+                            color: 'white', 
+                            gridcolor: 'rgba(255,255,255,0.15)' 
+                        },
+                        bgcolor: 'rgba(0,0,0,0)'
+                    },
+                    paper_bgcolor: 'rgba(0,0,0,0)', 
+                    plot_bgcolor: 'rgba(0,0,0,0)',
+                    title: { text: `Surface IV 3D – ${document.getElementById('vs-symbol-select').value === '__custom__' ? (document.getElementById('vs-symbol').value || '') : document.getElementById('vs-symbol-select').value}`, font: { color: 'white', size: 14 } }
+                };
+                
+                console.log('Plotly disponible:', typeof Plotly !== 'undefined');
+                const el = document.getElementById('vs-plot');
+                console.log('Élément plot trouvé:', !!el);
+                
+                if (!el) {
+                    console.error('Élément vs-plot non trouvé!');
+                    return;
+                }
+                
+                try { 
+                    console.log('Purge de l\'ancien plot...');
+                    Plotly.purge('vs-plot'); 
+                } catch (e) {
+                    console.log('Erreur lors du purge:', e);
+                }
+                
+                try {
+                    console.log('Création du nouveau plot 3D...');
+                    Plotly.newPlot('vs-plot', data, layout, { 
+                        responsive: true, 
+                        displaylogo: false
+                    });
+                    console.log('Plot 3D créé avec succès!');
+                } catch (e) {
+                    console.warn('Surface 3D échouée, fallback heatmap:', e);
+                    const hd = [{ type: 'heatmap', x: data[0].x, y: data[0].y, z: data[0].z, colorscale: 'Viridis' }];
+                    Plotly.newPlot('vs-plot', hd, layout, { 
+                        responsive: true, 
+                        displaylogo: false
+                    });
+                    console.log('Fallback heatmap créé');
+                }
+            } else {
+                console.error('Erreur dans la réponse API:', res);
+            }
+        } catch (e) {
+            console.error('Erreur lors du chargement:', e);
+            alert('Erreur lors du chargement de la surface');
+        }
+    });
+
+    // --- Section 2: Smile à maturité ---
+    // Gestion chips tickers
+    const defaultTickers = ['AAPL','MSFT','NVDA','AMZN','META','GOOGL','TSLA','SPY','QQQ','AMD','JPM','XOM'];
+    let smileTickers = ['AAPL','MSFT'];
+
+    function renderChips() {
+        const wrap = document.getElementById('smile-chips');
+        wrap.innerHTML = '';
+        smileTickers.forEach(t => {
+            const chip = document.createElement('button');
+            chip.className = 'px-2 py-1 rounded-full border border-border bg-muted/20 hover:bg-muted text-sm flex items-center gap-2';
+            chip.innerHTML = `<span>${t}</span><span class="inline-block text-xs opacity-70">✕</span>`;
+            chip.title = 'Retirer';
+            chip.addEventListener('click', () => {
+                smileTickers = smileTickers.filter(x => x !== t);
+                renderChips();
+            });
+            wrap.appendChild(chip);
+        });
+    }
+    renderChips();
+
+    document.getElementById('smile-add-btn').addEventListener('click', () => {
+        const add = document.getElementById('smile-add');
+        const val = (add.value || '').trim();
+        if (!val) return;
+        if (!smileTickers.includes(val)) {
+            smileTickers.push(val);
+            renderChips();
+        }
+        add.value = '';
+    });
+
+    document.getElementById('smile-plot-btn').addEventListener('click', async () => {
+        const tenor = document.getElementById('smile-tenor').value;
+        const tickers = smileTickers.slice();
+        const maxExp = 10; // valeur par défaut pour récupérer suffisamment d'échéances
+        const span = parseFloat(document.getElementById('smile-span').value) || 0.5;
+        if (!tickers.length) { alert('Sélectionnez au moins un ticker.'); return; }
+
+        const datasets = [];
+        for (const t of tickers) {
+            const surf = await fetchSurfaceSafe(t, maxExp, span);
+            if (!surf) continue;
+            // Convertir tenor en date cible: on choisit la maturité dont T en années est la plus proche de la durée demandée
+            const tenorToYears = (ten) => {
+                const m = ten.match(/^(\d+)([my])$/);
+                if (!m) return 1/12;
+                const n = parseInt(m[1]);
+                return m[2] === 'y' ? n : (n/12);
+            };
+            const targetYears = tenorToYears(tenor);
+            let bestIdx = 0, bestDelta = Infinity;
+            (surf.maturities || []).forEach((T, i) => {
+                const d = Math.abs(T - targetYears);
+                if (d < bestDelta) { bestDelta = d; bestIdx = i; }
+            });
+            const idx = bestIdx;
+            const strikes = surf.strikes || [];
+            const row = (surf.iv && surf.iv[idx]) ? surf.iv[idx] : [];
+            if (!strikes.length || !row.length) continue;
+            const xPct = (surf.spot && surf.spot !== 0)
+                ? strikes.map(s => (s / surf.spot) * 100)
+                : strikes;
+            datasets.push({ ticker: t, strikes: xPct, iv: row.map(v => v != null ? v * 100 : null) });
+        }
+
+        // Tracer avec Plotly (2D lignes)
+        const data = datasets.map((d) => ({
+            x: d.strikes,
+            y: d.iv,
+            type: 'scatter', mode: 'lines', name: d.ticker,
+            line: { width: 2 }
+        }));
+        const layout = {
+            margin: { l: 40, r: 10, t: 20, b: 40 },
+            xaxis: { title: 'Strike (% du spot = 100)', color: 'white', gridcolor: 'rgba(255,255,255,0.15)' },
+            yaxis: { title: 'IV (%)', color: 'white', gridcolor: 'rgba(255,255,255,0.15)' },
+            paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)'
+        };
+        Plotly.newPlot('smile-plot', data, layout, { responsive: true });
+    });
+
+    async function fetchSurfaceSafe(symbol, maxExp, span) {
+        try {
+            const r = await fetchSurface(symbol, maxExp, span);
+            return r && !r.error ? r : null;
+        } catch (e) { return null; }
+    }
+
+    function findClosestMaturityIndex(maturityLabels, targetDateStr) {
+        if (!targetDateStr) return 0;
+        const target = new Date(targetDateStr);
+        let bestIdx = 0, bestDelta = Infinity;
+        for (let i = 0; i < maturityLabels.length; i++) {
+            const d = new Date(maturityLabels[i]);
+            const delta = Math.abs(d - target);
+            if (delta < bestDelta) { bestDelta = delta; bestIdx = i; }
+        }
+        return bestIdx;
+    }
+</script>
+{% endblock %}

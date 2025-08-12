@@ -1,0 +1,1677 @@
+{% extends "base_flask.html" %}
+
+{% block title %}Description de l'Application – Equity Derivatives Dashboard{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Navigation</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="{{ url_for('index') }}" class="nav-link">
+                        <i data-lucide="home"></i>
+                        <span>Accueil</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
+                        <i data-lucide="user"></i>
+                        <span>CV Mathis Le Gall</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('indices_actions') }}" class="nav-link">
+                        <i data-lucide="candlestick-chart"></i>
+                        <span>Indices & Actions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
+                        <i data-lucide="activity"></i>
+                        <span>Analyse Actions & Indices</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('call_put') }}" class="nav-link">
+                        <i data-lucide="line-chart"></i>
+                        <span>Call & Put</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('volatility_surface') }}" class="nav-link">
+                        <i data-lucide="thermometer"></i>
+                        <span>Volatility Surface</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
+                        <i data-lucide="calculator"></i>
+                        <span>Analyse des Grecques</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('description_app') }}" class="nav-link active">
+                        <i data-lucide="info"></i>
+                        <span>Description App</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="main-header-flex">
+                <div class="main-header-left">
+                    <div class="natixis-brand">
+                        <img src="{{ url_for('static', filename='images/logo_natixis.png') }}" alt="Logo Natixis" class="natixis-logo">
+                        <span class="natixis-text">Natixis</span>
+                    </div>
+                </div>
+                <div class="main-header-center">
+                    <!-- Espace pour équilibrer le layout -->
+                </div>
+                <div class="main-header-right">
+                    <h1 class="header-title">Description App</h1>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Menu for Sections -->
+        <nav class="section-navigation" style="margin-top: 2rem;">
+            <div class="section-nav-container">
+                <ul class="section-nav-list">
+                    <li class="section-nav-item">
+                        <a href="#technologies" class="section-nav-link">
+                            <i data-lucide="code"></i>
+                            <span>Technologies</span>
+                        </a>
+                    </li>
+                    <li class="section-nav-item">
+                        <a href="#indices-actions" class="section-nav-link">
+                            <i data-lucide="candlestick-chart"></i>
+                            <span>Indices & Actions</span>
+                        </a>
+                    </li>
+                    <li class="section-nav-item">
+                        <a href="#analyse-actions" class="section-nav-link">
+                            <i data-lucide="activity"></i>
+                            <span>Analyse Actions</span>
+                        </a>
+                    </li>
+                    <li class="section-nav-item">
+                        <a href="#call-put" class="section-nav-link">
+                            <i data-lucide="line-chart"></i>
+                            <span>Call & Put</span>
+                        </a>
+                    </li>
+                    <li class="section-nav-item">
+                        <a href="#volatility-surface" class="section-nav-link">
+                            <i data-lucide="thermometer"></i>
+                            <span>Volatility Surface</span>
+                        </a>
+                    </li>
+                    <li class="section-nav-item">
+                        <a href="#glossaire" class="section-nav-link">
+                            <i data-lucide="file-text"></i>
+                            <span>Glossaire</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Content -->
+        <div class="content-area">
+            <div class="w-full px-4" style="padding-top: 0.5rem;">
+                <!-- Technologies Section -->
+                <section id="technologies" class="description-section">
+                    <div class="description-card">
+                        <div class="card-header">
+                            <i data-lucide="code" class="card-icon"></i>
+                            <h2>Technologies Utilisées</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="tech-grid">
+                                <!-- Backend Section -->
+                                <div class="tech-category">
+                                    <div class="tech-category-header">
+                                        <i data-lucide="code" class="tech-icon backend-icon"></i>
+                                        <h3>Backend</h3>
+                                    </div>
+                                    <div class="tech-list">
+                                        <div class="tech-item">
+                                            <span class="tech-badge backend-badge">Flask</span>
+                                            <span class="tech-description">Framework web Python léger et flexible</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge backend-badge">Python 3.8+</span>
+                                            <span class="tech-description">Langage de programmation principal</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge backend-badge">Pandas</span>
+                                            <span class="tech-description">Manipulation et analyse de données financières</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge backend-badge">NumPy</span>
+                                            <span class="tech-description">Calculs numériques et mathématiques</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge backend-badge">SciPy</span>
+                                            <span class="tech-description">Fonctions mathématiques avancées</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Frontend Section -->
+                                <div class="tech-category">
+                                    <div class="tech-category-header">
+                                        <i data-lucide="monitor" class="tech-icon frontend-icon"></i>
+                                        <h3>Frontend</h3>
+                                    </div>
+                                    <div class="tech-list">
+                                        <div class="tech-item">
+                                            <span class="tech-badge frontend-badge">HTML5</span>
+                                            <span class="tech-description">Structure sémantique des pages web</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge frontend-badge">CSS3</span>
+                                            <span class="tech-description">Styles et mise en page responsive</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge frontend-badge">JavaScript</span>
+                                            <span class="tech-description">Interactivité côté client sans framework</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge frontend-badge">Chart.js</span>
+                                            <span class="tech-description">Bibliothèque de graphiques financiers</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge frontend-badge">Lucide Icons</span>
+                                            <span class="tech-description">Icônes modernes et cohérentes</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- APIs Section -->
+                                <div class="tech-category">
+                                    <div class="tech-category-header">
+                                        <i data-lucide="database" class="tech-icon api-icon"></i>
+                                        <h3>APIs et Données</h3>
+                                    </div>
+                                    <div class="tech-list">
+                                        <div class="tech-item">
+                                            <span class="tech-badge api-badge">Yahoo Finance</span>
+                                            <span class="tech-description">Données de marché en temps réel</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge api-badge">Finnhub</span>
+                                            <span class="tech-description">Volatilité implicite et options</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge api-badge">Polygon.io</span>
+                                            <span class="tech-description">Données d'options et de volatilité</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge api-badge">Alpha Vantage</span>
+                                            <span class="tech-description">Données historiques et techniques</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Architecture Section -->
+                                <div class="tech-category">
+                                    <div class="tech-category-header">
+                                        <i data-lucide="layers" class="tech-icon arch-icon"></i>
+                                        <h3>Architecture</h3>
+                                    </div>
+                                    <div class="tech-list">
+                                        <div class="tech-item">
+                                            <span class="tech-badge arch-badge">MVC Pattern</span>
+                                            <span class="tech-description">Séparation Modèle/Vue/Contrôleur</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge arch-badge">Jinja2</span>
+                                            <span class="tech-description">Template Engine pour le rendu</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge arch-badge">RESTful APIs</span>
+                                            <span class="tech-description">Endpoints JSON pour données dynamiques</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge arch-badge">Responsive</span>
+                                            <span class="tech-description">Interface adaptative multi-écrans</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Financial Section -->
+                                <div class="tech-category">
+                                    <div class="tech-category-header">
+                                        <i data-lucide="trending-up" class="tech-icon finance-icon"></i>
+                                        <h3>Calculs Financiers</h3>
+                                    </div>
+                                    <div class="tech-list">
+                                        <div class="tech-item">
+                                            <span class="tech-badge finance-badge">Black-Scholes</span>
+                                            <span class="tech-description">Pricing des options européennes</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge finance-badge">Volatilité Implicite</span>
+                                            <span class="tech-description">Calcul et visualisation 3D</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge finance-badge">Greeks</span>
+                                            <span class="tech-description">Delta, Gamma, Theta, Vega</span>
+                                        </div>
+                                        <div class="tech-item">
+                                            <span class="tech-badge finance-badge">Surface 3D</span>
+                                            <span class="tech-description">Visualisation interactive</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+
+                <!-- Indices et Actions Section -->
+                <section id="indices-actions" class="description-section">
+                    <div class="description-card">
+                        <div class="card-header">
+                            <i data-lucide="candlestick-chart" class="card-icon"></i>
+                            <h2>Page Indices & Actions</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="page-description">
+                                <h3>Vue d'ensemble</h3>
+                                <p>La page "Indices & Actions" est le cœur de l'application, offrant une vue en temps réel des marchés financiers avec des données actualisées toutes les 5 minutes.</p>
+
+                                <h3>Fonctionnalités principales</h3>
+                                <ul>
+                                    <li><strong>Bandeau d'indices</strong> : Affichage en temps réel des 8 principaux indices mondiaux (CAC 40, S&P 500, NASDAQ, Dow Jones, FTSE 100, Nikkei 225, DAX, Euro STOXX 50)</li>
+                                    <li><strong>Graphique interactif</strong> : Visualisation des cours avec Chart.js, supportant 9 timeframes (1 jour à 5 ans)</li>
+                                    <li><strong>Actions sélectionnées</strong> : 30 actions majeures incluant les tech US, CAC 40, et actions asiatiques</li>
+                                    <li><strong>Rafraîchissement automatique</strong> : Mise à jour automatique toutes les 5 minutes avec compte à rebours</li>
+                                    <li><strong>Indicateur de statut API</strong> : Monitoring en temps réel de la connectivité et des temps de réponse</li>
+                                </ul>
+
+                                                                 <h3>APIs utilisées</h3>
+                                 <div class="api-details">
+                                     <div class="api-item">
+                                         <h4>Yahoo Finance API</h4>
+                                         <ul>
+                                             <li><strong>Endpoint principal</strong> : <code>https://query1.finance.yahoo.com/v8/finance/chart/</code></li>
+                                             <li><strong>Données récupérées</strong> : Prix, variations, volumes, données historiques</li>
+                                             <li><strong>Optimisations</strong> : Pool de connexions (20), requêtes parallèles, timeout 5s</li>
+                                             <li><strong>User-Agent</strong> : Simulation navigateur pour éviter les blocages</li>
+                                         </ul>
+                                     </div>
+                                 </div>
+
+                                 <h3>Inconvénients et limitations</h3>
+                                 <div class="limitations-section">
+                                     <div class="limitation-item">
+                                         <h4>🔴 Limitations Yahoo Finance</h4>
+                                         <ul>
+                                             <li><strong>API non officielle</strong> : Yahoo Finance n'offre pas d'API officielle, risque de blocage</li>
+                                             <li><strong>Instabilité</strong> : Changements fréquents de structure JSON, maintenance continue requise</li>
+                                             <li><strong>Limites de taux</strong> : Pas de garantie de disponibilité, risque de rate limiting</li>
+                                             <li><strong>Données limitées</strong> : Pas d'accès aux données de niveau 2, spreads bid/ask</li>
+                                             <li><strong>Délais</strong> : Données avec 15-20 minutes de retard pour les marchés US</li>
+                                         </ul>
+                                     </div>
+                                     <div class="limitation-item">
+                                         <h4>🟡 Solutions d'amélioration</h4>
+                                         <ul>
+                                             <li><strong>APIs payantes</strong> : Bloomberg Terminal, Reuters Eikon, IEX Cloud Pro</li>
+                                             <li><strong>Données temps réel</strong> : Alpha Vantage Premium, Polygon.io Pro, Finnhub Pro</li>
+                                             <li><strong>Backup multiple</strong> : Implémentation de plusieurs sources de données</li>
+                                             <li><strong>Cache intelligent</strong> : Mise en cache des données pour réduire les appels API</li>
+                                             <li><strong>Monitoring avancé</strong> : Système d'alerte en cas de défaillance API</li>
+                                         </ul>
+                                     </div>
+                                 </div>
+
+                                <h3>Tests d'intégrité des données</h3>
+                                <div class="tests-section">
+                                    <div class="test-item">
+                                        <h4>Validation des réponses API</h4>
+                                        <ul>
+                                            <li>Vérification de la structure JSON des réponses</li>
+                                            <li>Contrôle de la présence des champs obligatoires (price, change, change_percent)</li>
+                                            <li>Validation des timestamps et des données historiques</li>
+                                        </ul>
+                                    </div>
+                                    <div class="test-item">
+                                        <h4>Gestion des erreurs</h4>
+                                        <ul>
+                                            <li>Timeout de 5 secondes par requête</li>
+                                            <li>Retry automatique en cas d'échec</li>
+                                            <li>Affichage d'erreurs explicites à l'utilisateur</li>
+                                            <li>Fallback vers des données vides en cas de problème</li>
+                                        </ul>
+                                    </div>
+                                    <div class="test-item">
+                                        <h4>Monitoring en temps réel</h4>
+                                        <ul>
+                                            <li>Mesure des temps de réponse API</li>
+                                            <li>Indicateur visuel de statut (vert/orange/rouge)</li>
+                                            <li>Compteur de données récupérées (30 actions)</li>
+                                            <li>Horodatage des dernières mises à jour</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                                                 <h3>Architecture technique</h3>
+                                 <div class="architecture-details">
+                                     <div class="arch-item">
+                                         <h4>Backend (Flask)</h4>
+                                         <ul>
+                                             <li><strong>Route principale</strong> : <code>/api/market-data</code> pour les données temps réel</li>
+                                             <li><strong>Route graphique</strong> : <code>/api/chart-data-v2/&lt;symbol&gt;</code> pour les données historiques</li>
+                                             <li><strong>Récupération parallèle</strong> : ThreadPoolExecutor avec 10 workers</li>
+                                             <li><strong>Format de réponse</strong> : JSON structuré avec indices et stocks séparés</li>
+                                         </ul>
+                                     </div>
+                                     <div class="arch-item">
+                                         <h4>Frontend (JavaScript)</h4>
+                                         <ul>
+                                             <li><strong>Rafraîchissement automatique</strong> : Timer de 5 minutes avec compte à rebours</li>
+                                             <li><strong>Graphique interactif</strong> : Chart.js avec tooltips et zoom</li>
+                                             <li><strong>Gestion d'état</strong> : Variables globales pour symbol et timeframe</li>
+                                             <li><strong>Formatage</strong> : Fonctions de formatage pour prix et pourcentages</li>
+                                         </ul>
+                                     </div>
+                                 </div>
+
+                                 <h3>Flux de données</h3>
+                                 <div class="flow-diagram">
+                                     <div class="flow-step">
+                                         <div class="flow-circle">1</div>
+                                         <div class="flow-label">Utilisateur</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">2</div>
+                                         <div class="flow-label">Yahoo Finance API</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">3</div>
+                                         <div class="flow-label">Fichier JSON</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">4</div>
+                                         <div class="flow-label">Traitement Flask</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">5</div>
+                                         <div class="flow-label">Interface Graphique</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">6</div>
+                                         <div class="flow-label">Mise à jour 5min</div>
+                                     </div>
+                                 </div>
+
+                                <h3>Données surveillées</h3>
+                                <div class="data-section">
+                                    <div class="data-category">
+                                        <h4>Indices (8)</h4>
+                                        <p>CAC 40, S&P 500, NASDAQ, Dow Jones, FTSE 100, Nikkei 225, DAX, Euro STOXX 50</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Tech US (20)</h4>
+                                        <p>Apple, Microsoft, Google, Amazon, Tesla, NVIDIA, Meta, Netflix, Adobe, Salesforce, Intel, Oracle, Cisco, PayPal, Broadcom, Qualcomm, Texas Instruments, KLA, Palo Alto Networks, Synopsys, Cadence, Fortinet</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>CAC 40 (4)</h4>
+                                        <p>LVMH, ASML, SAP, Nestlé</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Actions Asiatiques (3)</h4>
+                                        <p>Samsung Electronics, Tencent Holdings, Alibaba Group</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Analyse Actions et Indices Section -->
+                <section id="analyse-actions" class="description-section">
+                    <div class="description-card">
+                        <div class="card-header">
+                            <i data-lucide="activity" class="card-icon"></i>
+                            <h2>Page Analyse Actions & Indices</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="page-description">
+                                <h3>Vue d'ensemble</h3>
+                                <p>La page "Analyse Actions & Indices" offre une analyse comparative avancée des performances financières avec normalisation en base 100 et calculs de métriques de risque professionnelles.</p>
+
+                                <h3>Fonctionnalités principales</h3>
+                                <ul>
+                                    <li><strong>Comparaison de performances</strong> : Normalisation en base 100 pour comparer équitablement différents instruments</li>
+                                    <li><strong>Sélection multi-instruments</strong> : Interface de recherche et sélection avec suggestions en temps réel</li>
+                                    <li><strong>Période personnalisable</strong> : Sélection de dates de début et fin d'analyse</li>
+                                    <li><strong>Échelle logarithmique</strong> : Option d'affichage en échelle log pour mieux visualiser les variations</li>
+                                    <li><strong>Métriques de risque avancées</strong> : 6 métriques professionnelles avec code couleur</li>
+                                    <li><strong>Monitoring API</strong> : Statut en temps réel de la connectivité Yahoo Finance</li>
+                                </ul>
+
+                                                                 <h3>APIs utilisées</h3>
+                                 <div class="api-details">
+                                     <div class="api-item">
+                                         <h4>Yahoo Finance API</h4>
+                                         <ul>
+                                             <li><strong>Endpoint principal</strong> : <code>/api/market-data</code> pour la liste des instruments</li>
+                                             <li><strong>Endpoint graphique</strong> : <code>/api/chart-data-v2/&lt;symbol&gt;</code> pour les données historiques</li>
+                                             <li><strong>Endpoint métriques</strong> : <code>/api/risk-metrics/&lt;symbol&gt;</code> pour les calculs de risque</li>
+                                             <li><strong>Données récupérées</strong> : Prix de clôture, rendements, métriques de risque</li>
+                                         </ul>
+                                     </div>
+                                 </div>
+
+                                 <h3>Inconvénients et limitations</h3>
+                                 <div class="limitations-section">
+                                     <div class="limitation-item">
+                                         <h4>🔴 Limitations des calculs</h4>
+                                         <ul>
+                                             <li><strong>Données historiques limitées</strong> : Yahoo Finance limite l'accès aux données très anciennes</li>
+                                             <li><strong>Précision des métriques</strong> : Calculs basés sur des prix de clôture, pas de données intraday</li>
+                                             <li><strong>Volatilité historique</strong> : Pas d'accès aux données de volatilité historique</li>
+                                             <li><strong>Corrélations</strong> : Calculs de corrélation limités par la qualité des données</li>
+                                             <li><strong>Backtesting</strong> : Impossible de tester les stratégies sur des données complètes</li>
+                                         </ul>
+                                     </div>
+                                     <div class="limitation-item">
+                                         <h4>🟡 Solutions d'amélioration</h4>
+                                         <ul>
+                                             <li><strong>Base de données locale</strong> : Stockage des données historiques pour analyses longues</li>
+                                             <li><strong>APIs spécialisées</strong> : Quandl, FRED, World Bank pour données macroéconomiques</li>
+                                             <li><strong>Données alternatives</strong> : Alpha Vantage pour données techniques avancées</li>
+                                             <li><strong>Calculs avancés</strong> : Implémentation de modèles GARCH pour volatilité</li>
+                                             <li><strong>Machine Learning</strong> : Prédiction de volatilité avec modèles ML</li>
+                                         </ul>
+                                     </div>
+                                 </div>
+
+                                <h3>Tests d'intégrité des données</h3>
+                                <div class="tests-section">
+                                    <div class="test-item">
+                                        <h4>Validation des données</h4>
+                                        <ul>
+                                            <li>Vérification que tous les prix sont positifs</li>
+                                            <li>Contrôle de l'absence de valeurs NaN ou infinies</li>
+                                            <li>Validation d'au moins 2 points de données</li>
+                                            <li>Gestion des erreurs API avec fallback</li>
+                                        </ul>
+                                    </div>
+                                    <div class="test-item">
+                                        <h4>Monitoring en temps réel</h4>
+                                        <ul>
+                                            <li>Vérification périodique du statut API (30 secondes)</li>
+                                            <li>Mesure des temps de réponse</li>
+                                            <li>Indicateur visuel de connectivité</li>
+                                            <li>Gestion des erreurs avec messages explicites</li>
+                                        </ul>
+                                    </div>
+                                    <div class="test-item">
+                                        <h4>Validation des métriques</h4>
+                                        <ul>
+                                            <li>Contrôle de la cohérence des calculs</li>
+                                            <li>Validation des périodes d'analyse</li>
+                                            <li>Gestion des cas limites (volatilité nulle, etc.)</li>
+                                            <li>Formatage et arrondi des résultats</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <h3>Métriques de risque calculées</h3>
+                                <div class="architecture-details">
+                                    <div class="arch-item">
+                                        <h4>Rendements</h4>
+                                        <ul>
+                                            <li><strong>Rendement Annuel (%)</strong> : Rendement annualisé sur la période</li>
+                                            <li><strong>Rendement Total (%)</strong> : Performance totale de début à fin</li>
+                                        </ul>
+                                    </div>
+                                    <div class="arch-item">
+                                        <h4>Risque</h4>
+                                        <ul>
+                                            <li><strong>Volatilité Annuelle (%)</strong> : Écart-type annualisé des rendements</li>
+                                            <li><strong>VaR 95% (%)</strong> : Value at Risk au 95ème percentile</li>
+                                            <li><strong>Max Drawdown (%)</strong> : Perte maximale depuis le pic</li>
+                                        </ul>
+                                    </div>
+                                    <div class="arch-item">
+                                        <h4>Performance ajustée</h4>
+                                        <ul>
+                                            <li><strong>Ratio de Sharpe</strong> : Rendement excédentaire par unité de risque</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <h3>Code couleur des métriques</h3>
+                                <div class="data-section">
+                                    <div class="data-category">
+                                        <h4>Vert (Excellent)</h4>
+                                        <p>Volatilité &lt; 15%, VaR &gt; -2%, Max DD &lt; 15%, Sharpe &gt; 1.0, Rendement &gt; 12%</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Orange (Moyen)</h4>
+                                        <p>Volatilité 15-25%, VaR -2% à -5%, Max DD 15-30%, Sharpe 0.5-1.0, Rendement 6-12%</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Rouge (Risqué)</h4>
+                                        <p>Volatilité &gt; 25%, VaR &lt; -5%, Max DD &gt; 30%, Sharpe &lt; 0.5, Rendement négatif</p>
+                                    </div>
+                                </div>
+
+                                                                 <h3>Architecture technique</h3>
+                                 <div class="architecture-details">
+                                     <div class="arch-item">
+                                         <h4>Backend (Python/NumPy)</h4>
+                                         <ul>
+                                             <li><strong>Calculs vectorisés</strong> : Utilisation de NumPy pour les performances</li>
+                                             <li><strong>Annualisation</strong> : Conversion en base 252 jours de trading</li>
+                                             <li><strong>Validation robuste</strong> : Contrôles de cohérence des données</li>
+                                             <li><strong>Gestion d'erreurs</strong> : Fallback en cas de données manquantes</li>
+                                         </ul>
+                                     </div>
+                                     <div class="arch-item">
+                                         <h4>Frontend (Chart.js)</h4>
+                                         <ul>
+                                             <li><strong>Graphique interactif</strong> : Multi-lignes avec légende</li>
+                                             <li><strong>Échelle logarithmique</strong> : Option pour visualiser les variations</li>
+                                             <li><strong>Tooltips avancés</strong> : Affichage des valeurs au survol</li>
+                                             <li><strong>Responsive design</strong> : Adaptation mobile et tablette</li>
+                                         </ul>
+                                     </div>
+                                 </div>
+
+                                 <h3>Flux de données</h3>
+                                 <div class="flow-diagram">
+                                     <div class="flow-step">
+                                         <div class="flow-circle">1</div>
+                                         <div class="flow-label">Utilisateur</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">2</div>
+                                         <div class="flow-label">Yahoo Finance API</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">3</div>
+                                         <div class="flow-label">Fichier JSON</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">4</div>
+                                         <div class="flow-label">Traitement NumPy</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">5</div>
+                                         <div class="flow-label">Interface Graphique</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">6</div>
+                                         <div class="flow-label">Mise à jour 30s</div>
+                                     </div>
+                                 </div>
+
+                                <h3>Instruments disponibles</h3>
+                                <div class="data-section">
+                                    <div class="data-category">
+                                        <h4>Indices (8)</h4>
+                                        <p>CAC 40, S&P 500, NASDAQ, Dow Jones, FTSE 100, Nikkei 225, DAX, Euro STOXX 50</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Actions Tech US (20)</h4>
+                                        <p>Apple, Microsoft, Google, Amazon, Tesla, NVIDIA, Meta, Netflix, Adobe, Salesforce, Intel, Oracle, Cisco, PayPal, Broadcom, Qualcomm, Texas Instruments, KLA, Palo Alto Networks, Synopsys, Cadence, Fortinet</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Actions Européennes (4)</h4>
+                                        <p>LVMH, ASML, SAP, Nestlé</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Actions Asiatiques (3)</h4>
+                                        <p>Samsung Electronics, Tencent Holdings, Alibaba Group</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Call & Put Section -->
+                <section id="call-put" class="description-section">
+                    <div class="description-card">
+                        <div class="card-header">
+                            <i data-lucide="line-chart" class="card-icon"></i>
+                            <h2>Page Call & Put</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="page-description">
+                                <h3>Vue d'ensemble</h3>
+                                <p>La page "Call & Put" est un calculateur d'options européennes avancé utilisant deux modèles de pricing : Black-Scholes (analytique) et Monte Carlo (simulation numérique) avec visualisation interactive des trajectoires.</p>
+
+                                <h3>Fonctionnalités principales</h3>
+                                <ul>
+                                    <li><strong>Pricing d'options européennes</strong> : Call et Put avec paramètres personnalisables</li>
+                                    <li><strong>Double modèle de calcul</strong> : Black-Scholes (analytique) et Monte Carlo (simulation)</li>
+                                    <li><strong>Calcul des Greeks</strong> : Delta, Gamma, Theta, Vega, Rho pour les deux modèles</li>
+                                    <li><strong>Simulation Monte Carlo</strong> : Jusqu'à 10 000 trajectoires avec visualisation</li>
+                                    <li><strong>Intervalle de confiance</strong> : Estimation statistique de la précision Monte Carlo</li>
+                                    <li><strong>Visualisation interactive</strong> : Graphique des trajectoires et distribution des prix finaux</li>
+                                    <li><strong>Barre de progression</strong> : Animation pendant les calculs avec métriques de performance</li>
+                                </ul>
+
+                                                                 <h3>APIs utilisées</h3>
+                                 <div class="api-details">
+                                     <div class="api-item">
+                                         <h4>API de calcul d'options</h4>
+                                         <ul>
+                                             <li><strong>Endpoint</strong> : <code>/api/calculate-option</code> (POST)</li>
+                                             <li><strong>Paramètres</strong> : Prix spot, strike, échéance, taux sans risque, volatilité, type d'option</li>
+                                             <li><strong>Paramètres Monte Carlo</strong> : Nombre de simulations, étapes temporelles, chemins affichés</li>
+                                             <li><strong>Réponse</strong> : Prix, Greeks, intervalle de confiance, trajectoires, temps de calcul</li>
+                                         </ul>
+                                     </div>
+                                 </div>
+
+                                 <h3>Inconvénients et limitations</h3>
+                                 <div class="limitations-section">
+                                     <div class="limitation-item">
+                                         <h4>🔴 Limitations des modèles</h4>
+                                         <ul>
+                                             <li><strong>Hypothèses Black-Scholes</strong> : Volatilité constante, pas de sauts, taux sans risque constant</li>
+                                             <li><strong>Monte Carlo limité</strong> : Simulation basique, pas de modèles stochastiques avancés</li>
+                                             <li><strong>Pas de données réelles</strong> : Utilisation de paramètres manuels, pas de volatilité implicite</li>
+                                             <li><strong>Greeks statiques</strong> : Calculs ponctuels, pas de dynamique temporelle</li>
+                                             <li><strong>Performance</strong> : Monte Carlo lent pour grandes simulations</li>
+                                         </ul>
+                                     </div>
+                                     <div class="limitation-item">
+                                         <h4>🟡 Solutions d'amélioration</h4>
+                                         <ul>
+                                             <li><strong>Modèles avancés</strong> : Heston, SABR, Local Volatility Models</li>
+                                             <li><strong>APIs d'options réelles</strong> : CBOE, OCC, Bloomberg pour données de marché</li>
+                                             <li><strong>Volatilité implicite</strong> : Intégration avec Finnhub/Polygon pour IV réelle</li>
+                                             <li><strong>Greeks dynamiques</strong> : Calculs en temps réel avec variations de marché</li>
+                                             <li><strong>Optimisation GPU</strong> : Utilisation de CUDA pour Monte Carlo rapide</li>
+                                         </ul>
+                                     </div>
+                                 </div>
+
+                                <h3>Tests d'intégrité des données</h3>
+                                <div class="tests-section">
+                                    <div class="test-item">
+                                        <h4>Validation des paramètres</h4>
+                                        <ul>
+                                            <li>Vérification que tous les prix sont strictement positifs</li>
+                                            <li>Contrôle des bornes pour taux sans risque et volatilité (0-1)</li>
+                                            <li>Validation de l'échéance positive</li>
+                                            <li>Contrôle du niveau de confiance (0.5-0.999)</li>
+                                            <li>Limitation du nombre de chemins affichés (0-200)</li>
+                                        </ul>
+                                    </div>
+                                    <div class="test-item">
+                                        <h4>Validation des calculs</h4>
+                                        <ul>
+                                            <li>Contrôle de la cohérence entre Black-Scholes et Monte Carlo</li>
+                                            <li>Vérification des valeurs NaN dans les Greeks</li>
+                                            <li>Validation des intervalles de confiance</li>
+                                            <li>Mesure des temps de calcul pour optimisation</li>
+                                            <li>Gestion des cas limites (volatilité nulle, échéance très courte)</li>
+                                        </ul>
+                                    </div>
+                                    <div class="test-item">
+                                        <h4>Validation des trajectoires</h4>
+                                        <ul>
+                                            <li>Contrôle de la cohérence des chemins Monte Carlo</li>
+                                            <li>Validation de la grille temporelle</li>
+                                            <li>Vérification de la distribution des prix finaux</li>
+                                            <li>Limitation du nombre d'étapes (max 300)</li>
+                                            <li>Contrôle de la mémoire pour les simulations</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <h3>Modèles de pricing implémentés</h3>
+                                <div class="architecture-details">
+                                    <div class="arch-item">
+                                        <h4>Black-Scholes (Analytique)</h4>
+                                        <ul>
+                                            <li><strong>Formule fermée</strong> : Solution exacte pour options européennes</li>
+                                            <li><strong>Greeks analytiques</strong> : Dérivées partielles exactes</li>
+                                            <li><strong>Performance</strong> : Calcul instantané (quelques millisecondes)</li>
+                                            <li><strong>Précision</strong> : Résultat exact sous les hypothèses du modèle</li>
+                                            <li><strong>Limitations</strong> : Hypothèses restrictives (volatilité constante, etc.)</li>
+                                        </ul>
+                                    </div>
+                                    <div class="arch-item">
+                                        <h4>Monte Carlo (Simulation)</h4>
+                                        <ul>
+                                            <li><strong>Simulation stochastique</strong> : Mouvement brownien géométrique</li>
+                                            <li><strong>Greeks numériques</strong> : Calcul par bump-and-revalue avec CRN</li>
+                                            <li><strong>Intervalle de confiance</strong> : Estimation statistique de l'erreur</li>
+                                            <li><strong>Flexibilité</strong> : Adaptable à des modèles plus complexes</li>
+                                            <li><strong>Performance</strong> : Temps proportionnel au nombre de simulations</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <h3>Greeks calculés</h3>
+                                <div class="data-section">
+                                    <div class="data-category">
+                                        <h4>Delta (Δ)</h4>
+                                        <p>Sensibilité du prix de l'option au prix de l'actif sous-jacent</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Gamma (Γ)</h4>
+                                        <p>Sensibilité du Delta au prix de l'actif sous-jacent (convexité)</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Theta (Θ)</h4>
+                                        <p>Sensibilité du prix de l'option au temps (décroissance temporelle)</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Vega (ν)</h4>
+                                        <p>Sensibilité du prix de l'option à la volatilité</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Rho (ρ)</h4>
+                                        <p>Sensibilité du prix de l'option au taux d'intérêt sans risque</p>
+                                    </div>
+                                </div>
+
+                                                                 <h3>Architecture technique</h3>
+                                 <div class="architecture-details">
+                                     <div class="arch-item">
+                                         <h4>Backend (Python/NumPy)</h4>
+                                         <ul>
+                                             <li><strong>Calculs vectorisés</strong> : Utilisation intensive de NumPy pour les performances</li>
+                                             <li><strong>Common Random Numbers (CRN)</strong> : Réduction de la variance pour les Greeks</li>
+                                             <li><strong>Optimisation Monte Carlo</strong> : Distribution terminale pour le pricing, chemins pour la visualisation</li>
+                                             <li><strong>Gestion mémoire</strong> : Limitation des chemins et étapes pour éviter la surcharge</li>
+                                             <li><strong>Validation robuste</strong> : Contrôles de cohérence et gestion d'erreurs</li>
+                                         </ul>
+                                     </div>
+                                     <div class="arch-item">
+                                         <h4>Frontend (Chart.js/JavaScript)</h4>
+                                         <ul>
+                                             <li><strong>Formulaire interactif</strong> : Validation en temps réel avec feedback visuel</li>
+                                             <li><strong>Barre de progression</strong> : Animation avec chips et timing</li>
+                                             <li><strong>Graphique Monte Carlo</strong> : Visualisation multi-trajectoires avec Chart.js</li>
+                                             <li><strong>Distribution des prix</strong> : Histogramme des valeurs finales des chemins</li>
+                                             <li><strong>Interface responsive</strong> : Adaptation mobile et tablette</li>
+                                         </ul>
+                                     </div>
+                                 </div>
+
+                                 <h3>Flux de données</h3>
+                                 <div class="flow-diagram">
+                                     <div class="flow-step">
+                                         <div class="flow-circle">1</div>
+                                         <div class="flow-label">Utilisateur</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">2</div>
+                                         <div class="flow-label">Paramètres</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">3</div>
+                                         <div class="flow-label">Calcul Black-Scholes</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">4</div>
+                                         <div class="flow-label">Simulation Monte Carlo</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">5</div>
+                                         <div class="flow-label">Interface Graphique</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">6</div>
+                                         <div class="flow-label">Résultats temps réel</div>
+                                     </div>
+                                 </div>
+
+                                <h3>Paramètres configurables</h3>
+                                <div class="data-section">
+                                    <div class="data-category">
+                                        <h4>Paramètres de marché</h4>
+                                        <p>Prix spot (S), Prix d'exercice (K), Échéance (T), Taux sans risque (r), Volatilité (σ), Type d'option (Call/Put)</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Paramètres Monte Carlo</h4>
+                                        <p>Nombre de simulations (1 000-∞), Nombre d'étapes (1-∞), Chemins affichés (0-200), Niveau de confiance (50%-99.9%)</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Paramètres de calcul</h4>
+                                        <p>Bump relatif pour Delta/Gamma (1%), Bump relatif pour Vega (1%), Bump absolu pour Rho (0.0001), Pas de temps pour Theta (auto)</p>
+                                    </div>
+                                </div>
+
+                                <h3>Visualisations disponibles</h3>
+                                <div class="data-section">
+                                    <div class="data-category">
+                                        <h4>Graphique des trajectoires</h4>
+                                        <p>Affichage des chemins Monte Carlo avec échelle temporelle et palette de couleurs</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Distribution des prix finaux</h4>
+                                        <p>Histogramme des valeurs terminales avec statistiques (min/max)</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Métriques de performance</h4>
+                                        <p>Temps de calcul pour chaque modèle avec comparaison</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Intervalle de confiance</h4>
+                                        <p>Borne inférieure, prix estimé, borne supérieure avec niveau de confiance</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Volatility Surface Section -->
+                <section id="volatility-surface" class="description-section">
+                    <div class="description-card">
+                        <div class="card-header">
+                            <i data-lucide="thermometer" class="card-icon"></i>
+                            <h2>Page Volatility Surface</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="page-description">
+                                <h3>Vue d'ensemble</h3>
+                                <p>La page "Volatility Surface" offre une analyse interactive de la volatilité implicite basée sur les données d'options réelles du marché, avec visualisation 3D avancée et comparaison de sourires de volatilité.</p>
+
+                                <h3>Fonctionnalités principales</h3>
+                                <ul>
+                                    <li><strong>Surface de volatilité 3D</strong> : Visualisation interactive en trois dimensions avec Plotly</li>
+                                    <li><strong>Données d'options réelles</strong> : Utilisation de Finnhub et Polygon.io APIs</li>
+                                    <li><strong>Comparaison de sourires</strong> : Analyse comparative entre différents titres</li>
+                                    <li><strong>Paramètres configurables</strong> : Écart autour du spot (10% à 50%), sélection de provider</li>
+                                    <li><strong>Métriques détaillées</strong> : Prix spot, IV min/max/moyenne, statistiques complètes</li>
+                                    <li><strong>Mode debug avancé</strong> : Visualisation des données brutes et matrices IV</li>
+                                    <li><strong>Monitoring API</strong> : Statut en temps réel des fournisseurs de données</li>
+                                </ul>
+
+                                                                 <h3>APIs utilisées</h3>
+                                 <div class="api-details">
+                                     <div class="api-item">
+                                         <h4>Finnhub API</h4>
+                                         <ul>
+                                             <li><strong>Endpoint principal</strong> : <code>/api/vol-surface-3d/&lt;symbol&gt;</code></li>
+                                             <li><strong>Données récupérées</strong> : Chaînes d'options complètes, prix spot, volatilité implicite</li>
+                                             <li><strong>Avantages</strong> : Données gratuites, couverture large, temps réel</li>
+                                             <li><strong>Limitations</strong> : Limites de taux, données parfois incomplètes</li>
+                                         </ul>
+                                     </div>
+                                     <div class="api-item">
+                                         <h4>Polygon.io API</h4>
+                                         <ul>
+                                             <li><strong>Endpoint principal</strong> : <code>/api/vol-surface-3d/&lt;symbol&gt;?provider=polygon</code></li>
+                                             <li><strong>Données récupérées</strong> : Contrats d'options détaillés, estimations de prix</li>
+                                             <li><strong>Avantages</strong> : Données de haute qualité, estimations précises</li>
+                                             <li><strong>Limitations</strong> : Limites de taux strictes, nécessite fallback</li>
+                                         </ul>
+                                     </div>
+                                 </div>
+
+                                 <h3>Inconvénients et limitations</h3>
+                                 <div class="limitations-section">
+                                     <div class="limitation-item">
+                                         <h4>🔴 Limitations des APIs gratuites</h4>
+                                         <ul>
+                                             <li><strong>Finnhub gratuit</strong> : 60 appels/minute, données limitées, pas de données historiques</li>
+                                             <li><strong>Polygon gratuit</strong> : 5 appels/minute, données très limitées, pas d'options</li>
+                                             <li><strong>Qualité des données</strong> : Données parfois incomplètes, strikes manquants</li>
+                                             <li><strong>Maturités limitées</strong> : Peu d'expirations disponibles, pas de long terme</li>
+                                             <li><strong>Symboles restreints</strong> : Couverture limitée aux titres majeurs</li>
+                                             <li><strong>Pas de données historiques</strong> : Impossible de backtester les stratégies</li>
+                                         </ul>
+                                     </div>
+                                     <div class="limitation-item">
+                                         <h4>🟡 Solutions d'amélioration</h4>
+                                         <ul>
+                                             <li><strong>APIs payantes</strong> : Bloomberg Terminal, Reuters Eikon, CBOE DataShop</li>
+                                             <li><strong>Données professionnelles</strong> : IEX Cloud Pro, Alpha Vantage Premium</li>
+                                             <li><strong>Base de données locale</strong> : Stockage des surfaces de volatilité historiques</li>
+                                             <li><strong>Modèles de calibration</strong> : Interpolation et extrapolation des données manquantes</li>
+                                             <li><strong>APIs alternatives</strong> : Quandl, FRED pour données macroéconomiques</li>
+                                             <li><strong>Machine Learning</strong> : Prédiction de volatilité avec modèles ML</li>
+                                         </ul>
+                                     </div>
+                                 </div>
+
+                                <h3>Tests d'intégrité des données</h3>
+                                <div class="tests-section">
+                                    <div class="test-item">
+                                        <h4>Validation des paramètres</h4>
+                                        <ul>
+                                            <li>Vérification du span (0-1) pour l'écart autour du spot</li>
+                                            <li>Validation du provider (finnhub/polygon)</li>
+                                            <li>Contrôle du nombre maximum d'expirations</li>
+                                            <li>Validation des symboles disponibles</li>
+                                        </ul>
+                                    </div>
+                                    <div class="test-item">
+                                        <h4>Validation des données d'options</h4>
+                                        <ul>
+                                            <li>Vérification de la présence d'expirations valides</li>
+                                            <li>Contrôle de la cohérence des strikes et maturités</li>
+                                            <li>Validation des prix d'options (positifs)</li>
+                                            <li>Filtrage des options avec volatilité implicite valide</li>
+                                        </ul>
+                                    </div>
+                                    <div class="test-item">
+                                        <h4>Gestion des erreurs API</h4>
+                                        <ul>
+                                            <li>Détection des limites de taux (429)</li>
+                                            <li>Fallback automatique vers moins d'expirations</li>
+                                            <li>Gestion des timeouts et erreurs réseau</li>
+                                            <li>Messages d'erreur informatifs pour l'utilisateur</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <h3>Visualisations disponibles</h3>
+                                <div class="architecture-details">
+                                    <div class="arch-item">
+                                        <h4>Surface 3D Interactive</h4>
+                                        <ul>
+                                            <li><strong>Vues multiples</strong> : Surface, Wireframe, Contour</li>
+                                            <li><strong>Palettes de couleurs</strong> : Viridis, Plasma, Inferno, Turbo, RdBu, Spectral</li>
+                                            <li><strong>Contrôles interactifs</strong> : Zoom, rotation, pan, reset</li>
+                                            <li><strong>Fond transparent</strong> : Optimisé pour l'intégration</li>
+                                        </ul>
+                                    </div>
+                                    <div class="arch-item">
+                                        <h4>Comparaison de Sourires</h4>
+                                        <ul>
+                                            <li><strong>Multi-tickers</strong> : Comparaison simultanée de plusieurs titres</li>
+                                            <li><strong>Maturité fixe</strong> : Analyse pour une échéance spécifique</li>
+                                            <li><strong>Statistiques comparatives</strong> : IV min/max/moyenne par titre</li>
+                                            <li><strong>Interface de sélection</strong> : Ajout/suppression dynamique de tickers</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <h3>Métriques calculées</h3>
+                                <div class="data-section">
+                                    <div class="data-category">
+                                        <h4>Prix et Source</h4>
+                                        <p>Prix spot actuel, source de données (Finnhub/Polygon), nombre de maturités et strikes</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Statistiques IV</h4>
+                                        <p>Volatilité implicite minimum, maximum, moyenne sur toute la surface</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Paramètres de marché</h4>
+                                        <p>Taux sans risque (5%), taux de dividende (0%), écart autour du spot configurable</p>
+                                    </div>
+                                </div>
+
+                                                                 <h3>Architecture technique</h3>
+                                 <div class="architecture-details">
+                                     <div class="arch-item">
+                                         <h4>Backend (Python/APIs)</h4>
+                                         <ul>
+                                             <li><strong>Récupération parallèle</strong> : Multiples expirations simultanées</li>
+                                             <li><strong>Fallback intelligent</strong> : Basculement automatique entre APIs</li>
+                                             <li><strong>Traitement des données</strong> : Interpolation et nettoyage des données</li>
+                                             <li><strong>Optimisation mémoire</strong> : Limitation du nombre d'expirations</li>
+                                         </ul>
+                                     </div>
+                                     <div class="arch-item">
+                                         <h4>Frontend (Plotly/JavaScript)</h4>
+                                         <ul>
+                                             <li><strong>Graphique 3D</strong> : Plotly.js pour la visualisation interactive</li>
+                                             <li><strong>Contrôles avancés</strong> : Sélection de vue, palette de couleurs</li>
+                                             <li><strong>Mode debug</strong> : Onglets pour données brutes, matrices, JSON</li>
+                                             <li><strong>Interface responsive</strong> : Adaptation mobile et tablette</li>
+                                         </ul>
+                                     </div>
+                                 </div>
+
+                                 <h3>Flux de données</h3>
+                                 <div class="flow-diagram">
+                                     <div class="flow-step">
+                                         <div class="flow-circle">1</div>
+                                         <div class="flow-label">Utilisateur</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">2</div>
+                                         <div class="flow-label">Finnhub/Polygon API</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">3</div>
+                                         <div class="flow-label">Fichier JSON</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">4</div>
+                                         <div class="flow-label">Traitement Python</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">5</div>
+                                         <div class="flow-label">Interface 3D</div>
+                                     </div>
+                                     <div class="flow-arrow">→</div>
+                                     <div class="flow-step">
+                                         <div class="flow-circle">6</div>
+                                         <div class="flow-label">Surface Volatilité</div>
+                                     </div>
+                                 </div>
+
+                                <h3>Symboles disponibles</h3>
+                                <div class="data-section">
+                                    <div class="data-category">
+                                        <h4>ETFs Majeurs (3)</h4>
+                                        <p>SPY (SPDR S&P 500), QQQ (Invesco QQQ), IWM (iShares Russell 2000)</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Actions Tech US (7)</h4>
+                                        <p>AAPL (Apple), MSFT (Microsoft), GOOGL (Alphabet), AMZN (Amazon), TSLA (Tesla), META (Meta), NVDA (NVIDIA)</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Symboles personnalisés</h4>
+                                        <p>Possibilité d'ajouter n'importe quel symbole avec options disponibles</p>
+                                    </div>
+                                </div>
+
+                                <h3>Mode Debug et Analyse</h3>
+                                <div class="data-section">
+                                    <div class="data-category">
+                                        <h4>Onglet Résumé</h4>
+                                        <p>Statistiques globales : symbole, prix spot, source, nombre d'options, IV min/max/moyenne</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Onglet Options Détaillées</h4>
+                                        <p>Tableau complet : contrat, type, strike, prix, IV, expiration</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Onglet Matrice IV</h4>
+                                        <p>Matrice de volatilité implicite : lignes (maturités), colonnes (strikes)</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Onglet JSON Brut</h4>
+                                        <p>Données complètes au format JSON pour analyse approfondie</p>
+                                    </div>
+                                </div>
+
+                                <h3>Optimisations de performance</h3>
+                                <div class="data-section">
+                                    <div class="data-category">
+                                        <h4>Gestion des APIs</h4>
+                                        <p>Limitation automatique du nombre d'expirations, retry avec backoff, fallback entre providers</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Traitement des données</h4>
+                                        <p>Filtrage des options invalides, interpolation des données manquantes, optimisation mémoire</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Interface utilisateur</h4>
+                                        <p>Chargement asynchrone, placeholders, animations de chargement, gestion d'erreurs</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Glossaire Section -->
+                <section id="glossaire" class="description-section">
+                    <div class="description-card">
+                        <div class="card-header">
+                            <i data-lucide="file-text" class="card-icon"></i>
+                            <h2>Glossaire Technique</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="glossary-grid">
+                                <!-- Termes API -->
+                                <div class="glossary-category">
+                                    <h3><i data-lucide="database" class="glossary-icon"></i>Termes API</h3>
+                                    <div class="glossary-items">
+                                        <div class="glossary-item">
+                                            <h4>Endpoint</h4>
+                                            <p>Point d'accès spécifique à une API web permettant d'échanger des données. Exemple : <code>/api/market-data</code> pour récupérer les données de marché.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>User-Agent</h4>
+                                            <p>En-tête HTTP identifiant le logiciel client qui effectue la requête. Utilisé pour simuler un navigateur web et éviter les blocages API.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Rate Limiting</h4>
+                                            <p>Limitation du nombre de requêtes autorisées par unité de temps (ex: 60 appels/minute) pour éviter la surcharge des serveurs.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>JSON</h4>
+                                            <p>Format de données léger et lisible utilisé pour échanger des informations entre applications web. Structure hiérarchique avec clés et valeurs.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>HTTP Status Code</h4>
+                                            <p>Code numérique indiquant le résultat d'une requête HTTP : 200 (succès), 404 (non trouvé), 429 (trop de requêtes), 500 (erreur serveur).</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Termes Financiers -->
+                                <div class="glossary-category">
+                                    <h3><i data-lucide="trending-up" class="glossary-icon"></i>Termes Financiers</h3>
+                                    <div class="glossary-items">
+                                        <div class="glossary-item">
+                                            <h4>Volatilité Implicite</h4>
+                                            <p>Mesure de l'incertitude du marché déduite du prix des options. Plus élevée = plus d'incertitude sur l'évolution du prix de l'actif.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Surface de Volatilité</h4>
+                                            <p>Représentation 3D de la volatilité implicite selon le prix d'exercice (strike) et l'échéance (maturité) des options.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Greeks</h4>
+                                            <p>Mesures de sensibilité du prix d'une option : Delta (prix), Gamma (delta), Theta (temps), Vega (volatilité), Rho (taux d'intérêt).</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Call/Put</h4>
+                                            <p>Types d'options : Call (droit d'acheter), Put (droit de vendre) un actif à un prix fixe avant une date donnée.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Strike Price</h4>
+                                            <p>Prix d'exercice fixé dans le contrat d'option auquel l'actif peut être acheté ou vendu.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>VaR (Value at Risk)</h4>
+                                            <p>Mesure de risque indiquant la perte maximale potentielle sur un portefeuille avec un niveau de confiance donné (ex: 95%).</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Max Drawdown</h4>
+                                            <p>Perte maximale enregistrée depuis le pic historique d'un investissement, mesurant le risque de baisse.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Ratio de Sharpe</h4>
+                                            <p>Mesure de performance ajustée au risque : rendement excédentaire divisé par la volatilité du portefeuille.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Termes Techniques -->
+                                <div class="glossary-category">
+                                    <h3><i data-lucide="code" class="glossary-icon"></i>Termes Techniques</h3>
+                                    <div class="glossary-items">
+                                        <div class="glossary-item">
+                                            <h4>Backend</h4>
+                                            <p>Partie serveur de l'application qui traite les données, effectue les calculs et gère la logique métier (Python/Flask).</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Frontend</h4>
+                                            <p>Interface utilisateur côté client qui affiche les données et permet l'interaction (HTML/CSS/JavaScript).</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>API (Application Programming Interface)</h4>
+                                            <p>Ensemble de règles permettant à différents logiciels de communiquer et d'échanger des données de manière standardisée.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>RESTful</h4>
+                                            <p>Style d'architecture pour les APIs web utilisant les méthodes HTTP standard (GET, POST, PUT, DELETE) pour manipuler les ressources.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Monte Carlo</h4>
+                                            <p>Méthode de simulation numérique utilisant des nombres aléatoires pour résoudre des problèmes mathématiques complexes.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>ThreadPoolExecutor</h4>
+                                            <p>Pool de threads permettant d'exécuter plusieurs tâches en parallèle pour améliorer les performances des requêtes API.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Fallback</h4>
+                                            <p>Mécanisme de secours activé automatiquement en cas d'échec d'un service principal (ex: basculement vers une API alternative).</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Timeout</h4>
+                                            <p>Délai maximum d'attente pour une opération (ex: 5 secondes pour une requête API) avant de considérer qu'elle a échoué.</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Termes de Données -->
+                                <div class="glossary-category">
+                                    <h3><i data-lucide="bar-chart" class="glossary-icon"></i>Termes de Données</h3>
+                                    <div class="glossary-items">
+                                        <div class="glossary-item">
+                                            <h4>Timeframe</h4>
+                                            <p>Période de temps pour l'agrégation des données : 1 jour, 1 semaine, 1 mois, etc. Détermine la granularité des graphiques.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>OHLC</h4>
+                                            <p>Données de prix : Open (ouverture), High (plus haut), Low (plus bas), Close (fermeture) pour une période donnée.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Volume</h4>
+                                            <p>Nombre de titres échangés pendant une période, indicateur de l'activité de marché et de la liquidité.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Rendement</h4>
+                                            <p>Variation relative du prix d'un actif sur une période, exprimée en pourcentage. Mesure de performance.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Normalisation Base 100</h4>
+                                            <p>Méthode permettant de comparer des instruments avec des prix différents en les ramenant à une base commune de 100.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Corrélation</h4>
+                                            <p>Mesure de la relation linéaire entre deux variables, variant de -1 (corrélation négative parfaite) à +1 (corrélation positive parfaite).</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Termes de Visualisation -->
+                                <div class="glossary-category">
+                                    <h3><i data-lucide="eye" class="glossary-icon"></i>Termes de Visualisation</h3>
+                                    <div class="glossary-items">
+                                        <div class="glossary-item">
+                                            <h4>Chart.js</h4>
+                                            <p>Bibliothèque JavaScript pour créer des graphiques interactifs et responsives dans les applications web.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Plotly</h4>
+                                            <p>Bibliothèque de visualisation scientifique permettant de créer des graphiques 3D interactifs et des dashboards avancés.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Échelle Logarithmique</h4>
+                                            <p>Type d'échelle où les distances représentent des rapports plutôt que des différences, utile pour visualiser les variations relatives.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Tooltip</h4>
+                                            <p>Fenêtre d'information qui apparaît au survol d'un élément graphique, affichant des détails supplémentaires.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Responsive Design</h4>
+                                            <p>Approche de conception web permettant à l'interface de s'adapter automatiquement à différentes tailles d'écran.</p>
+                                        </div>
+                                        <div class="glossary-item">
+                                            <h4>Wireframe</h4>
+                                            <p>Mode d'affichage 3D montrant uniquement la structure de la surface sans remplissage, utile pour l'analyse géométrique.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+/* Section Navigation Styles */
+.section-navigation {
+    position: sticky;
+    top: 10px;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding: 0 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.section-nav-container {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50px;
+    padding: 0.5rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: fit-content;
+}
+
+.section-nav-list {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0.25rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.section-nav-list::-webkit-scrollbar {
+    display: none;
+}
+
+.section-nav-item {
+    flex-shrink: 0;
+}
+
+.section-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-radius: 25px;
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
+.section-nav-link:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-1px);
+}
+
+.section-nav-link.active {
+    color: white;
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.section-nav-link i {
+    width: 16px;
+    height: 16px;
+}
+
+.section-nav-link span {
+    font-size: 0.85rem;
+}
+
+/* Smooth scrolling for anchor links */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Add padding to sections to account for navigation */
+.description-section {
+    scroll-margin-top: 80px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .section-navigation {
+        top: 5px;
+        padding: 0 0.5rem;
+    }
+    
+    .section-nav-container {
+        border-radius: 30px;
+        padding: 0.4rem;
+    }
+    
+    .section-nav-link {
+        padding: 0.6rem 1rem;
+        font-size: 0.8rem;
+        border-radius: 20px;
+    }
+    
+    .section-nav-link span {
+        font-size: 0.75rem;
+    }
+    
+    .section-nav-link i {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .section-navigation {
+        top: 2px;
+    }
+    
+    .section-nav-container {
+        border-radius: 25px;
+        padding: 0.3rem;
+    }
+    
+    .section-nav-link {
+        padding: 0.5rem 0.75rem;
+        border-radius: 15px;
+    }
+    
+    .section-nav-link span {
+        display: none;
+    }
+    
+    .section-nav-link i {
+        width: 16px;
+        height: 16px;
+    }
+}
+
+/* Glossaire Styles - Version sobre et sombre */
+.glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.glossary-category {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.glossary-category:hover {
+    border-color: #4b5563;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+.glossary-category h3 {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #e5e7eb;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #374151;
+}
+
+.glossary-icon {
+    width: 18px;
+    height: 18px;
+    color: #9ca3af;
+}
+
+.glossary-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.glossary-item {
+    background: #111827;
+    border: 1px solid #374151;
+    border-radius: 6px;
+    padding: 1rem;
+    transition: all 0.2s ease;
+}
+
+.glossary-item:hover {
+    border-color: #4b5563;
+    background: #1f2937;
+}
+
+.glossary-item h4 {
+    color: #f3f4f6;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.glossary-item p {
+    color: #9ca3af;
+    line-height: 1.5;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.glossary-item code {
+    background: #374151;
+    color: #fbbf24;
+    padding: 0.1rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.8rem;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+/* Responsive design for glossary */
+@media (max-width: 768px) {
+    .glossary-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .glossary-category {
+        padding: 1rem;
+    }
+    
+    .glossary-category h3 {
+        font-size: 1rem;
+        margin-bottom: 0.75rem;
+    }
+    
+    .glossary-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .glossary-item {
+        padding: 0.75rem;
+    }
+    
+    .glossary-item h4 {
+        font-size: 0.95rem;
+    }
+    
+    .glossary-item p {
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .glossary-category {
+        padding: 0.75rem;
+    }
+    
+    .glossary-category h3 {
+        font-size: 0.95rem;
+    }
+    
+    .glossary-item {
+        padding: 0.5rem;
+    }
+    
+    .glossary-item h4 {
+        font-size: 0.9rem;
+    }
+    
+    .glossary-item p {
+        font-size: 0.8rem;
+    }
+}
+</style>
+
+<script>
+// Add smooth scrolling and active state management
+document.addEventListener('DOMContentLoaded', function() {
+    const sectionNavLinks = document.querySelectorAll('.section-nav-link');
+    const sections = document.querySelectorAll('.description-section');
+    
+    // Function to update active nav link
+    function updateActiveNavLink() {
+        const scrollPosition = window.scrollY + 120; // Increased offset for navigation
+        
+        sections.forEach((section, index) => {
+            const sectionTop = section.offsetTop;
+            const sectionBottom = sectionTop + section.offsetHeight;
+            
+            if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                // Remove active class from all links
+                sectionNavLinks.forEach(link => link.classList.remove('active'));
+                // Add active class to current link
+                sectionNavLinks[index].classList.add('active');
+            }
+        });
+    }
+    
+    // Add click event listeners for smooth scrolling
+    sectionNavLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href').substring(1);
+            const targetSection = document.getElementById(targetId);
+            
+            if (targetSection) {
+                // Remove active class from all links first
+                sectionNavLinks.forEach(link => link.classList.remove('active'));
+                // Add active class to clicked link immediately
+                this.classList.add('active');
+                
+                targetSection.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Update active link after scroll completes
+                setTimeout(updateActiveNavLink, 1000);
+            }
+        });
+    });
+    
+    // Update active link on scroll
+    window.addEventListener('scroll', updateActiveNavLink);
+    
+    // Initial call to set active link
+    updateActiveNavLink();
+});
+</script>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+</script>
+{% endblock %}

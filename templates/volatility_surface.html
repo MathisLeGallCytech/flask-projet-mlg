@@ -1,0 +1,2234 @@
+{% extends "base_flask.html" %}
+
+{% block title %}Surface de Volatilité – Volatilité Implicite{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Navigation</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="{{ url_for('index') }}" class="nav-link">
+                        <i data-lucide="home"></i>
+                        <span>Accueil</span>
+                    </a>
+                </li>
+                                    <li class="nav-item">
+                        <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
+                            <i data-lucide="user"></i>
+                            <span>CV Mathis Le Gall</span>
+                        </a>
+                    </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('indices_actions') }}" class="nav-link">
+                        <i data-lucide="candlestick-chart"></i>
+                        <span>Indices & Actions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
+                        <i data-lucide="activity"></i>
+                        <span>Analyse Actions & Indices</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('call_put') }}" class="nav-link">
+                        <i data-lucide="line-chart"></i>
+                        <span>Call & Put</span>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ url_for('volatility_surface') }}" class="nav-link active">
+                        <i data-lucide="thermometer"></i>
+                        <span>Volatility Surface</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
+                        <i data-lucide="calculator"></i>
+                        <span>Analyse des Grecques</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('description_app') }}" class="nav-link">
+                        <i data-lucide="info"></i>
+                        <span>Description App</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="main-header-flex">
+                <div class="main-header-left">
+                    <div class="natixis-brand">
+                        <img src="{{ url_for('static', filename='images/logo_natixis.png') }}" alt="Logo Natixis" class="natixis-logo">
+                        <span class="natixis-text">Natixis</span>
+                    </div>
+                </div>
+                <div class="main-header-center">
+                    <!-- Espace pour équilibrer le layout -->
+                </div>
+                <div class="main-header-right">
+                    <h1 class="header-title">Volatility Surface</h1>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content-area">
+            <div class="main-content-area">
+            <div class="page-header">
+                <div class="header-content">
+                    <div class="header-left">
+                        <h1 class="page-title">
+                            <i data-lucide="thermometer" class="title-icon"></i>
+                            Surface de Volatilité Implicite
+                        </h1>
+                        <p class="page-subtitle">
+                            Analyse interactive de la volatilité implicite basée sur les données d'options réelles du marché
+                        </p>
+                    </div>
+                    
+                    <!-- Indicateur de statut API -->
+                    <div id="api-status" class="api-status-card">
+                        <div class="status-indicator">
+                            <div id="api-status-indicator" class="status-dot"></div>
+                            <span id="api-status-text" class="status-text">Vérification API...</span>
+                        </div>
+                        <div class="status-details">
+                            <div class="api-name">Options API</div>
+                            <div id="api-response-time" class="response-time">--</div>
+                        </div>
+                        <div class="status-meta">
+                            <i data-lucide="database" class="meta-icon"></i>
+                            <span class="meta-text">Données Options</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <main class="main-content-area">
+                <section class="analysis-section">
+                    <!-- Configuration Section -->
+                    <div class="options-form-container">
+                        <div class="options-form">
+                            <!-- Paramètres principaux -->
+                            <div class="form-section">
+                                <div class="form-grid">
+                                    <div class="form-field">
+                                        <label for="vs-symbol-select" class="field-label">
+                                            <i data-lucide="building-2" class="field-icon"></i>
+                                            Symbole
+                                        </label>
+                                        <select id="vs-symbol-select" class="form-input">
+                                            <option value="SPY">SPY - SPDR S&P 500 ETF (Recommandé)</option>
+                                            <option value="QQQ">QQQ - Invesco QQQ Trust</option>
+                                            <option value="IWM">IWM - iShares Russell 2000 ETF</option>
+                                            <option value="AAPL">AAPL - Apple Inc.</option>
+                                            <option value="MSFT">MSFT - Microsoft Corp.</option>
+                                            <option value="GOOGL">GOOGL - Alphabet Inc.</option>
+                                            <option value="AMZN">AMZN - Amazon.com Inc.</option>
+                                            <option value="TSLA">TSLA - Tesla Inc.</option>
+                                            <option value="META">META - Meta Platforms Inc.</option>
+                                            <option value="NVDA">NVDA - NVIDIA Corp.</option>
+                                            <option value="__custom__">Personnalisé...</option>
+                                        </select>
+                                        <div id="vs-custom-wrap" class="hidden">
+                                            <input type="text" id="vs-symbol" class="form-input" placeholder="Entrez un symbole (ex: AAPL)">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-field">
+                                        <label for="vs-provider" class="field-label">
+                                            <i data-lucide="database" class="field-icon"></i>
+                                            Fournisseur de données
+                                        </label>
+                                        <select id="vs-provider" class="form-input">
+                                            <option value="finnhub">Finnhub API</option>
+                                            <option value="polygon">Polygon.io API</option>
+                                        </select>
+                                    </div>
+                                    
+
+                                    
+                                    <div class="form-field">
+                                        <label for="vs-span" class="field-label">
+                                            <i data-lucide="target" class="field-icon"></i>
+                                            Écart autour du spot
+                                        </label>
+                                        <select id="vs-span" class="form-input">
+                                            <option value="0.1">10%</option>
+                                            <option value="0.2">20%</option>
+                                            <option value="0.3">30%</option>
+                                            <option value="0.5" selected>50%</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                                                         <div class="form-actions">
+                                 <button id="vs-load" class="calculate-btn">
+                                     <i data-lucide="play" class="btn-icon"></i>
+                                     Charger la Surface
+                                 </button>
+                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Parameters Display -->
+                    <div id="vs-parameters" class="options-form-container hidden">
+                        <div class="form-header">
+                            <h3 class="form-title">
+                                <i data-lucide="bar-chart-3" class="form-icon"></i>
+                                Paramètres de Calcul
+                            </h3>
+                            <p class="form-subtitle">Informations détaillées sur l'analyse de volatilité</p>
+                        </div>
+                        
+                        <div class="metrics-grid">
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i data-lucide="dollar-sign" class="metric-icon"></i>
+                                    <div class="metric-label">Prix Spot</div>
+                                </div>
+                                <div class="metric-values">
+                                    <div class="metric-value">
+                                        <span class="value-number" id="vs-spot-price">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i data-lucide="database" class="metric-icon"></i>
+                                    <div class="metric-label">Source</div>
+                                </div>
+                                <div class="metric-values">
+                                    <div class="metric-value">
+                                        <span class="value-number" id="vs-data-source">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i data-lucide="calendar" class="metric-icon"></i>
+                                    <div class="metric-label">Maturités</div>
+                                </div>
+                                <div class="metric-values">
+                                    <div class="metric-value">
+                                        <span class="value-number" id="vs-maturities-count">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i data-lucide="target" class="metric-icon"></i>
+                                    <div class="metric-label">Strikes</div>
+                                </div>
+                                <div class="metric-values">
+                                    <div class="metric-value">
+                                        <span class="value-number" id="vs-strikes-count">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i data-lucide="trending-up" class="metric-icon"></i>
+                                    <div class="metric-label">Taux Sans Risque</div>
+                                </div>
+                                <div class="metric-values">
+                                    <div class="metric-value">
+                                        <span class="value-number">5.00%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i data-lucide="percent" class="metric-icon"></i>
+                                    <div class="metric-label">Dividende</div>
+                                </div>
+                                <div class="metric-values">
+                                    <div class="metric-value">
+                                        <span class="value-number">0.00%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i data-lucide="arrow-down" class="metric-icon"></i>
+                                    <div class="metric-label">IV Minimum</div>
+                                </div>
+                                <div class="metric-values">
+                                    <div class="metric-value">
+                                        <span class="value-number" id="vs-iv-min">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i data-lucide="arrow-up" class="metric-icon"></i>
+                                    <div class="metric-label">IV Maximum</div>
+                                </div>
+                                <div class="metric-values">
+                                    <div class="metric-value">
+                                        <span class="value-number" id="vs-iv-max">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="metric-card">
+                                <div class="metric-header">
+                                    <i data-lucide="bar-chart-2" class="metric-icon"></i>
+                                    <div class="metric-label">IV Moyenne</div>
+                                </div>
+                                <div class="metric-values">
+                                    <div class="metric-value">
+                                        <span class="value-number" id="vs-iv-avg">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                                         <!-- Debug JSON Section -->
+                     <div id="debug-json-section" class="options-form-container hidden">
+                         <div class="form-header">
+                             <h3 class="form-title">
+                                 Data
+                             </h3>
+                         </div>
+                         
+                         <div class="debug-content">
+                             <div class="debug-tabs">
+                                 <button class="debug-tab active" data-tab="summary">Résumé</button>
+                                 <button class="debug-tab" data-tab="options">Options Détaillées</button>
+                                 <button class="debug-tab" data-tab="iv-matrix">Matrice IV</button>
+                                 <button class="debug-tab" data-tab="raw">JSON Brut</button>
+                             </div>
+                             
+                             <div class="debug-panels">
+                                 <div id="summary-panel" class="debug-panel active">
+                                     <div class="summary-grid">
+                                         <div class="summary-item">
+                                             <span class="summary-label">Symbole</span>
+                                             <span class="summary-value" id="debug-symbol">-</span>
+                                         </div>
+                                         <div class="summary-item">
+                                             <span class="summary-label">Prix Spot</span>
+                                             <span class="summary-value" id="debug-spot-price">-</span>
+                                         </div>
+                                         <div class="summary-item">
+                                             <span class="summary-label">Source</span>
+                                             <span class="summary-value" id="debug-source">-</span>
+                                         </div>
+                                         <div class="summary-item">
+                                             <span class="summary-label">Total Options</span>
+                                             <span class="summary-value" id="debug-total-options">-</span>
+                                         </div>
+                                         <div class="summary-item">
+                                             <span class="summary-label">Calls</span>
+                                             <span class="summary-value" id="debug-calls-count">-</span>
+                                         </div>
+                                         <div class="summary-item">
+                                             <span class="summary-label">Puts</span>
+                                             <span class="summary-value" id="debug-puts-count">-</span>
+                                         </div>
+                                         <div class="summary-item">
+                                             <span class="summary-label">Maturités</span>
+                                             <span class="summary-value" id="debug-maturities-count">-</span>
+                                         </div>
+                                         <div class="summary-item">
+                                             <span class="summary-label">Strikes</span>
+                                             <span class="summary-value" id="debug-strikes-count">-</span>
+                                         </div>
+                                         <div class="summary-item">
+                                             <span class="summary-label">IV Min</span>
+                                             <span class="summary-value" id="debug-iv-min">-</span>
+                                         </div>
+                                         <div class="summary-item">
+                                             <span class="summary-label">IV Max</span>
+                                             <span class="summary-value" id="debug-iv-max">-</span>
+                                         </div>
+                                         <div class="summary-item">
+                                             <span class="summary-label">IV Moyenne</span>
+                                             <span class="summary-value" id="debug-iv-avg">-</span>
+                                         </div>
+
+                                     </div>
+                                 </div>
+                                 
+                                 <div id="raw-panel" class="debug-panel">
+                                     <div class="json-viewer">
+                                         <pre id="debug-raw-json" class="json-content"></pre>
+                                     </div>
+                                 </div>
+                                 
+                                 <div id="options-panel" class="debug-panel">
+                                     <div class="options-table-container">
+                                         <table id="debug-options-table" class="options-table">
+                                             <thead>
+                                                 <tr>
+                                                     <th>Contrat</th>
+                                                     <th>Type</th>
+                                                     <th>Strike</th>
+                                                     <th>Prix</th>
+                                                     <th>IV (%)</th>
+                                                     <th>Expiration</th>
+                                                 </tr>
+                                             </thead>
+                                             <tbody id="debug-options-tbody">
+                                             </tbody>
+                                         </table>
+                                     </div>
+                                 </div>
+                                 
+                                 <div id="iv-matrix-panel" class="debug-panel">
+                                     <div class="iv-matrix-container">
+                                         <h4>Matrice de Volatilité Implicite</h4>
+                                         <div class="matrix-info">
+                                             <p>Lignes: Maturités (années) | Colonnes: Strikes ($)</p>
+                                         </div>
+                                         <div id="debug-iv-matrix" class="iv-matrix"></div>
+                                     </div>
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+
+                     <!-- 3D Surface Chart -->
+                     <div class="volatility-3d-chart-container">
+                         <div class="volatility-3d-chart-header">
+                             <div>
+                                 <div class="volatility-3d-chart-title">
+                                     <i data-lucide="layers" class="volatility-3d-chart-icon"></i>
+                                     Surface de Volatilité 3D
+                                 </div>
+                                 <p class="volatility-3d-chart-subtitle">Visualisation interactive de la volatilité implicite en trois dimensions avec données Finnhub</p>
+                             </div>
+                             <div class="volatility-3d-controls">
+                                 <div class="volatility-3d-control-group">
+                                     <label class="volatility-3d-control-label">Vue:</label>
+                                     <select id="vs-3d-view" class="volatility-3d-control-select">
+                                         <option value="surface">Surface</option>
+                                         <option value="wireframe">Wireframe</option>
+                                         <option value="contour">Contour</option>
+                                     </select>
+                                 </div>
+                                 <div class="volatility-3d-control-group">
+                                     <label class="volatility-3d-control-label">Couleur:</label>
+                                     <select id="vs-3d-colorscale" class="volatility-3d-control-select">
+                                         <option value="Viridis">Viridis</option>
+                                         <option value="Plasma">Plasma</option>
+                                         <option value="Inferno">Inferno</option>
+                                         <option value="Turbo">Turbo</option>
+                                         <option value="RdBu">Rouge-Bleu</option>
+                                         <option value="Spectral">Spectral</option>
+                                         <option value="RdYlBu">Rouge-Jaune-Bleu</option>
+                                         <option value="Set1">Set1</option>
+                                     </select>
+                                 </div>
+                                 <button id="vs-3d-reset" class="volatility-3d-btn secondary">
+                                     <i data-lucide="refresh-cw"></i>
+                                     Reset Vue
+                                 </button>
+                             </div>
+                         </div>
+                         
+                         <div id="vs-plot" class="volatility-3d-plot-container">
+                             <div id="vs-plot-placeholder" class="volatility-3d-placeholder">
+                                 <div class="volatility-3d-placeholder-icon">
+                            <i data-lucide="bar-chart-3" style="width: 48px; height: 48px; color: #6b7280;"></i>
+                        </div>
+                                 <div class="volatility-3d-placeholder-title">Prêt à analyser</div>
+                                 <div class="volatility-3d-placeholder-text">Sélectionnez un symbole et cliquez sur "Charger la Surface" pour afficher la visualisation 3D interactive</div>
+                             </div>
+                         </div>
+                         
+                         <!-- Conteneur pour les statistiques - SUPPRIMÉ selon demande utilisateur -->
+                         <!-- Les statistiques sont maintenant affichées dans la section Debug -->
+                     </div>
+
+
+
+                    <!-- Bloc de contrôles séparé - AU-DESSUS -->
+                    <div class="options-form-container">
+                        <div class="options-form">
+                            <div class="form-section">
+                                <div class="form-grid">
+                                    <div class="form-field">
+                                        <label for="smile-add-select" class="field-label">
+                                            <i data-lucide="plus-circle" class="field-icon"></i>
+                                            Ajouter un ticker
+                                        </label>
+                                        <select id="smile-add-select" class="form-input">
+                                            <option value="">Sélectionner un ticker...</option>
+                                            <option value="SPY">SPY - SPDR S&P 500 ETF</option>
+                                            <option value="QQQ">QQQ - Invesco QQQ Trust</option>
+                                            <option value="IWM">IWM - iShares Russell 2000 ETF</option>
+                                            <option value="AAPL">AAPL - Apple Inc.</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-field">
+                                        <label class="field-label">
+                                            <i data-lucide="check-square" class="field-icon"></i>
+                                            Tickers sélectionnés
+                                        </label>
+                                        <div id="smile-chips" class="tag-chips">
+                                            <span style="color: white;"><i data-lucide="building-2" style="width: 16px; height: 16px; margin-right: 8px; color: #6b7280;"></i>Aucun ticker sélectionné</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-field">
+                                        <label for="smile-span" class="field-label">
+                                            <i data-lucide="target" class="field-icon"></i>
+                                            Écart autour du spot
+                                        </label>
+                                        <select id="smile-span" class="form-input">
+                                            <option value="0.1">10%</option>
+                                            <option value="0.2">20%</option>
+                                            <option value="0.3" selected>30%</option>
+                                            <option value="0.5">50%</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button id="smile-compare-btn" class="calculate-btn">
+                                    <i data-lucide="bar-chart-3" class="btn-icon"></i>
+                                    Comparer les Sourires
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Smile de Volatilité Section -->
+                    <div class="volatility-3d-chart-container">
+                        <div class="volatility-3d-chart-header">
+                            <div>
+                                <div class="volatility-3d-chart-title">
+                                    <i data-lucide="trending-up" class="volatility-3d-chart-icon"></i>
+                                    Comparaison des Sourires de Volatilité
+                                </div>
+                                <p class="volatility-3d-chart-subtitle">Comparez les sourires de volatilité implicite entre différents titres pour une maturité spécifique</p>
+                            </div>
+                        </div>
+                        
+
+                        
+                        <!-- Smile Comparison Chart Container -->
+                        <div id="smile-chart" class="chart-container">
+                            <div id="smile-chart-placeholder" class="chart-placeholder">
+                                <div class="placeholder-content">
+                                    <div class="placeholder-icon">
+                                        <i data-lucide="bar-chart-3" style="width: 48px; height: 48px; color: #6b7280;"></i>
+                                    </div>
+                                    <h4>Comparaison des Sourires</h4>
+                                    <p>Ajoutez des tickers et cliquez sur "Comparer les Sourires" pour afficher les courbes de volatilité implicite</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Smile Comparison Statistics -->
+                        <div id="smile-statistics" class="chart-container hidden">
+                            <div class="chart-header">
+                                <div class="chart-title">
+                                    Statistiques de Comparaison
+                                </div>
+                            </div>
+                            
+                            <div id="smile-comparison-stats" class="comparison-stats">
+                                <!-- Les statistiques seront générées dynamiquement -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<script>
+    // Attendre que le DOM soit chargé avant d'exécuter le code
+    document.addEventListener('DOMContentLoaded', function() {
+        // Gestion du menu mobile
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        if (mobileMenuBtn) {
+            mobileMenuBtn.addEventListener('click', () => {
+                document.querySelector('.sidebar').classList.toggle('open');
+            });
+        }
+        
+        // Fermer le menu en cliquant en dehors
+        document.addEventListener('click', (e) => {
+            const sidebar = document.querySelector('.sidebar');
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            
+            if (sidebar && mobileBtn && !sidebar.contains(e.target) && !mobileBtn.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+    
+    // Fonction pour mettre à jour le statut de l'API
+    function updateApiStatus(status, responseTime = null) {
+        const indicator = document.getElementById('api-status-indicator');
+        const statusText = document.getElementById('api-status-text');
+        const responseTimeEl = document.getElementById('api-response-time');
+        
+        indicator.classList.remove('connected', 'error', 'checking');
+        
+        switch(status) {
+            case 'connected':
+                indicator.classList.add('connected');
+                statusText.textContent = 'API Connectée';
+                if (responseTime) {
+                    responseTimeEl.textContent = `${responseTime}ms`;
+                }
+                break;
+            case 'error':
+                indicator.classList.add('error');
+                statusText.textContent = 'API Hors ligne';
+                responseTimeEl.textContent = 'Erreur';
+                break;
+            case 'checking':
+                indicator.classList.add('checking');
+                statusText.textContent = 'Vérification API...';
+                responseTimeEl.textContent = '--';
+                break;
+        }
+    }
+    
+    // Vérification initiale du statut API
+    async function checkApiStatus() {
+        try {
+            updateApiStatus('checking');
+            const startTime = performance.now();
+            const response = await fetch('/api/vol-surface/SPY?maxExp=1&span=0.3&provider=finnhub');
+            const data = await response.json();
+            const endTime = performance.now();
+            const responseTime = Math.round(endTime - startTime);
+            
+            if (data.error) {
+                // Si SPY ne fonctionne pas, essayer QQQ
+                console.log('SPY non disponible, test avec QQQ...');
+                const response2 = await fetch('/api/vol-surface/QQQ?maxExp=1&span=0.3&provider=finnhub');
+                const data2 = await response2.json();
+                
+                if (data2.error) {
+                    throw new Error('API disponible mais données limitées');
+                }
+                
+                updateApiStatus('connected', responseTime);
+            } else {
+                updateApiStatus('connected', responseTime);
+            }
+        } catch (error) {
+            console.error('Erreur de vérification API:', error);
+            updateApiStatus('error');
+        }
+    }
+    
+    // Vérifier le statut API au chargement de la page
+    checkApiStatus();
+    
+    // Charger les symboles disponibles depuis l'API
+    async function loadAvailableSymbols() {
+        try {
+            const response = await fetch('/api/available-symbols');
+            const data = await response.json();
+            
+            if (data.error) {
+                console.error('Erreur lors du chargement des symboles:', data.error);
+                return;
+            }
+            
+            // Stocker les données globalement
+            window.availableSymbols = data;
+            
+            // Mettre à jour les listes déroulantes
+            updateSymbolSelects(data);
+            
+            console.log('Symboles disponibles chargés:', data);
+            
+        } catch (error) {
+            console.error('Erreur lors du chargement des symboles:', error);
+        }
+    }
+    
+    // Mettre à jour les listes déroulantes de symboles (version simplifiée)
+    function updateSymbolSelects(symbolsData) {
+        const selectSymbol = document.getElementById('vs-symbol-select');
+        
+        // Vider les listes existantes
+        selectSymbol.innerHTML = '';
+        
+        // Ajouter les 4 symboles recommandés
+        if (symbolsData.recommended_symbols && symbolsData.recommended_symbols.length > 0) {
+            symbolsData.recommended_symbols.forEach(symbol => {
+                const option = document.createElement('option');
+                option.value = symbol.symbol;
+                option.textContent = symbol.label;
+                option.dataset.apis = JSON.stringify(symbol.apis);
+                selectSymbol.appendChild(option);
+            });
+        }
+        
+        // Ajouter l'option personnalisée
+        const customOption = document.createElement('option');
+        customOption.value = '__custom__';
+        customOption.textContent = 'Personnalisé...';
+        selectSymbol.appendChild(customOption);
+        
+        // Définir QQQ comme valeur par défaut (le meilleur)
+        if (symbolsData.recommended_symbols && symbolsData.recommended_symbols.length > 0) {
+            selectSymbol.value = symbolsData.recommended_symbols[0].symbol;
+        }
+    }
+    
+    // Adapter les options de provider selon le symbole sélectionné
+    function updateProviderOptions(selectedSymbol) {
+        const providerSelect = document.getElementById('vs-provider');
+        const rawProviderSelect = document.getElementById('raw-provider');
+        
+        if (!window.availableSymbols) return;
+        
+        // Tous les symboles recommandés ont les deux APIs
+        const availableApis = ['finnhub', 'polygon'];
+        
+        // Mettre à jour les options de provider
+        [providerSelect, rawProviderSelect].forEach(select => {
+            if (!select) return;
+            
+            // Sauvegarder la valeur actuelle
+            const currentValue = select.value;
+            
+            // Vider et recréer les options
+            select.innerHTML = '';
+            
+            if (availableApis.includes('finnhub')) {
+                const option = document.createElement('option');
+                option.value = 'finnhub';
+                option.textContent = 'Finnhub API';
+                select.appendChild(option);
+            }
+            
+            if (availableApis.includes('polygon')) {
+                const option = document.createElement('option');
+                option.value = 'polygon';
+                option.textContent = 'Polygon.io API';
+                select.appendChild(option);
+            }
+            
+            // Restaurer la valeur si elle est toujours disponible
+            if (availableApis.includes(currentValue)) {
+                select.value = currentValue;
+            } else if (availableApis.length > 0) {
+                select.value = availableApis[0];
+            }
+        });
+        
+                        console.log(`${selectedSymbol} disponible via Finnhub et Polygon.io`);
+    }
+    
+    // Charger les symboles au démarrage
+    loadAvailableSymbols();
+    
+    // Gestion des symboles personnalisés
+    const selectSymbol = document.getElementById('vs-symbol-select');
+    const customWrap = document.getElementById('vs-custom-wrap');
+    const customInput = document.getElementById('vs-symbol');
+    
+    function getCurrentSymbol() {
+        return (selectSymbol && selectSymbol.value === '__custom__') ? (customInput && customInput.value || '').trim() : (selectSymbol ? selectSymbol.value : '');
+    }
+    
+    if (selectSymbol) {
+        selectSymbol.addEventListener('change', () => {
+            const show = selectSymbol.value === '__custom__';
+            if (show) {
+                if (customWrap) customWrap.classList.remove('hidden');
+                if (customInput) customInput.focus();
+            } else {
+                if (customWrap) customWrap.classList.add('hidden');
+                // Mettre à jour les options de provider selon le symbole sélectionné
+                updateProviderOptions(selectSymbol.value);
+            }
+        });
+    }
+    
+    // Mettre à jour les providers aussi pour le symbole personnalisé
+    if (customInput) {
+        customInput.addEventListener('input', () => {
+            const symbol = customInput.value.trim();
+            if (symbol) {
+                updateProviderOptions(symbol);
+            }
+        });
+    }
+    
+    // Fonction pour charger les données de volatilité surface 3D
+    async function fetchVolatilitySurface(symbol, span, provider) {
+        // Utiliser la nouvelle API 3D optimisée (sans maxExp - utilise toutes les maturités disponibles)
+        const url = `/api/vol-surface-3d/${encodeURIComponent(symbol)}?span=${span}&provider=${provider}&_t=${Date.now()}`;
+        console.log('Fetching volatility surface 3D from:', url);
+        
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('Volatility surface 3D data received:', data);
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            return data;
+        } catch (error) {
+            console.error('Error fetching volatility surface 3D:', error);
+            throw error;
+        }
+    }
+    
+    // Gestion du bouton de chargement
+    const vsLoadBtn = document.getElementById('vs-load');
+    if (vsLoadBtn) {
+        vsLoadBtn.addEventListener('click', async () => {
+        try {
+            const symbol = getCurrentSymbol();
+            if (!symbol) {
+                showNotification('Veuillez choisir un ticker.', 'error');
+                return;
+            }
+            
+            const span = parseFloat(document.getElementById('vs-span').value) || 0.5;
+            const provider = document.getElementById('vs-provider').value || 'finnhub';
+            
+            console.log('Chargement avec paramètres:', { symbol, span, provider });
+            
+            updateApiStatus('checking');
+            
+            const plotDiv = document.getElementById('vs-plot');
+            const placeholder = document.getElementById('vs-plot-placeholder');
+            
+            if (placeholder) {
+                placeholder.innerHTML = '<div class="volatility-3d-loading"><div class="volatility-3d-loading-spinner"></div><div class="volatility-3d-loading-text">Chargement des données de volatilité surface 3D...</div></div>';
+            }
+            
+            const startTime = performance.now();
+            const res = await fetchVolatilitySurface(symbol, span, provider);
+            const endTime = performance.now();
+            const responseTime = Math.round(endTime - startTime);
+            
+            console.log('Réponse API:', res);
+            
+            if (res && !res.error) {
+                updateApiStatus('connected', responseTime);
+                
+                // Stocker les données actuelles pour les contrôles
+                window.currentVolatilityData = res;
+                
+                // Note: Section "Paramètres de Calcul" supprimée selon la demande utilisateur
+                // document.getElementById('vs-parameters').classList.remove('hidden');
+                
+                // Mettre à jour les métriques
+                if (res.spot_price) {
+                    document.getElementById('vs-spot-price').textContent = `$${res.spot_price.toFixed(2)}`;
+                }
+                document.getElementById('vs-data-source').textContent = provider.toUpperCase();
+                document.getElementById('vs-maturities-count').textContent = res.maturities ? res.maturities.length : '-';
+                document.getElementById('vs-strikes-count').textContent = res.strikes ? res.strikes.length : '-';
+                
+                // Calculer les statistiques IV
+                if (res.iv && res.iv.length > 0) {
+                    const ivs = res.iv.flat().filter(v => v !== null && !isNaN(v));
+                    if (ivs.length > 0) {
+                        const minIV = Math.min(...ivs);
+                        const maxIV = Math.max(...ivs);
+                        const avgIV = ivs.reduce((a, b) => a + b, 0) / ivs.length;
+                        
+                        document.getElementById('vs-iv-min').textContent = `${(minIV * 100).toFixed(2)}%`;
+                        document.getElementById('vs-iv-max').textContent = `${(maxIV * 100).toFixed(2)}%`;
+                        document.getElementById('vs-iv-avg').textContent = `${(avgIV * 100).toFixed(2)}%`;
+                    }
+                }
+                
+                // Créer le graphique 3D
+                create3DVolatilitySurface(res, symbol);
+                
+                // Supprimer le spinner de chargement
+                if (placeholder) {
+                    placeholder.innerHTML = '';
+                }
+                
+                // Afficher les statistiques dans la section debug (pas sous le graphique)
+                // Les statistiques sont maintenant gérées dans updateDebugSection()
+                
+                // Afficher la section debug
+                document.getElementById('debug-json-section').classList.remove('hidden');
+                updateDebugSection(res, symbol);
+                
+            } else {
+                updateApiStatus('error');
+                
+                // Supprimer le spinner de chargement en cas d'erreur
+                if (placeholder) {
+                    placeholder.innerHTML = '';
+                }
+                
+                let errorMessage = res.error || 'Erreur lors du chargement des données';
+                
+                // Messages d'erreur plus informatifs
+                if (errorMessage.includes('Aucune date d\'expiration')) {
+                    errorMessage = `Aucune option disponible pour ${symbol}. Essayez SPY, QQQ ou IWM qui ont généralement plus de données d'options.`;
+                } else if (errorMessage.includes('Aucune option')) {
+                    errorMessage = `Aucune option trouvée pour ${symbol}. Vérifiez que le symbole est correct et qu'il a des options disponibles.`;
+                }
+                
+                plotDiv.innerHTML = `
+                                                <div class="volatility-3d-error">
+                                <div class="volatility-3d-error-icon">
+                                    <i data-lucide="x-circle" style="width: 24px; height: 24px; color: #ef4444;"></i>
+                                </div>
+                        <div class="volatility-3d-error-title">Erreur de chargement</div>
+                        <div class="volatility-3d-error-message">${errorMessage}</div>
+                        <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(55, 65, 81, 0.5); border-radius: 0.5rem; border: 1px solid #374151;">
+                            <h5 style="color: #3b82f6; margin-bottom: 0.75rem;">
+                                <i data-lucide="lightbulb" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                Suggestions :
+                            </h5>
+                            <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #d1d5db; font-size: 0.875rem;">
+                                <li>Essayez SPY, QQQ ou IWM (ETF avec beaucoup d'options)</li>
+                                <li>Vérifiez que le symbole est correct</li>
+                                <li>Réduisez le nombre de maturités (maxExp)</li>
+                                <li>Augmentez l'écart autour du spot (span)</li>
+                            </ul>
+                        </div>
+                        <div style="margin-top: 1rem; padding: 1rem; background: rgba(31, 41, 55, 0.5); border: 1px solid #374151; border-radius: 0.5rem;">
+                            <h5 style="color: #3b82f6; margin-bottom: 0.75rem;">
+                                <i data-lucide="search" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                Données brutes reçues :
+                            </h5>
+                            <pre style="color: #9ca3af; font-size: 0.75rem; overflow-x: auto; white-space: pre-wrap; background: rgba(0, 0, 0, 0.3); padding: 0.75rem; border-radius: 0.375rem;">${JSON.stringify(res, null, 2)}</pre>
+                        </div>
+                    </div>`;
+            }
+                 } catch (e) {
+             console.error('Erreur lors du chargement:', e);
+             updateApiStatus('error');
+             const plotDiv = document.getElementById('vs-plot');
+             plotDiv.innerHTML = `<div class="error-message">Erreur de connexion: ${e.message}</div>`;
+         }
+     });
+     }
+     
+
+    
+    // Fonction pour créer le graphique 3D avec fond transparent
+    function create3DVolatilitySurface(data, symbol) {
+        const plotDiv = document.getElementById('vs-plot');
+        
+        console.log('Création graphique 3D avec données:', data);
+        
+        if (!data.iv || !data.maturities || !data.strikes) {
+                            plotDiv.innerHTML = '<div class="volatility-3d-error"><div class="volatility-3d-error-icon"><i data-lucide="x-circle" style="width: 24px; height: 24px; color: #ef4444;"></i></div><div class="volatility-3d-error-title">Données insuffisantes</div><div class="volatility-3d-error-message">Les données de volatilité implicite ne sont pas suffisantes pour créer le graphique 3D</div></div>';
+            return;
+        }
+        
+        // Convertir les strikes en pourcentage du spot (spot = 100%)
+        const spotPrice = data.spot_price || 100;
+        const x = data.strikes.map(strike => (strike / spotPrice) * 100);
+        const y = data.maturities; // Déjà en années
+        const z = data.iv; // Matrice 2D déjà formatée
+        
+        // Récupérer les paramètres de contrôle
+        const viewType = document.getElementById('vs-3d-view').value;
+        const colorscale = document.getElementById('vs-3d-colorscale').value;
+        
+        // Créer la trace de surface principale
+        let trace;
+        
+        if (viewType === 'wireframe') {
+            trace = {
+                x: x,
+                y: y,
+                z: z,
+                type: 'surface',
+                colorscale: colorscale,
+                name: 'Volatilité Implicite',
+                hovertemplate: 
+                    '<b>Strike:</b> %{x:.1f}% du spot<br>' +
+                    '<b>Maturité:</b> %{y:.2f} ans<br>' +
+                    '<b>IV:</b> %{z:.2%}<br>' +
+                    '<extra></extra>',
+                showscale: true,
+                colorbar: {
+                    title: "Volatilité Implicite",
+                    titleside: "right",
+                    tickformat: ".1%",
+                    len: 0.8
+                },
+                opacity: 0.8,
+                contours: {
+                    z: {
+                        show: true,
+                        usecolormap: true,
+                        highlightcolor: "#42f462",
+                        project: {z: true}
+                    }
+                }
+            };
+        } else if (viewType === 'contour') {
+            trace = {
+                x: x,
+                y: y,
+                z: z,
+                type: 'contour',
+                colorscale: colorscale,
+                name: 'Volatilité Implicite',
+                hovertemplate: 
+                    '<b>Strike:</b> %{x:.1f}% du spot<br>' +
+                    '<b>Maturité:</b> %{y:.2f} ans<br>' +
+                    '<b>IV:</b> %{z:.2%}<br>' +
+                    '<extra></extra>',
+                showscale: true,
+                colorbar: {
+                    title: "Volatilité Implicite",
+                    titleside: "right",
+                    tickformat: ".1%",
+                    len: 0.8
+                },
+                contours: {
+                    coloring: 'heatmap',
+                    showlabels: true
+                }
+            };
+        } else {
+            // Vue surface par défaut
+            trace = {
+                x: x,
+                y: y,
+                z: z,
+                type: 'surface',
+                colorscale: colorscale,
+                name: 'Volatilité Implicite',
+                hovertemplate: 
+                    '<b>Strike:</b> %{x:.1f}% du spot<br>' +
+                    '<b>Maturité:</b> %{y:.2f} ans<br>' +
+                    '<b>IV:</b> %{z:.2%}<br>' +
+                    '<extra></extra>',
+                showscale: true,
+                colorbar: {
+                    title: "Volatilité Implicite",
+                    titleside: "right",
+                    tickformat: ".1%",
+                    len: 0.8
+                }
+            };
+        }
+        
+        const traces = [trace];
+        
+        // Note: Ligne du prix spot supprimée selon la demande utilisateur
+        
+        // Layout avec fond transparent et styles améliorés
+        const layout = {
+            title: {
+                text: `Surface de Volatilité Implicite - ${symbol}`,
+                font: { color: '#ffffff', size: 18, family: 'Segoe UI' },
+                x: 0.5,
+                xanchor: 'center'
+            },
+            scene: {
+                xaxis: {
+                    title: 'Strike (% du Spot)',
+                    gridcolor: 'rgba(55, 65, 81, 0.3)',
+                    zerolinecolor: 'rgba(107, 114, 128, 0.5)',
+                    showbackground: false,
+                    titlefont: { color: '#ffffff', size: 14, family: 'Segoe UI' },
+                    tickfont: { color: '#d1d5db', size: 12, family: 'Segoe UI' },
+                    showgrid: true,
+                    zeroline: true
+                },
+                yaxis: {
+                    title: 'Maturité (années)',
+                    gridcolor: 'rgba(55, 65, 81, 0.3)',
+                    zerolinecolor: 'rgba(107, 114, 128, 0.5)',
+                    showbackground: false,
+                    titlefont: { color: '#ffffff', size: 14, family: 'Segoe UI' },
+                    tickfont: { color: '#d1d5db', size: 12, family: 'Segoe UI' },
+                    showgrid: true,
+                    zeroline: true
+                },
+                zaxis: {
+                    title: 'Volatilité Implicite',
+                    gridcolor: 'rgba(55, 65, 81, 0.3)',
+                    zerolinecolor: 'rgba(107, 114, 128, 0.5)',
+                    tickformat: '.1%',
+                    showbackground: false,
+                    titlefont: { color: '#ffffff', size: 14, family: 'Segoe UI' },
+                    tickfont: { color: '#d1d5db', size: 12, family: 'Segoe UI' },
+                    showgrid: true,
+                    zeroline: true
+                },
+                camera: {
+                    eye: {x: 1.5, y: 1.5, z: 1.5},
+                    center: {x: 0, y: 0, z: 0}
+                },
+                bgcolor: 'rgba(0,0,0,0)', // Fond transparent
+                aspectmode: 'cube'
+            },
+            paper_bgcolor: 'rgba(0,0,0,0)', // Fond transparent
+            plot_bgcolor: 'rgba(0,0,0,0)',  // Fond transparent
+            font: {
+                color: '#ffffff',
+                family: 'Segoe UI'
+            },
+            margin: {
+                l: 50,
+                r: 50,
+                b: 50,
+                t: 80
+            },
+            showlegend: true,
+            legend: {
+                font: { color: '#ffffff', size: 12, family: 'Segoe UI' },
+                bgcolor: 'rgba(0,0,0,0.6)',
+                bordercolor: 'rgba(55, 65, 81, 0.5)',
+                borderwidth: 1,
+                x: 0.02,
+                y: 0.98,
+                xanchor: 'left',
+                yanchor: 'top'
+            }
+        };
+        
+        // Configuration Plotly optimisée
+        const config = {
+            responsive: true,
+            displayModeBar: true,
+            modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d', 'hoverClosest2d'],
+            displaylogo: false,
+            toImageButtonOptions: {
+                format: 'png',
+                filename: `volatility_surface_3d_${symbol}`,
+                height: 800,
+                width: 1200,
+                scale: 2
+            },
+            modeBarButtonsToAdd: [{
+                name: 'Reset View',
+                icon: Plotly.Icons.undo,
+                click: function() {
+                    Plotly.relayout(plotDiv, {
+                        'scene.camera.eye': {x: 1.5, y: 1.5, z: 1.5},
+                        'scene.camera.center': {x: 0, y: 0, z: 0}
+                    });
+                }
+            }]
+        };
+        
+        // Utiliser la configuration de la classe si disponible
+        if (data.plot_config) {
+            Object.assign(config, data.plot_config);
+        }
+        
+        Plotly.newPlot(plotDiv, traces, layout, config);
+        
+        // Les statistiques sont maintenant affichées dans la section debug
+        // Pas besoin d'afficher les statistiques sous le graphique
+        
+        // Initialiser les icônes Lucide
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+    }
+    
+        // Fonction displayStatistics supprimée - les statistiques sont maintenant dans la section debug
+    
+    // ===== SECTION SMILE DE VOLATILITÉ =====
+    
+    // Gestion des tickers pour la comparaison des sourires (INDÉPENDANTE de la surface 3D)
+    let smileComparisonTickers = [];
+    
+    function renderSmileChips() {
+        const wrap = document.getElementById('smile-chips');
+        if (!wrap) return;
+        
+        wrap.innerHTML = '';
+        
+        if (smileComparisonTickers.length === 0) {
+            wrap.innerHTML = '<span style="color: white;"><i data-lucide="building-2" style="width: 16px; height: 16px; margin-right: 8px; color: #6b7280;"></i>Aucun ticker sélectionné</span>';
+            return;
+        }
+        
+        smileComparisonTickers.forEach(ticker => {
+            const chip = document.createElement('div');
+            chip.className = 'tag-chip';
+            chip.innerHTML = `<span>${ticker}</span><button><i data-lucide="x"></i></button>`;
+            chip.title = 'Retirer';
+            chip.querySelector('button').addEventListener('click', () => {
+                smileComparisonTickers = smileComparisonTickers.filter(t => t !== ticker);
+                renderSmileChips();
+            });
+            wrap.appendChild(chip);
+        });
+        
+        // Initialiser les icônes Lucide
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+    }
+    
+    // Initialiser les chips au chargement
+    renderSmileChips();
+    
+    // Fonction pour afficher les notifications
+    function showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification notification-${type}`;
+        notification.innerHTML = `
+            <div class="notification-content">
+                <div class="notification-icon">
+                    <i data-lucide="${type === 'error' ? 'alert-circle' : 'info'}"></i>
+                </div>
+                <div class="notification-message">${message}</div>
+                <button class="notification-close">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Initialiser les icônes
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+        
+        // Auto-remove après 5 secondes
+        setTimeout(() => {
+            notification.remove();
+        }, 5000);
+        
+        // Fermer manuellement
+        notification.querySelector('.notification-close').addEventListener('click', () => {
+            notification.remove();
+        });
+    }
+    
+         // Fonction pour mettre à jour la section debug
+     function updateDebugSection(data, symbol) {
+         // Mettre à jour le résumé
+         document.getElementById('debug-symbol').textContent = symbol;
+         document.getElementById('debug-spot-price').textContent = data.spot_price ? `$${data.spot_price.toFixed(2)}` : 'N/A';
+         document.getElementById('debug-source').textContent = data.data_source || 'N/A';
+         
+         // Calculer le nombre total d'options si pas fourni
+         let totalOptions = data.total_options;
+         let callsCount = data.calls_count;
+         let putsCount = data.puts_count;
+         
+         if (!totalOptions && data.raw_options && data.raw_options.length > 0) {
+             totalOptions = data.raw_options.length;
+             callsCount = data.raw_options.filter(opt => opt.type === 'call').length;
+             putsCount = data.raw_options.filter(opt => opt.type === 'put').length;
+         } else if (!totalOptions && data.iv && data.iv.length > 0) {
+             // Estimer à partir de la matrice IV
+             const nonNullValues = data.iv.flat().filter(v => v !== null && v !== undefined && v > 0).length;
+             totalOptions = nonNullValues;
+             callsCount = Math.floor(nonNullValues / 2); // Estimation
+             putsCount = Math.floor(nonNullValues / 2); // Estimation
+         }
+         
+         document.getElementById('debug-total-options').textContent = totalOptions || 0;
+         document.getElementById('debug-calls-count').textContent = callsCount || 0;
+         document.getElementById('debug-puts-count').textContent = putsCount || 0;
+         document.getElementById('debug-maturities-count').textContent = data.maturities ? data.maturities.length : 0;
+         document.getElementById('debug-strikes-count').textContent = data.strikes ? data.strikes.length : 0;
+         
+         if (data.statistics) {
+             document.getElementById('debug-iv-min').textContent = `${(data.statistics.min_iv * 100).toFixed(2)}%`;
+             document.getElementById('debug-iv-max').textContent = `${(data.statistics.max_iv * 100).toFixed(2)}%`;
+             document.getElementById('debug-iv-avg').textContent = `${(data.statistics.mean_iv * 100).toFixed(2)}%`;
+         } else {
+             // Calculer les statistiques à partir des données IV si pas disponibles
+             if (data.iv && data.iv.length > 0) {
+                 const ivs = data.iv.flat().filter(v => v !== null && !isNaN(v));
+                 if (ivs.length > 0) {
+                     const minIV = Math.min(...ivs);
+                     const maxIV = Math.max(...ivs);
+                     const avgIV = ivs.reduce((a, b) => a + b, 0) / ivs.length;
+                     
+                     document.getElementById('debug-iv-min').textContent = `${(minIV * 100).toFixed(2)}%`;
+                     document.getElementById('debug-iv-max').textContent = `${(maxIV * 100).toFixed(2)}%`;
+                     document.getElementById('debug-iv-avg').textContent = `${(avgIV * 100).toFixed(2)}%`;
+                 }
+             }
+         }
+         
+         // Mettre à jour le JSON brut
+         document.getElementById('debug-raw-json').textContent = JSON.stringify(data, null, 2);
+         
+         // Mettre à jour le tableau des options
+         updateOptionsTable(data.raw_options || []);
+         
+         // Mettre à jour la matrice IV
+         updateIVMatrix(data.iv, data.strikes, data.maturities);
+     }
+     
+     // Fonction pour mettre à jour le tableau des options
+     function updateOptionsTable(options) {
+         const tbody = document.getElementById('debug-options-tbody');
+         tbody.innerHTML = '';
+         
+         // Limiter à 100 options pour les performances
+         const limitedOptions = options.slice(0, 100);
+         
+         limitedOptions.forEach(option => {
+             const row = document.createElement('tr');
+             row.innerHTML = `
+                 <td>${option.contractSymbol || 'N/A'}</td>
+                 <td>${option.type || 'N/A'}</td>
+                 <td>$${option.strike || 0}</td>
+                 <td>$${option.lastPrice || 0}</td>
+                 <td>${((option.impliedVolatility || 0) * 100).toFixed(2)}%</td>
+                 <td>${option.expiration_date || 'N/A'}</td>
+             `;
+             tbody.appendChild(row);
+         });
+         
+         if (options.length > 100) {
+             const row = document.createElement('tr');
+             row.innerHTML = `<td colspan="6" style="text-align: center; color: #9ca3af;">... et ${options.length - 100} autres options</td>`;
+             tbody.appendChild(row);
+         }
+     }
+     
+     // Fonction pour mettre à jour la matrice IV
+     function updateIVMatrix(ivMatrix, strikes, maturities) {
+         const container = document.getElementById('debug-iv-matrix');
+         
+         if (!ivMatrix || !strikes || !maturities) {
+             container.innerHTML = '<p style="color: #9ca3af;">Aucune donnée de matrice disponible</p>';
+             return;
+         }
+         
+         let matrixHTML = '<div style="font-family: monospace; white-space: pre;">';
+         
+         // En-tête avec les strikes
+         matrixHTML += 'Maturité/Strike';
+         strikes.forEach(strike => {
+             matrixHTML += `\t$${strike}`;
+         });
+         matrixHTML += '\n';
+         
+         // Lignes avec les maturités et IV
+         maturities.forEach((maturity, i) => {
+             matrixHTML += `${maturity.toFixed(2)}a`;
+             ivMatrix[i].forEach(iv => {
+                 if (iv !== null && iv !== undefined) {
+                     matrixHTML += `\t${(iv * 100).toFixed(1)}%`;
+                 } else {
+                     matrixHTML += '\t-';
+                 }
+             });
+             matrixHTML += '\n';
+         });
+         
+         matrixHTML += '</div>';
+         container.innerHTML = matrixHTML;
+     }
+     
+     // Gestion des onglets debug
+     document.addEventListener('click', (e) => {
+         if (e.target.classList.contains('debug-tab')) {
+             const tabName = e.target.getAttribute('data-tab');
+             
+             // Retirer la classe active de tous les onglets
+             document.querySelectorAll('.debug-tab').forEach(tab => {
+                 tab.classList.remove('active');
+             });
+             
+             // Retirer la classe active de tous les panels
+             document.querySelectorAll('.debug-panel').forEach(panel => {
+                 panel.classList.remove('active');
+             });
+             
+             // Ajouter la classe active à l'onglet cliqué
+             e.target.classList.add('active');
+             
+             // Afficher le panel correspondant
+             document.getElementById(`${tabName}-panel`).classList.add('active');
+         }
+     });
+     
+     // Initialiser les icônes Lucide au chargement
+     document.addEventListener('DOMContentLoaded', () => {
+         if (window.lucide) {
+             lucide.createIcons();
+         }
+         
+         // Gestionnaires d'événements pour les contrôles du graphique 3D
+         const viewSelect = document.getElementById('vs-3d-view');
+         const colorscaleSelect = document.getElementById('vs-3d-colorscale');
+         const resetBtn = document.getElementById('vs-3d-reset');
+         
+         // Gestionnaire pour changer le type de vue
+         if (viewSelect) {
+             viewSelect.addEventListener('change', () => {
+                 const currentSymbol = getCurrentSymbol();
+                 if (currentSymbol && window.currentVolatilityData) {
+                     create3DVolatilitySurface(window.currentVolatilityData, currentSymbol);
+                 }
+             });
+         }
+         
+         // Gestionnaire pour changer l'échelle de couleurs
+         if (colorscaleSelect) {
+             colorscaleSelect.addEventListener('change', () => {
+                 const currentSymbol = getCurrentSymbol();
+                 if (currentSymbol && window.currentVolatilityData) {
+                     create3DVolatilitySurface(window.currentVolatilityData, currentSymbol);
+                 }
+             });
+         }
+         
+         // Gestionnaire pour reset la vue
+         if (resetBtn) {
+             resetBtn.addEventListener('click', () => {
+                 const plotDiv = document.getElementById('vs-plot');
+                 if (plotDiv && plotDiv.data) {
+                     Plotly.relayout(plotDiv, {
+                         'scene.camera.eye': {x: 1.5, y: 1.5, z: 1.5},
+                         'scene.camera.center': {x: 0, y: 0, z: 0}
+                     });
+                 }
+             });
+         }
+     });
+     
+     // ===== SECTION DONNÉES BRUTES =====
+     
+     // Gestion des symboles personnalisés pour les données brutes
+     const rawSymbolSelect = document.getElementById('raw-symbol-select');
+     const rawCustomWrap = document.getElementById('raw-custom-wrap');
+     const rawCustomInput = document.getElementById('raw-symbol');
+     
+     function getCurrentRawSymbol() {
+         return (rawSymbolSelect && rawSymbolSelect.value === '__custom__') ? (rawCustomInput && rawCustomInput.value || '').trim() : (rawSymbolSelect ? rawSymbolSelect.value : '');
+     }
+     
+     if (rawSymbolSelect) {
+         rawSymbolSelect.addEventListener('change', () => {
+             const show = rawSymbolSelect.value === '__custom__';
+             if (show) {
+                 if (rawCustomWrap) rawCustomWrap.classList.remove('hidden');
+                 if (rawCustomInput) rawCustomInput.focus();
+             } else {
+                 if (rawCustomWrap) rawCustomWrap.classList.add('hidden');
+             }
+         });
+     }
+     
+     // Fonction pour récupérer les données de toutes les sources
+     async function fetchAllSourcesData(symbol, maxExp, span) {
+         const sources = [];
+         const results = {};
+         
+         // Déterminer quelles sources sont sélectionnées
+         // Pour l'instant, utiliser les deux sources par défaut
+         sources.push('finnhub');
+         sources.push('polygon');
+         
+         if (sources.length === 0) {
+             throw new Error('Aucune source sélectionnée');
+         }
+         
+         // Récupérer les données de chaque source
+         for (const source of sources) {
+             try {
+                 console.log(`Récupération des données ${source} pour ${symbol}...`);
+                 const url = `/api/vol-surface/${encodeURIComponent(symbol)}?maxExp=${maxExp}&span=${span}&provider=${source}&_t=${Date.now()}`;
+                 const response = await fetch(url);
+                 const data = await response.json();
+                 
+                 results[source] = {
+                     success: true,
+                     data: data,
+                     timestamp: new Date().toISOString()
+                 };
+             } catch (error) {
+                 console.error(`Erreur pour ${source}:`, error);
+                 results[source] = {
+                     success: false,
+                     error: error.message,
+                     timestamp: new Date().toISOString()
+                 };
+             }
+         }
+         
+         return results;
+     }
+     
+     // Fonction pour afficher la vue d'ensemble
+     function displayOverview(results, symbol) {
+         const container = document.getElementById('overview-content');
+         let html = '<div class="overview-cards">';
+         
+         Object.entries(results).forEach(([source, result]) => {
+             const statusClass = result.success ? 'success' : 'error';
+             const statusIcon = result.success ? '✓' : '✗';
+             const statusText = result.success ? 'Succès' : 'Erreur';
+             
+             html += `
+                 <div class="overview-card ${statusClass}">
+                     <div class="card-header">
+                         <h5>${source.toUpperCase()}</h5>
+                         <span class="status-badge ${statusClass}">${statusIcon} ${statusText}</span>
+                     </div>
+                     <div class="card-content">
+             `;
+             
+             if (result.success) {
+                 const data = result.data;
+                 html += `
+                     <div class="metric-row">
+                         <span class="metric-label">Prix Spot:</span>
+                         <span class="metric-value">$${data.spot_price ? data.spot_price.toFixed(2) : 'N/A'}</span>
+                     </div>
+                     <div class="metric-row">
+                         <span class="metric-label">Options:</span>
+                         <span class="metric-value">${data.total_options || 0}</span>
+                     </div>
+                     <div class="metric-row">
+                         <span class="metric-label">Maturités:</span>
+                         <span class="metric-value">${data.maturities ? data.maturities.length : 0}</span>
+                     </div>
+                     <div class="metric-row">
+                         <span class="metric-label">Strikes:</span>
+                         <span class="metric-value">${data.strikes ? data.strikes.length : 0}</span>
+                     </div>
+                     <div class="metric-row">
+                         <span class="metric-label">IV Moyenne:</span>
+                         <span class="metric-value">${data.statistics ? (data.statistics.avg_iv * 100).toFixed(2) + '%' : 'N/A'}</span>
+                     </div>
+                 `;
+             } else {
+                 html += `
+                     <div class="error-message">
+                         <p>${result.error}</p>
+                     </div>
+                 `;
+             }
+             
+             html += `
+                     </div>
+                     <div class="card-footer">
+                         <small>${new Date(result.timestamp).toLocaleTimeString('fr-FR')}</small>
+                     </div>
+                 </div>
+             `;
+         });
+         
+         html += '</div>';
+         container.innerHTML = html;
+     }
+     
+     // Fonction pour afficher les détails par source
+     function displaySourceDetails(results) {
+         const container = document.getElementById('source-details-content');
+         let html = '';
+         
+         Object.entries(results).forEach(([source, result]) => {
+             html += `
+                 <div class="source-detail-card">
+                     <div class="detail-header">
+                         <h5>${source.toUpperCase()} - Détails complets</h5>
+                         <span class="status-badge ${result.success ? 'success' : 'error'}">
+                             ${result.success ? '✓ Succès' : '✗ Erreur'}
+                         </span>
+                     </div>
+                     <div class="detail-content">
+             `;
+             
+             if (result.success) {
+                 const data = result.data;
+                 html += `
+                     <div class="detail-section">
+                         <h6>Informations générales</h6>
+                         <div class="detail-grid">
+                             <div class="detail-item">
+                                 <span class="detail-label">Prix Spot:</span>
+                                 <span class="detail-value">$${data.spot_price ? data.spot_price.toFixed(2) : 'N/A'}</span>
+                             </div>
+                             <div class="detail-item">
+                                 <span class="detail-label">Source:</span>
+                                 <span class="detail-value">${data.data_source || 'N/A'}</span>
+                             </div>
+                             <div class="detail-item">
+                                 <span class="detail-label">Total Options:</span>
+                                 <span class="detail-value">${data.total_options || 0}</span>
+                             </div>
+                             <div class="detail-item">
+                                 <span class="detail-label">Calls:</span>
+                                 <span class="detail-value">${data.calls_count || 0}</span>
+                             </div>
+                             <div class="detail-item">
+                                 <span class="detail-label">Puts:</span>
+                                 <span class="detail-value">${data.puts_count || 0}</span>
+                             </div>
+                         </div>
+                     </div>
+                     
+                     <div class="detail-section">
+                         <h6>Statistiques IV</h6>
+                         <div class="detail-grid">
+                             <div class="detail-item">
+                                 <span class="detail-label">IV Min:</span>
+                                 <span class="detail-value">${data.statistics ? (data.statistics.min_iv * 100).toFixed(2) + '%' : 'N/A'}</span>
+                             </div>
+                             <div class="detail-item">
+                                 <span class="detail-label">IV Max:</span>
+                                 <span class="detail-value">${data.statistics ? (data.statistics.max_iv * 100).toFixed(2) + '%' : 'N/A'}</span>
+                             </div>
+                             <div class="detail-item">
+                                 <span class="detail-label">IV Moyenne:</span>
+                                 <span class="detail-value">${data.statistics ? (data.statistics.avg_iv * 100).toFixed(2) + '%' : 'N/A'}</span>
+                             </div>
+                             <div class="detail-item">
+                                 <span class="detail-label">IV Écart-type:</span>
+                                 <span class="detail-value">${data.statistics ? (data.statistics.std_iv * 100).toFixed(2) + '%' : 'N/A'}</span>
+                             </div>
+                         </div>
+                     </div>
+                     
+                     <div class="detail-section">
+                         <h6>Maturités disponibles</h6>
+                         <div class="maturities-list">
+                             ${data.maturities ? data.maturities.map(m => `${m.toFixed(2)}a`).join(', ') : 'Aucune'}
+                         </div>
+                     </div>
+                     
+                     <div class="detail-section">
+                         <h6>Strikes disponibles</h6>
+                         <div class="strikes-list">
+                             ${data.strikes ? data.strikes.slice(0, 10).map(s => `$${s}`).join(', ') + (data.strikes.length > 10 ? '...' : '') : 'Aucun'}
+                         </div>
+                     </div>
+                 `;
+             } else {
+                 html += `
+                     <div class="error-details">
+                         <h6>Erreur détaillée</h6>
+                         <p>${result.error}</p>
+                         <p><strong>Timestamp:</strong> ${new Date(result.timestamp).toLocaleString('fr-FR')}</p>
+                     </div>
+                 `;
+             }
+             
+             html += `
+                     </div>
+                 </div>
+             `;
+         });
+         
+         container.innerHTML = html;
+     }
+     
+     // Fonction pour afficher la comparaison directe
+     function displayComparison(results) {
+         const container = document.getElementById('comparison-chart');
+         
+         // Filtrer les sources avec succès
+         const successfulSources = Object.entries(results).filter(([source, result]) => result.success);
+         
+         if (successfulSources.length < 2) {
+             container.innerHTML = '<div class="no-comparison"><p>Au moins 2 sources avec succès sont nécessaires pour la comparaison</p></div>';
+             return;
+         }
+         
+         // Créer un graphique de comparaison simple
+         const traces = [];
+         const colors = ['#3b82f6', '#ef4444', '#10b981', '#f59e0b'];
+         
+         successfulSources.forEach(([source, result], index) => {
+             const data = result.data;
+             if (data.iv && data.strikes && data.maturities) {
+                 // Prendre la première maturité pour la comparaison
+                 const firstMaturityIndex = 0;
+                 const ivs = data.iv[firstMaturityIndex];
+                 const strikes = data.strikes;
+                 
+                 // Filtrer les valeurs non-null
+                 const validData = strikes.map((strike, i) => ({
+                     strike: strike,
+                     iv: ivs[i]
+                 })).filter(item => item.iv !== null && !isNaN(item.iv));
+                 
+                 if (validData.length > 0) {
+                     traces.push({
+                         x: validData.map(d => d.strike),
+                         y: validData.map(d => d.iv * 100), // Convertir en pourcentage
+                         type: 'scatter',
+                         mode: 'lines+markers',
+                         name: `${source.toUpperCase()} (${data.maturities[firstMaturityIndex].toFixed(2)}a)`,
+                         line: { color: colors[index % colors.length] },
+                         marker: { size: 4 }
+                     });
+                 }
+             }
+         });
+         
+         if (traces.length > 0) {
+             const layout = {
+                 title: 'Comparaison des courbes de volatilité implicite',
+                 xaxis: { title: 'Strike Price ($)' },
+                 yaxis: { title: 'Volatilité Implicite (%)' },
+                 paper_bgcolor: '#1a1a1a',
+                 plot_bgcolor: '#1a1a1a',
+                 font: { color: '#ffffff' },
+                 legend: { x: 0, y: 1 }
+             };
+             
+             Plotly.newPlot(container, traces, layout, { responsive: true });
+         } else {
+             container.innerHTML = '<div class="no-data"><p>Aucune donnée valide pour la comparaison</p></div>';
+         }
+     }
+     
+     // Fonction pour afficher les données brutes
+     function displayRawData(results) {
+         const container = document.getElementById('raw-data-content');
+         let html = '<div class="raw-data-tabs">';
+         
+         Object.entries(results).forEach(([source, result]) => {
+             html += `
+                 <div class="raw-data-section">
+                     <h5>${source.toUpperCase()}</h5>
+                     <div class="raw-json-viewer">
+                         <pre class="json-content">${JSON.stringify(result, null, 2)}</pre>
+                     </div>
+                 </div>
+             `;
+         });
+         
+         html += '</div>';
+         container.innerHTML = html;
+     }
+     
+         // Gestion du bouton de comparaison
+    const rawCompareBtn = document.getElementById('raw-compare-btn');
+    if (rawCompareBtn) {
+        rawCompareBtn.addEventListener('click', async () => {
+         try {
+             const symbol = getCurrentRawSymbol();
+             if (!symbol) {
+                 showNotification('Veuillez choisir un symbole.', 'error');
+                 return;
+             }
+             
+             const maxExp = 3; // Valeur par défaut
+             const span = 0.5; // Valeur par défaut (50%)
+             
+             // Vérifier qu'au moins une source est sélectionnée
+             const sources = ['Finnhub', 'Polygon']; // Utiliser les deux sources par défaut
+             
+             if (sources.length === 0) {
+                 showNotification('Veuillez sélectionner au moins une source.', 'error');
+                 return;
+             }
+             
+             console.log(`Comparaison des sources pour ${symbol}:`, sources);
+             
+             // Afficher le loader
+             const resultsContainer = document.getElementById('raw-results');
+             resultsContainer.classList.remove('hidden');
+             resultsContainer.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><p>Comparaison des sources en cours...</p></div>';
+             
+             // Récupérer les données
+             const results = await fetchAllSourcesData(symbol, maxExp, span);
+             
+             // Afficher les résultats
+             resultsContainer.innerHTML = `
+                 <div class="results-header">
+                     <h4>Résultats de la comparaison - ${symbol}</h4>
+                     <div class="results-summary" id="raw-summary">
+                         <span>Sources testées: ${Object.keys(results).join(', ')}</span>
+                         <span>Succès: ${Object.values(results).filter(r => r.success).length}/${Object.keys(results).length}</span>
+                     </div>
+                 </div>
+                 
+                 <div class="results-tabs">
+                     <button class="results-tab active" data-tab="overview">Vue d'ensemble</button>
+                     <button class="results-tab" data-tab="details">Détails par source</button>
+                     <button class="results-tab" data-tab="comparison">Comparaison directe</button>
+                     <button class="results-tab" data-tab="raw-data">Données brutes</button>
+                 </div>
+                 
+                 <div class="results-panels">
+                     <div id="overview-panel" class="results-panel active">
+                         <div class="overview-grid" id="overview-content"></div>
+                     </div>
+                     <div id="details-panel" class="results-panel">
+                         <div class="source-details" id="source-details-content"></div>
+                     </div>
+                     <div id="comparison-panel" class="results-panel">
+                         <div class="comparison-chart" id="comparison-chart"></div>
+                     </div>
+                     <div id="raw-data-panel" class="results-panel">
+                         <div class="raw-data-content" id="raw-data-content"></div>
+                     </div>
+                 </div>
+             `;
+             
+             // Afficher le contenu des onglets
+             displayOverview(results, symbol);
+             displaySourceDetails(results);
+             displayComparison(results);
+             displayRawData(results);
+             
+             // Gestion des onglets de résultats
+             document.querySelectorAll('.results-tab').forEach(tab => {
+                 tab.addEventListener('click', (e) => {
+                     const tabName = e.target.getAttribute('data-tab');
+                     
+                     // Retirer la classe active de tous les onglets et panels
+                     document.querySelectorAll('.results-tab').forEach(t => t.classList.remove('active'));
+                     document.querySelectorAll('.results-panel').forEach(p => p.classList.remove('active'));
+                     
+                     // Ajouter la classe active
+                     e.target.classList.add('active');
+                     document.getElementById(`${tabName}-panel`).classList.add('active');
+                 });
+             });
+             
+             showNotification(`Comparaison terminée pour ${symbol}`, 'success');
+             
+         } catch (error) {
+             console.error('Erreur lors de la comparaison:', error);
+             showNotification(`Erreur: ${error.message}`, 'error');
+         }
+     });
+     }
+     
+         // Gestion du bouton d'export
+    const rawExportBtn = document.getElementById('raw-export-btn');
+    if (rawExportBtn) {
+        rawExportBtn.addEventListener('click', () => {
+         const resultsContainer = document.getElementById('raw-results');
+         if (resultsContainer.classList.contains('hidden')) {
+             showNotification('Aucune donnée à exporter. Lancez d\'abord une comparaison.', 'error');
+             return;
+         }
+         
+         // Récupérer les données actuelles (simulation)
+         const exportData = {
+             timestamp: new Date().toISOString(),
+             symbol: getCurrentRawSymbol(),
+             sources: ['finnhub', 'polygon'], // Sources disponibles pour la surface de volatilité
+             note: 'Données exportées depuis l\'interface de comparaison'
+         };
+         
+         // Créer et télécharger le fichier
+         const dataStr = JSON.stringify(exportData, null, 2);
+         const dataBlob = new Blob([dataStr], { type: 'application/json' });
+         const url = URL.createObjectURL(dataBlob);
+         
+         const link = document.createElement('a');
+         link.href = url;
+         link.download = `comparison_${getCurrentRawSymbol()}_${new Date().toISOString().split('T')[0]}.json`;
+         document.body.appendChild(link);
+         link.click();
+         document.body.removeChild(link);
+         URL.revokeObjectURL(url);
+         
+         showNotification('Données exportées avec succès', 'success');
+     });
+     }
+     
+    // Gestion des tickers pour la comparaison des sourires (suite)
+    
+    // Gestion du select pour ajouter des tickers
+    const smileComparisonAddSelect = document.getElementById('smile-add-select');
+    const smileComparisonCustomWrap = document.getElementById('smile-custom-wrap');
+    const smileComparisonAddCustom = document.getElementById('smile-add-custom');
+    
+    if (smileComparisonAddSelect) {
+        smileComparisonAddSelect.addEventListener('change', () => {
+            const selectedValue = smileComparisonAddSelect.value;
+            
+            if (selectedValue && selectedValue !== '') {
+                // Ajouter automatiquement le ticker sélectionné
+                if (!smileComparisonTickers.includes(selectedValue)) {
+                    smileComparisonTickers.push(selectedValue);
+                    renderSmileChips();
+                    showNotification(`${selectedValue} ajouté à la liste`, 'success');
+                } else {
+                    showNotification('Ce ticker est déjà dans la liste.', 'warning');
+                }
+                
+                // Reset du select
+                smileComparisonAddSelect.value = '';
+            }
+        });
+    }
+    
+
+    
+    // Fonction pour récupérer les données du smile
+    async function fetchVolatilitySmile(symbol, maturity, span) {
+        const url = `/api/volatility-smile/${encodeURIComponent(symbol)}?maturity=${maturity}&span=${span}&_t=${Date.now()}`;
+        console.log('Fetching volatility smile from:', url);
+        
+        try {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('Volatility smile data received:', data);
+            
+            if (data.error) {
+                throw new Error(data.error);
+            }
+            
+            return data;
+        } catch (error) {
+            console.error('Error fetching volatility smile:', error);
+            throw error;
+        }
+    }
+    
+    // Fonction pour créer le graphique de comparaison des sourires
+    function createSmileComparisonChart(allData, maturity) {
+        const chartDiv = document.getElementById('smile-chart');
+        
+        console.log('Création graphique comparaison sourires avec données:', allData);
+        
+        if (!allData || allData.length === 0) {
+            chartDiv.innerHTML = '<div class="chart-error"><div class="chart-error-icon"><i data-lucide="x-circle" style="width: 24px; height: 24px; color: #ef4444;"></i></div><div class="chart-error-title">Données insuffisantes</div><div class="chart-error-message">Aucune donnée de volatilité implicite disponible pour créer le graphique</div></div>';
+            return;
+        }
+        
+        // Préparer les traces pour Plotly
+        const traces = [];
+        const colors = ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd'];
+        
+        allData.forEach((data, index) => {
+            const color = colors[index % colors.length];
+            const symbol = data.symbol;
+            const spotPrice = data.spot_price || 100;
+            
+            // Trace pour les calls
+            if (data.calls_iv && data.calls_iv.length > 0) {
+                traces.push({
+                    x: data.calls_strikes.map(strike => (strike / spotPrice) * 100),
+                    y: data.calls_iv.map(iv => iv * 100), // Convertir en pourcentage
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: `${symbol} - Calls`,
+                    line: { color: color, width: 3 },
+                    marker: { size: 6, color: color },
+                    hovertemplate: 
+                        `<b>${symbol} - Call</b><br>` +
+                        '<b>Strike:</b> %{x:.1f}% du spot<br>' +
+                        '<b>IV:</b> %{y:.2f}%<br>' +
+                        '<extra></extra>'
+                });
+            }
+            
+            // Trace pour les puts
+            if (data.puts_iv && data.puts_iv.length > 0) {
+                traces.push({
+                    x: data.puts_strikes.map(strike => (strike / spotPrice) * 100),
+                    y: data.puts_iv.map(iv => iv * 100), // Convertir en pourcentage
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: `${symbol} - Puts`,
+                    line: { color: color, width: 3, dash: 'dash' },
+                    marker: { size: 6, color: color, symbol: 'diamond' },
+                    hovertemplate: 
+                        `<b>${symbol} - Put</b><br>` +
+                        '<b>Strike:</b> %{x:.1f}% du spot<br>' +
+                        '<b>IV:</b> %{y:.2f}%<br>' +
+                        '<extra></extra>'
+                });
+            }
+            
+            // Ligne verticale pour le prix spot de chaque symbole (100%)
+            if (data.spot_price > 0) {
+                const maxIV = Math.max(
+                    ...(data.calls_iv || []).map(iv => iv * 100),
+                    ...(data.puts_iv || []).map(iv => iv * 100)
+                );
+                
+                traces.push({
+                    x: [100, 100], // Prix spot = 100%
+                    y: [0, maxIV * 1.1],
+                    type: 'scatter',
+                    mode: 'lines',
+                    name: `${symbol} - Prix Spot`,
+                    line: { color: color, width: 2, dash: 'dot' },
+                    showlegend: false,
+                    hovertemplate: 
+                        `<b>${symbol} - Prix Spot</b><br>` +
+                        '<b>Prix:</b> 100% du spot<br>' +
+                        '<extra></extra>'
+                });
+            }
+        });
+        
+        // Layout avec fond transparent et styles améliorés
+        const layout = {
+            title: {
+                text: `Comparaison des Sourires de Volatilité (${maturity} jours)`,
+                font: { color: '#ffffff', size: 18, family: 'Segoe UI' },
+                x: 0.5,
+                xanchor: 'center'
+            },
+            xaxis: {
+                title: 'Strike (% du Spot)',
+                gridcolor: 'rgba(55, 65, 81, 0.3)',
+                zerolinecolor: 'rgba(107, 114, 128, 0.5)',
+                showbackground: false,
+                titlefont: { color: '#ffffff', size: 14, family: 'Segoe UI' },
+                tickfont: { color: '#d1d5db', size: 12, family: 'Segoe UI' },
+                showgrid: true,
+                zeroline: true
+            },
+            yaxis: {
+                title: 'Volatilité Implicite (%)',
+                gridcolor: 'rgba(55, 65, 81, 0.3)',
+                zerolinecolor: 'rgba(107, 114, 128, 0.5)',
+                showbackground: false,
+                titlefont: { color: '#ffffff', size: 14, family: 'Segoe UI' },
+                tickfont: { color: '#d1d5db', size: 12, family: 'Segoe UI' },
+                showgrid: true,
+                zeroline: true
+            },
+            paper_bgcolor: 'rgba(0,0,0,0)', // Fond transparent
+            plot_bgcolor: 'rgba(0,0,0,0)',  // Fond transparent
+            font: {
+                color: '#ffffff',
+                family: 'Segoe UI'
+            },
+            margin: {
+                l: 60,
+                r: 40,
+                b: 60,
+                t: 80
+            },
+            showlegend: true,
+            legend: {
+                font: { color: '#ffffff', size: 11, family: 'Segoe UI' },
+                bgcolor: 'rgba(0,0,0,0.7)',
+                bordercolor: 'rgba(55, 65, 81, 0.5)',
+                borderwidth: 1,
+                x: 0.02,
+                y: 0.98,
+                xanchor: 'left',
+                yanchor: 'top'
+            },
+            hovermode: 'closest'
+        };
+        
+        // Configuration Plotly
+        const config = {
+            responsive: true,
+            displayModeBar: true,
+            modeBarButtonsToRemove: ['pan2d', 'lasso2d', 'select2d'],
+            displaylogo: false,
+            toImageButtonOptions: {
+                format: 'png',
+                filename: `smile_comparison_${maturity}d`,
+                height: 600,
+                width: 800,
+                scale: 2
+            }
+        };
+        
+        Plotly.newPlot(chartDiv, traces, layout, config);
+    }
+    
+    // Fonction pour mettre à jour les statistiques de comparaison
+    function updateSmileComparisonStatistics(allData) {
+        const container = document.getElementById('smile-comparison-stats');
+        
+        if (!allData || allData.length === 0) {
+            container.innerHTML = '<p>Aucune donnée disponible</p>';
+            return;
+        }
+        
+        let html = '<div class="comparison-stats-grid">';
+        
+        allData.forEach((data, index) => {
+            const stats = data.statistics;
+            html += `
+                <div class="comparison-stat-card">
+                    <div class="stat-card-header">
+                        <h4>${data.symbol}</h4>
+                        <span class="stat-card-price">$${data.spot_price.toFixed(2)}</span>
+                    </div>
+                    <div class="stat-card-content">
+                        <div class="stat-row">
+                            <span class="stat-label">Maturité:</span>
+                            <span class="stat-value">${data.maturity_days} jours</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">Options:</span>
+                            <span class="stat-value">${stats.total_options} (${stats.calls_count}C/${stats.puts_count}P)</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">IV Min:</span>
+                            <span class="stat-value">${(stats.min_iv * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">IV Max:</span>
+                            <span class="stat-value">${(stats.max_iv * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="stat-row">
+                            <span class="stat-label">IV Moy:</span>
+                            <span class="stat-value">${(stats.avg_iv * 100).toFixed(1)}%</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        });
+        
+        html += '</div>';
+        container.innerHTML = html;
+    }
+    
+    // Gestion du bouton de comparaison des sourires
+    const smileCompareBtn = document.getElementById('smile-compare-btn');
+    if (smileCompareBtn) {
+        smileCompareBtn.addEventListener('click', async () => {
+            try {
+                if (smileComparisonTickers.length === 0) {
+                    showNotification('Veuillez ajouter au moins un ticker.', 'error');
+                    return;
+                }
+                
+                // Maturité automatique - utiliser la première maturité disponible avec le plus d'options
+                const maturity = 30; // Maturité par défaut, sera ajustée automatiquement par l'API
+                const span = parseFloat(document.getElementById('smile-span').value) || 0.3;
+                
+                console.log('Comparaison des sourires avec paramètres:', { tickers: smileComparisonTickers, maturity, span });
+                
+                const chartDiv = document.getElementById('smile-chart');
+                const placeholder = document.getElementById('smile-chart-placeholder');
+                
+                if (placeholder) {
+                    placeholder.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><div class="loading-text">Comparaison des sourires de volatilité...</div></div>';
+                }
+                
+                // Récupérer les données pour tous les tickers
+                const allData = [];
+                const errors = [];
+                
+                for (const ticker of smileComparisonTickers) {
+                    try {
+                        console.log(`Récupération des données pour ${ticker}...`);
+                        const data = await fetchVolatilitySmile(ticker, maturity, span);
+                        
+                        if (data && !data.error) {
+                            allData.push(data);
+                        } else {
+                            errors.push(`${ticker}: ${data.error || 'Erreur inconnue'}`);
+                        }
+                    } catch (e) {
+                        console.error(`Erreur pour ${ticker}:`, e);
+                        errors.push(`${ticker}: ${e.message}`);
+                    }
+                }
+                
+                // Supprimer le spinner de chargement
+                if (placeholder) {
+                    placeholder.innerHTML = '';
+                }
+                
+                if (allData.length > 0) {
+                    // Créer le graphique de comparaison
+                    createSmileComparisonChart(allData, maturity);
+                    
+                    // Afficher les statistiques
+                    document.getElementById('smile-statistics').classList.remove('hidden');
+                    updateSmileComparisonStatistics(allData);
+                    
+                    // Afficher les notifications
+                    if (errors.length > 0) {
+                        showNotification(`${allData.length} sourires chargés avec succès. ${errors.length} erreurs.`, 'warning');
+                        console.log('Erreurs:', errors);
+                    } else {
+                        showNotification(`${allData.length} sourires comparés avec succès!`, 'success');
+                    }
+                    
+                } else {
+                    // Aucune donnée récupérée
+                    let errorMessage = 'Aucune donnée récupérée pour les tickers sélectionnés.';
+                    
+                    if (errors.length > 0) {
+                        errorMessage += '\n\nErreurs:\n' + errors.join('\n');
+                    }
+                    
+                    chartDiv.innerHTML = `
+                        <div class="chart-error">
+                            <div class="chart-error-icon">
+                                <i data-lucide="x-circle" style="width: 24px; height: 24px; color: #ef4444;"></i>
+                            </div>
+                            <div class="chart-error-title">Erreur de comparaison</div>
+                            <div class="chart-error-message">${errorMessage}</div>
+                            <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(55, 65, 81, 0.5); border-radius: 0.5rem; border: 1px solid #374151;">
+                                <h5 style="color: #3b82f6; margin-bottom: 0.75rem;">
+                                    <i data-lucide="lightbulb" style="width: 16px; height: 16px; margin-right: 0.5rem;"></i>
+                                    Suggestions :
+                                </h5>
+                                <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #d1d5db; font-size: 0.875rem;">
+                                    <li>Essayez SPY, QQQ ou IWM (ETF avec beaucoup d'options)</li>
+                                    <li>Vérifiez que les symboles sont corrects</li>
+                                    <li>Essayez une maturité différente (30, 60, 90 jours)</li>
+                                    <li>Augmentez l'écart autour du spot (span)</li>
+                                </ul>
+                            </div>
+                        </div>`;
+                }
+                
+            } catch (e) {
+                console.error('Erreur lors de la comparaison des sourires:', e);
+                const chartDiv = document.getElementById('smile-chart');
+                chartDiv.innerHTML = `<div class="chart-error"><div class="chart-error-icon"><i data-lucide="x-circle" style="width: 24px; height: 24px; color: #ef4444;"></i></div><div class="chart-error-title">Erreur de connexion</div><div class="chart-error-message">${e.message}</div></div>`;
+            }
+        });
+    }
+     
+    }); // Fermeture de DOMContentLoaded
+</script>
+{% endblock %} 

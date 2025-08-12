@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Force Refresh</title>
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+</head>
+<body>
+    <h1>Force Refresh de la page Volatility Surface</h1>
+    <p>Cette page va forcer le rafraîchissement complet de votre navigateur.</p>
+    <button onclick="forceRefresh()">Rafraîchir Volatility Surface</button>
+    
+    <script>
+        function forceRefresh() {
+            // Vider le cache
+            if ('caches' in window) {
+                caches.keys().then(function(names) {
+                    for (let name of names) {
+                        caches.delete(name);
+                    }
+                });
+            }
+            
+            // Rediriger vers la page avec paramètre de cache
+            const timestamp = Date.now();
+            window.location.href = `/volatility-surface?_t=${timestamp}`;
+        }
+        
+        // Auto-refresh après 3 secondes
+        setTimeout(() => {
+            forceRefresh();
+        }, 3000);
+    </script>
+</body>
+</html>

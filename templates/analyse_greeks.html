@@ -1,0 +1,219 @@
+{% extends "base_flask.html" %}
+
+{% block title %}Equity Derivatives Dashboard – Analyse des Grecques{% endblock %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <h2>Navigation</h2>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item">
+                    <a href="{{ url_for('index') }}" class="nav-link">
+                        <i data-lucide="home"></i>
+                        <span>Accueil</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
+                        <i data-lucide="user"></i>
+                        <span>CV Mathis Le Gall</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('indices_actions') }}" class="nav-link">
+                        <i data-lucide="candlestick-chart"></i>
+                        <span>Indices & Actions</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
+                        <i data-lucide="activity"></i>
+                        <span>Analyse Actions & Indices</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('call_put') }}" class="nav-link">
+                        <i data-lucide="line-chart"></i>
+                        <span>Call & Put</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('volatility_surface') }}" class="nav-link">
+                        <i data-lucide="thermometer"></i>
+                        <span>Volatility Surface</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link active">
+                        <i data-lucide="calculator"></i>
+                        <span>Analyse des Grecques</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('description_app') }}" class="nav-link">
+                        <i data-lucide="info"></i>
+                        <span>Description App</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="content-header">
+            <div class="main-header-flex">
+                <div class="main-header-left">
+                    <div class="natixis-brand">
+                        <img src="{{ url_for('static', filename='images/logo_natixis.png') }}" alt="Logo Natixis" class="natixis-logo">
+                        <span class="natixis-text">Natixis</span>
+                    </div>
+                </div>
+                <div class="main-header-center">
+                    <!-- Espace pour équilibrer le layout -->
+                </div>
+                <div class="main-header-right">
+                    <h1 class="header-title">Analyse des Grecques</h1>
+                </div>
+            </div>
+        </header>
+
+        <!-- Content -->
+        <div class="content-area">
+            <div class="max-w-7xl mx-auto">
+                <!-- Hero Section -->
+                <section class="hero-section">
+                    <h1 class="hero-title">Analyse des Grecques</h1>
+                    <p class="hero-subtitle">
+                        Calcul et visualisation des sensibilités des options (Delta, Gamma, Theta, Vega, Rho)
+                    </p>
+                </section>
+
+                <!-- Main Content Area -->
+                <section class="main-section">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h2>Analyse des Sensibilités</h2>
+                            <p>Cette page sera dédiée à l'analyse des grecques des options</p>
+                        </div>
+                        
+                        <div class="card-content">
+                            <div class="placeholder-content">
+                                <div class="placeholder-icon">
+                                    <i data-lucide="calculator" class="text-6xl text-gray-400"></i>
+                                </div>
+                                <h3 class="placeholder-title">Page en cours de développement</h3>
+                                <p class="placeholder-text">
+                                    Cette section permettra d'analyser les différentes grecques des options :
+                                </p>
+                                <ul class="placeholder-list">
+                                    <li><strong>Delta</strong> : Sensibilité du prix de l'option par rapport au prix du sous-jacent</li>
+                                    <li><strong>Gamma</strong> : Sensibilité du Delta par rapport au prix du sous-jacent</li>
+                                    <li><strong>Theta</strong> : Sensibilité du prix de l'option par rapport au temps</li>
+                                    <li><strong>Vega</strong> : Sensibilité du prix de l'option par rapport à la volatilité</li>
+                                    <li><strong>Rho</strong> : Sensibilité du prix de l'option par rapport au taux d'intérêt</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Styles pour les icônes Lucide */
+    [data-lucide] {
+        width: 1em;
+        height: 1em;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    
+    /* Styles spécifiques pour les icônes dans la navigation */
+    .sidebar-nav [data-lucide] {
+        width: 1.25rem;
+        height: 1.25rem;
+        margin-right: 0.75rem;
+    }
+    
+    /* Styles pour l'icône dans le contenu principal */
+    .placeholder-icon [data-lucide] {
+        width: 4rem;
+        height: 4rem;
+        color: #d1d5db;
+    }
+    
+    .placeholder-content {
+        text-align: center;
+        padding: 4rem 2rem;
+        color: #e5e7eb;
+    }
+    
+    .placeholder-icon {
+        margin-bottom: 2rem;
+    }
+    
+    .placeholder-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        color: #f3f4f6;
+    }
+    
+    .placeholder-text {
+        font-size: 1.1rem;
+        margin-bottom: 2rem;
+        color: #d1d5db;
+    }
+    
+    .placeholder-list {
+        text-align: left;
+        max-width: 600px;
+        margin: 0 auto;
+        list-style: none;
+        padding: 0;
+    }
+    
+    .placeholder-list li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #4b5563;
+        color: #e5e7eb;
+    }
+    
+    .placeholder-list li:last-child {
+        border-bottom: none;
+    }
+    
+    .placeholder-list strong {
+        color: #f3f4f6;
+    }
+    
+    /* Styles pour l'en-tête de la carte */
+    .content-card .card-header h2 {
+        color: #ffffff;
+    }
+    
+    .content-card .card-header p {
+        color: #e5e7eb;
+    }
+</style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+</script>
+{% endblock %}
