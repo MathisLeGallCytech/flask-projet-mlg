@@ -59,45 +59,50 @@ def get_options_expirations(ticker: str):
         
         data = response.json()
         
-        # L'API Finnhub retourne directement un tableau d'options
-        if isinstance(data, list) and len(data) > 0:
+        # L'API Finnhub retourne une structure avec un champ 'data' contenant un tableau
+        if isinstance(data, dict) and 'data' in data and isinstance(data['data'], list):
             # Extraire les dates d'expiration uniques
+            expirations = set()
+            for expiration_data in data['data']:
+                if 'expirationDate' in expiration_data:
+                    # Convertir en timestamp UNIX
+                    try:
+                        exp_date = datetime.strptime(expiration_data['expirationDate'], '%Y-%m-%d')
+                        exp_timestamp = int(exp_date.timestamp())
+                        expirations.add(exp_timestamp)
+                    except ValueError:
+                        # Si c'est déjà un timestamp
+                        if isinstance(expiration_data['expirationDate'], int):
+                            expirations.add(expiration_data['expirationDate'])
+                        else:
+                            print(f"Format de date invalide: {expiration_data['expirationDate']}")
+            
+            expirations_list = sorted(list(expirations))
+            print(f"✅ {len(expirations_list)} dates d'expiration trouvées")
+            return expirations_list
+        elif isinstance(data, list) and len(data) > 0:
+            # Structure alternative (ancienne API)
             expirations = set()
             for option in data:
                 if 'expirationDate' in option:
-                    # Convertir en timestamp UNIX
                     try:
                         exp_date = datetime.strptime(option['expirationDate'], '%Y-%m-%d')
                         exp_timestamp = int(exp_date.timestamp())
                         expirations.add(exp_timestamp)
                     except ValueError:
-                        # Si c'est déjà un timestamp
                         if isinstance(option['expirationDate'], int):
                             expirations.add(option['expirationDate'])
                         else:
                             print(f"Format de date invalide: {option['expirationDate']}")
             
             expirations_list = sorted(list(expirations))
-            print(f"✅ {len(expirations_list)} dates d'expiration trouvées")
-            return expirations_list
-        elif 'data' in data and data['data']:
-            # Structure alternative avec 'data'
-            expirations = set()
-            for option in data['data']:
-                if 'expirationDate' in option:
-                    try:
-                        exp_date = datetime.strptime(option['expirationDate'], '%Y-%m-%d')
-                        exp_timestamp = int(exp_date.timestamp())
-                        expirations.add(exp_timestamp)
-                    except ValueError:
-                        if isinstance(option['expirationDate'], int):
-                            expirations.add(option['expirationDate'])
-            
-            expirations_list = sorted(list(expirations))
-            print(f"✅ {len(expirations_list)} dates d'expiration trouvées (structure data)")
+            print(f"✅ {len(expirations_list)} dates d'expiration trouvées (structure alternative)")
             return expirations_list
         else:
             print("❌ Aucune donnée d'options trouvée")
+            print(f"Structure de réponse: {type(data)}")
+            if isinstance(data, dict):
+                print(f"Clés disponibles: {list(data.keys())}")
             return []
             
     except requests.exceptions.Timeout:

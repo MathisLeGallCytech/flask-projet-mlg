@@ -7,6 +7,23 @@ from datetime import datetime
 from models.options_pricing import OptionPricer
 from models.risk_metrics import risk_calculator
 
+# Charger les variables d'environnement AVANT tous les imports
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    load_dotenv('.env.local')  # Charger aussi .env.local pour le développement
+    print("✅ Variables d'environnement chargées avec succès")
+except ImportError:
+    print("⚠️  Module python-dotenv non trouvé, utilisation des variables d'environnement système")
+
+# Vérifier que les clés API sont disponibles
+finnhub_key = os.getenv("FINNHUB_API_KEY")
+if not finnhub_key:
+    print("❌ ERREUR: FINNHUB_API_KEY non trouvée dans les variables d'environnement")
+    print("   L'application ne fonctionnera pas correctement")
+else:
+    print(f"✅ FINNHUB_API_KEY trouvée: {finnhub_key[:10]}...{finnhub_key[-4:]}")
+
 # Import du nouveau module Yahoo Finance API
 from api.yahoo_finance_api import yahoo_api
 

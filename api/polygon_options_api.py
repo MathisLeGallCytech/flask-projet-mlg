@@ -11,14 +11,24 @@ import os
 from datetime import datetime, timedelta
 import time
 from typing import List, Dict, Optional, Tuple
-from dotenv import load_dotenv
 
 # Charger les variables d'environnement
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    load_dotenv('.env.local')  # Charger aussi .env.local pour le développement
+except ImportError:
+    print("⚠️  Module python-dotenv non trouvé, utilisation des variables d'environnement système")
+    # Les variables d'environnement système seront utilisées automatiquement
 
 # Configuration de l'API Polygon.io
-POLYGON_API_KEY = os.getenv("POLYGON_API_KEY", "yoi_pGvtpiF25yOY7RVre6CToiAfFBCn")
+POLYGON_API_KEY = os.getenv("POLYGON_API_KEY")
 POLYGON_BASE_URL = "https://api.polygon.io"
+
+# Vérifier que la clé API est disponible
+if not POLYGON_API_KEY:
+    print("⚠️  ATTENTION: POLYGON_API_KEY n'est pas définie dans les variables d'environnement")
+    print("   L'API Polygon.io ne fonctionnera pas correctement")
 
 def get_polygon_options_expirations(ticker: str) -> List[str]:
     """
