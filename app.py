@@ -605,6 +605,15 @@ def api_vol_surface_3d(symbol):
         if provider not in ['finnhub', 'polygon']:
             return jsonify({'error': 'provider doit être "finnhub" ou "polygon"'}), 400
         
+        # Vérifier que la clé API est disponible pour Finnhub
+        if provider == 'finnhub':
+            from api.finnhub_config import FINNHUB_API_KEY
+            if not FINNHUB_API_KEY:
+                return jsonify({
+                    'error': 'Clé API Finnhub non configurée',
+                    'details': 'Veuillez configurer FINNHUB_API_KEY dans les variables d\'environnement'
+                }), 500
+        
         # Récupérer les données selon le provider
         if provider == 'polygon':
             from api.polygon_options_api import get_polygon_volatility_surface
@@ -625,55 +634,67 @@ def api_vol_surface_3d(symbol):
         else:
             from api.finnhub_implied_volatility import get_options_expirations, get_implied_volatility
             
-            # Récupérer les expirations
-            expirations = get_options_expirations(symbol)
-            if not expirations:
-                return jsonify({'error': f'Aucune date d\'expiration disponible pour {symbol}'}), 404
-            
-            # Limiter le nombre d'expirations pour la performance (par défaut 6)
-            max_expirations = int(request.args.get('maxExp', 6))
-            expirations_to_use = expirations[:max_expirations]
-            
-            # Récupérer le prix spot
             try:
-                import requests
-                from api.finnhub_config import FINNHUB_API_KEY, FINNHUB_BASE_URL
+                # Récupérer les expirations avec timeout
+                expirations = get_options_expirations(symbol)
+                if not expirations:
+                    return jsonify({'error': f'Aucune date d\'expiration disponible pour {symbol}'}), 404
                 
-                url = f"{FINNHUB_BASE_URL}/quote"
-                params = {'symbol': symbol, 'token': FINNHUB_API_KEY}
-                response = requests.get(url, params=params)
-                response.raise_for_status()
-                quote_data = response.json()
-                spot_price = float(quote_data.get('c', 0))
-            except:
-                spot_price = 0
-            
-            # Collecter les données d'options
-            all_options_data = []
-            for expiration_timestamp in expirations_to_use:
+                # Limiter le nombre d'expirations pour la performance (par défaut 6)
+                max_expirations = int(request.args.get('maxExp', 6))
+                expirations_to_use = expirations[:max_expirations]
+                
+                # Récupérer le prix spot
                 try:
-                    expiration_date = datetime.fromtimestamp(expiration_timestamp).strftime('%Y-%m-%d')
-                    options_data = get_implied_volatility(symbol, expiration_timestamp)
+                    import requests
+                    from api.finnhub_config import FINNHUB_API_KEY, FINNHUB_BASE_URL
                     
-                    if not options_data.empty:
-                        options_data['expiration_date'] = expiration_date
-                        all_options_data.append(options_data)
-                        
+                    url = f"{FINNHUB_BASE_URL}/quote"
+                    params = {'symbol': symbol, 'token': FINNHUB_API_KEY}
+                    response = requests.get(url, params=params, timeout=10)  # Timeout de 10 secondes
+                    response.raise_for_status()
+                    quote_data = response.json()
+                    spot_price = float(quote_data.get('c', 0))
+                except requests.exceptions.Timeout:
+                    print(f"⚠️  Timeout lors de la récupération du prix spot pour {symbol}")
+                    spot_price = 0
                 except Exception as e:
-                    print(f"Erreur pour l'expiration {expiration_date}: {e}")
-                    continue
-            
-            if not all_options_data:
-                return jsonify({'error': f'Aucune donnée d\'options collectée pour {symbol}'}), 404
-            
-            # Traiter les données pour créer la surface
-            result = process_volatility_surface_data(all_options_data, symbol, spot_price, span)
+                    print(f"⚠️  Erreur lors de la récupération du prix spot pour {symbol}: {e}")
+                    spot_price = 0
+                
+                # Collecter les données d'options
+                all_options_data = []
+                for expiration_timestamp in expirations_to_use:
+                    try:
+                        expiration_date = datetime.fromtimestamp(expiration_timestamp).strftime('%Y-%m-%d')
+                        options_data = get_implied_volatility(symbol, expiration_timestamp)
+                        
+                        if not options_data.empty:
+                            options_data['expiration_date'] = expiration_date
+                            all_options_data.append(options_data)
+                            
+                    except Exception as e:
+                        print(f"Erreur pour l'expiration {expiration_date}: {e}")
+                        continue
+                
+                if not all_options_data:
+                    return jsonify({'error': f'Aucune donnée d\'options collectée pour {symbol}'}), 404
+                
+                # Traiter les données pour créer la surface
+                result = process_volatility_surface_data(all_options_data, symbol, spot_price, span)
+                
+            except Exception as e:
+                print(f"❌ Erreur lors de la récupération des données Finnhub pour {symbol}: {e}")
+                return jsonify({
+                    'error': f'Erreur lors de la récupération des données pour {symbol}',
+                    'details': str(e)
+                }), 500
         
         if 'error' in result:
             error_msg = result['error']
             if 'limite de taux' in error_msg.lower() or '429' in error_msg:
                 return jsonify({
-                    'error': 'API Polygon.io temporairement indisponible (limite de taux). Veuillez réessayer dans quelques secondes.',
+                    'error': 'API temporairement indisponible (limite de taux). Veuillez réessayer dans quelques secondes.',
                     'details': error_msg
                 }), 429
             elif 'aucune donnée' in error_msg.lower():
@@ -709,6 +730,7 @@ def api_vol_surface_3d(symbol):
         return jsonify(result)
         
     except Exception as e:
+        print(f"❌ Erreur générale dans api_vol_surface_3d: {e}")
         return jsonify({'error': str(e)}), 500
 
 

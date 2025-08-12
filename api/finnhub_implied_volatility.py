@@ -23,8 +23,13 @@ except ImportError:
         BASE_URL = FINNHUB_BASE_URL
     except ImportError:
         # Configuration par défaut si le fichier de config n'existe pas
-        API_KEY = "d2cdsh9r01qihtcraq80d2cdsh9r01qihtcraq8g"  # Clé API réelle
+        API_KEY = None
         BASE_URL = "https://finnhub.io/api/v1"
+
+# Vérifier que la clé API est disponible
+if not API_KEY:
+    print("⚠️  ATTENTION: FINNHUB_API_KEY n'est pas configurée")
+    print("   L'API Finnhub ne fonctionnera pas correctement")
 
 
 def get_options_expirations(ticker: str):
@@ -37,6 +42,10 @@ def get_options_expirations(ticker: str):
     Returns:
         list: Liste des dates d'expiration (timestamps UNIX)
     """
+    if not API_KEY:
+        print("❌ Clé API Finnhub non configurée")
+        return []
+    
     url = f"{BASE_URL}/stock/option-chain"
     params = {
         'symbol': ticker,
@@ -45,13 +54,10 @@ def get_options_expirations(ticker: str):
     
     try:
         print(f"Récupération des dates d'expiration pour {ticker}...")
-        print(f"URL: {url}")
-        print(f"Params: {params}")
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, timeout=15)  # Timeout de 15 secondes
         response.raise_for_status()
         
         data = response.json()
-        print(f"Réponse API: {json.dumps(data, indent=2)[:500]}...")
         
         # L'API Finnhub retourne directement un tableau d'options
         if isinstance(data, list) and len(data) > 0:
@@ -92,18 +98,16 @@ def get_options_expirations(ticker: str):
             return expirations_list
         else:
             print("❌ Aucune donnée d'options trouvée")
-            print(f"Type de données reçu: {type(data)}")
-            print(f"Structure de données reçue: {list(data.keys()) if isinstance(data, dict) else 'Liste'}")
             return []
             
+    except requests.exceptions.Timeout:
+        print(f"❌ Timeout lors de la récupération des expirations pour {ticker}")
+        return []
     except requests.exceptions.RequestException as e:
         print(f"❌ Erreur lors de la récupération des expirations: {e}")
-        if hasattr(e, 'response') and e.response is not None:
-            print(f"Code d'erreur: {e.response.status_code}")
-            print(f"Réponse: {e.response.text}")
         return []
-    except json.JSONDecodeError as e:
-        print(f"❌ Erreur de décodage JSON: {e}")
+    except Exception as e:
+        print(f"❌ Erreur inattendue: {e}")
         return []
 
 
@@ -118,6 +122,10 @@ def get_implied_volatility(ticker: str, expiration: int):
     Returns:
         pd.DataFrame: DataFrame contenant les données de volatilité implicite
     """
+    if not API_KEY:
+        print("❌ Clé API Finnhub non configurée")
+        return pd.DataFrame()
+
     url = f"{BASE_URL}/stock/option-chain"
     params = {
         'symbol': ticker,
@@ -129,7 +137,7 @@ def get_implied_volatility(ticker: str, expiration: int):
         print(f"Récupération des options pour {ticker} - expiration: {expiration}")
         print(f"Date d'expiration: {datetime.fromtimestamp(expiration).strftime('%Y-%m-%d')}")
         
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, timeout=15) # Timeout de 15 secondes
         response.raise_for_status()
         
         data = response.json()
@@ -213,6 +221,9 @@ def get_implied_volatility(ticker: str, expiration: int):
         
         return df
         
+    except requests.exceptions.Timeout:
+        print(f"❌ Timeout lors de la récupération des options pour {ticker} - expiration: {expiration}")
+        return pd.DataFrame()
     except requests.exceptions.RequestException as e:
         print(f"❌ Erreur de requête HTTP: {e}")
         if hasattr(e, 'response') and e.response is not None:
@@ -231,6 +242,10 @@ def test_api_connection():
     """
     Teste la connexion à l'API Finnhub
     """
+    if not API_KEY:
+        print("❌ Clé API Finnhub non configurée, impossible de tester la connexion.")
+        return False
+
     print("🔍 Test de connexion à l'API Finnhub...")
     
     # Test simple avec un appel à l'API
@@ -241,7 +256,7 @@ def test_api_connection():
     }
     
     try:
-        response = requests.get(url, params=params)
+        response = requests.get(url, params=params, timeout=10) # Timeout de 10 secondes
         response.raise_for_status()
         
         data = response.json()
@@ -252,6 +267,9 @@ def test_api_connection():
             print("❌ Réponse API invalide")
             return False
             
+    except requests.exceptions.Timeout:
+        print("❌ Timeout lors du test de connexion API.")
+        return False
     except requests.exceptions.RequestException as e:
         print(f"❌ Erreur de connexion API: {e}")
         return False
