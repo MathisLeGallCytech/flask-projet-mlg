@@ -23,8 +23,13 @@ except ImportError:
         BASE_URL = FINNHUB_BASE_URL
     except ImportError:
         # Configuration par défaut si le fichier de config n'existe pas
-        API_KEY = "d2cdsh9r01qihtcraq80d2cdsh9r01qihtcraq8g"  # Clé API réelle
+        API_KEY = None
         BASE_URL = "https://finnhub.io/api/v1"
+
+# Vérifier que la clé API est disponible
+if not API_KEY:
+    print("⚠️  ATTENTION: FINNHUB_API_KEY n'est pas définie dans les variables d'environnement")
+    print("   L'API Finnhub ne fonctionnera pas correctement")
 
 
 def get_single_maturity_options(ticker: str, target_maturity_days: int = 30) -> pd.DataFrame:

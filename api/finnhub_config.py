@@ -4,10 +4,15 @@ Configuration pour l'API Finnhub
 """
 
 import os
-from dotenv import load_dotenv
 
 # Charger les variables d'environnement
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    load_dotenv('.env.local')  # Charger aussi .env.local pour le développement
+except ImportError:
+    print("⚠️  Module python-dotenv non trouvé, utilisation des variables d'environnement système")
+    # Les variables d'environnement système seront utilisées automatiquement
 
 # Récupérer la clé API depuis les variables d'environnement
 # Obtenez votre clé gratuite sur: https://finnhub.io/register
