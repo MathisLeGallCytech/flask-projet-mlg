@@ -61,7 +61,9 @@ python tests/run_tests.py --coverage
 
 ### 🌐 Accès à l'Application
 
-Ouvrez votre navigateur et allez sur : `http://localhost:5000`
+**Application déployée :** [https://flask-projet-natixis-mlg.onrender.com](https://flask-projet-natixis-mlg.onrender.com)
+
+**Développement local :** Ouvrez votre navigateur et allez sur : `http://localhost:5000`
 
 ### 📖 Documentation Complète
 

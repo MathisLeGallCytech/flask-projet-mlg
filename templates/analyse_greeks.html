@@ -1,6 +1,6 @@
 {% extends "base_flask.html" %}
 
-{% block title %}Equity Derivatives Dashboard – Analyse des Grecques{% endblock %}
+{% block title %}Equity Derivatives Dashboard – Analyse des Greeks{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
@@ -50,7 +50,7 @@
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_greeks') }}" class="nav-link active">
                         <i data-lucide="calculator"></i>
-                        <span>Analyse des Grecques</span>
+                        <span>Analyse des Greeks</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -78,7 +78,7 @@
                     <!-- Espace pour équilibrer le layout -->
                 </div>
                 <div class="main-header-right">
-                    <h1 class="header-title">Analyse des Grecques</h1>
+                    <h1 class="header-title">Analyse des Greeks</h1>
                 </div>
             </div>
         </header>
@@ -88,7 +88,7 @@
             <div class="max-w-7xl mx-auto">
                 <!-- Hero Section -->
                 <section class="hero-section">
-                    <h1 class="hero-title">Analyse des Grecques</h1>
+                    <h1 class="hero-title">Analyse des Greeks</h1>
                     <p class="hero-subtitle">
                         Calcul et visualisation des sensibilités des options (Delta, Gamma, Theta, Vega, Rho)
                     </p>
@@ -99,7 +99,7 @@
                     <div class="content-card">
                         <div class="card-header">
                             <h2>Analyse des Sensibilités</h2>
-                            <p>Cette page sera dédiée à l'analyse des grecques des options</p>
+                            <p>Cette page sera dédiée à l'analyse des greeks des options</p>
                         </div>
                         
                         <div class="card-content">
@@ -109,7 +109,7 @@
                                 </div>
                                 <h3 class="placeholder-title">Page en cours de développement</h3>
                                 <p class="placeholder-text">
-                                    Cette section permettra d'analyser les différentes grecques des options :
+                                    Cette section permettra d'analyser les différents greeks des options :
                                 </p>
                                 <ul class="placeholder-list">
                                     <li><strong>Delta</strong> : Sensibilité du prix de l'option par rapport au prix du sous-jacent</li>

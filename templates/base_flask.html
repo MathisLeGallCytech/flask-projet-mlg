@@ -11,8 +11,9 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo_natixis.png') }}">
 
     <!-- CSS personnalisé -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}?v=2.0">
     
+    {% block extra_css %}{% endblock %}
     {% block extra_head %}{% endblock %}
 </head>
 <body data-page="{{ request.endpoint }}">

@@ -4,6 +4,12 @@
 
 J'ai créé un système de tests complet et robuste pour votre application Flask de trading et d'analyse financière. Le système couvre tous les aspects critiques de l'application.
 
+## 🌐 Accès à l'Application
+
+**Application déployée :** [https://flask-projet-natixis-mlg.onrender.com](https://flask-projet-natixis-mlg.onrender.com)
+
+**Développement local :** `http://localhost:5000`
+
 ## 📁 Fichiers Créés
 
 ### 1. `test_app.py` - Fichier principal de tests

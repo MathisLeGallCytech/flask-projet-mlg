@@ -51,7 +51,7 @@
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
                         <i data-lucide="calculator"></i>
-                        <span>Analyse des Grecques</span>
+                        <span>Analyse des Greeks</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -421,33 +421,7 @@
                                  </div>
                                  <p class="volatility-3d-chart-subtitle">Visualisation interactive de la volatilité implicite en trois dimensions avec données Finnhub</p>
                              </div>
-                             <div class="volatility-3d-controls">
-                                 <div class="volatility-3d-control-group">
-                                     <label class="volatility-3d-control-label">Vue:</label>
-                                     <select id="vs-3d-view" class="volatility-3d-control-select">
-                                         <option value="surface">Surface</option>
-                                         <option value="wireframe">Wireframe</option>
-                                         <option value="contour">Contour</option>
-                                     </select>
-                                 </div>
-                                 <div class="volatility-3d-control-group">
-                                     <label class="volatility-3d-control-label">Couleur:</label>
-                                     <select id="vs-3d-colorscale" class="volatility-3d-control-select">
-                                         <option value="Viridis">Viridis</option>
-                                         <option value="Plasma">Plasma</option>
-                                         <option value="Inferno">Inferno</option>
-                                         <option value="Turbo">Turbo</option>
-                                         <option value="RdBu">Rouge-Bleu</option>
-                                         <option value="Spectral">Spectral</option>
-                                         <option value="RdYlBu">Rouge-Jaune-Bleu</option>
-                                         <option value="Set1">Set1</option>
-                                     </select>
-                                 </div>
-                                 <button id="vs-3d-reset" class="volatility-3d-btn secondary">
-                                     <i data-lucide="refresh-cw"></i>
-                                     Reset Vue
-                                 </button>
-                             </div>
+
                          </div>
                          
                          <div id="vs-plot" class="volatility-3d-plot-container">
@@ -513,7 +487,7 @@
                             <div class="form-actions">
                                 <button id="smile-compare-btn" class="calculate-btn">
                                     <i data-lucide="bar-chart-3" class="btn-icon"></i>
-                                    Comparer les Sourires
+                                    Comparer les Smiles
                                 </button>
                             </div>
                         </div>
@@ -525,9 +499,9 @@
                             <div>
                                 <div class="volatility-3d-chart-title">
                                     <i data-lucide="trending-up" class="volatility-3d-chart-icon"></i>
-                                    Comparaison des Sourires de Volatilité
+                                    Comparaison des Smiles de Volatilité
                                 </div>
-                                <p class="volatility-3d-chart-subtitle">Comparez les sourires de volatilité implicite entre différents titres pour une maturité spécifique</p>
+                                <p class="volatility-3d-chart-subtitle">Comparez les smiles de volatilité implicite entre différents titres pour une maturité spécifique</p>
                             </div>
                         </div>
                         
@@ -540,14 +514,14 @@
                                     <div class="placeholder-icon">
                                         <i data-lucide="bar-chart-3" style="width: 48px; height: 48px; color: #6b7280;"></i>
                                     </div>
-                                    <h4>Comparaison des Sourires</h4>
-                                    <p>Ajoutez des tickers et cliquez sur "Comparer les Sourires" pour afficher les courbes de volatilité implicite</p>
+                                    <h4>Comparaison des Smiles</h4>
+                                    <p>Ajoutez des tickers et cliquez sur "Comparer les Smiles" pour afficher les courbes de volatilité implicite</p>
                                 </div>
                             </div>
                         </div>
                         
                         <!-- Smile Comparison Statistics -->
-                        <div id="smile-statistics" class="chart-container hidden">
+                        <div id="smile-statistics" class="chart-container statistics-container hidden">
                             <div class="chart-header">
                                 <div class="chart-title">
                                     Statistiques de Comparaison
@@ -861,7 +835,10 @@
                 if (res.spot_price) {
                     document.getElementById('vs-spot-price').textContent = `$${res.spot_price.toFixed(2)}`;
                 }
-                document.getElementById('vs-data-source').textContent = provider.toUpperCase();
+                // Nettoyer le texte de la source pour supprimer "(Données Réelles)"
+                let sourceText = provider.toUpperCase();
+                sourceText = sourceText.replace(/\s*\(Données Réelles\)\s*/g, '');
+                document.getElementById('vs-data-source').textContent = sourceText;
                 document.getElementById('vs-maturities-count').textContent = res.maturities ? res.maturities.length : '-';
                 document.getElementById('vs-strikes-count').textContent = res.strikes ? res.strikes.length : '-';
                 
@@ -967,9 +944,9 @@
         const y = data.maturities; // Déjà en années
         const z = data.iv; // Matrice 2D déjà formatée
         
-        // Récupérer les paramètres de contrôle
-        const viewType = document.getElementById('vs-3d-view').value;
-        const colorscale = document.getElementById('vs-3d-colorscale').value;
+        // Paramètres de contrôle (valeurs par défaut)
+        const viewType = 'surface';
+        const colorscale = 'Viridis';
         
         // Créer la trace de surface principale
         let trace;
@@ -1248,7 +1225,10 @@
          // Mettre à jour le résumé
          document.getElementById('debug-symbol').textContent = symbol;
          document.getElementById('debug-spot-price').textContent = data.spot_price ? `$${data.spot_price.toFixed(2)}` : 'N/A';
-         document.getElementById('debug-source').textContent = data.data_source || 'N/A';
+         // Nettoyer le texte de la source pour supprimer "(Données Réelles)"
+         let sourceText = data.data_source || 'N/A';
+         sourceText = sourceText.replace(/\s*\(Données Réelles\)\s*/g, '');
+         document.getElementById('debug-source').textContent = sourceText;
          
          // Calculer le nombre total d'options si pas fourni
          let totalOptions = data.total_options;
@@ -1395,43 +1375,7 @@
              lucide.createIcons();
          }
          
-         // Gestionnaires d'événements pour les contrôles du graphique 3D
-         const viewSelect = document.getElementById('vs-3d-view');
-         const colorscaleSelect = document.getElementById('vs-3d-colorscale');
-         const resetBtn = document.getElementById('vs-3d-reset');
-         
-         // Gestionnaire pour changer le type de vue
-         if (viewSelect) {
-             viewSelect.addEventListener('change', () => {
-                 const currentSymbol = getCurrentSymbol();
-                 if (currentSymbol && window.currentVolatilityData) {
-                     create3DVolatilitySurface(window.currentVolatilityData, currentSymbol);
-                 }
-             });
-         }
-         
-         // Gestionnaire pour changer l'échelle de couleurs
-         if (colorscaleSelect) {
-             colorscaleSelect.addEventListener('change', () => {
-                 const currentSymbol = getCurrentSymbol();
-                 if (currentSymbol && window.currentVolatilityData) {
-                     create3DVolatilitySurface(window.currentVolatilityData, currentSymbol);
-                 }
-             });
-         }
-         
-         // Gestionnaire pour reset la vue
-         if (resetBtn) {
-             resetBtn.addEventListener('click', () => {
-                 const plotDiv = document.getElementById('vs-plot');
-                 if (plotDiv && plotDiv.data) {
-                     Plotly.relayout(plotDiv, {
-                         'scene.camera.eye': {x: 1.5, y: 1.5, z: 1.5},
-                         'scene.camera.center': {x: 0, y: 0, z: 0}
-                     });
-                 }
-             });
-         }
+
      });
      
      // ===== SECTION DONNÉES BRUTES =====
@@ -2009,7 +1953,7 @@
         // Layout avec fond transparent et styles améliorés
         const layout = {
             title: {
-                text: `Comparaison des Sourires de Volatilité (${maturity} jours)`,
+                text: `Comparaison des Smiles de Volatilité (${maturity} jours)`,
                 font: { color: '#ffffff', size: 18, family: 'Segoe UI' },
                 x: 0.5,
                 xanchor: 'center'
@@ -2125,6 +2069,9 @@
         
         html += '</div>';
         container.innerHTML = html;
+        
+        // Afficher la section des statistiques
+        document.getElementById('smile-statistics').classList.remove('hidden');
     }
     
     // Gestion du bouton de comparaison des sourires
@@ -2147,7 +2094,7 @@
                 const placeholder = document.getElementById('smile-chart-placeholder');
                 
                 if (placeholder) {
-                    placeholder.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><div class="loading-text">Comparaison des sourires de volatilité...</div></div>';
+                    placeholder.innerHTML = '<div class="loading-spinner"><div class="spinner"></div><div class="loading-text">Comparaison des smiles de volatilité...</div></div>';
                 }
                 
                 // Récupérer les données pour tous les tickers
@@ -2185,10 +2132,10 @@
                     
                     // Afficher les notifications
                     if (errors.length > 0) {
-                        showNotification(`${allData.length} sourires chargés avec succès. ${errors.length} erreurs.`, 'warning');
+                        showNotification(`${allData.length} smiles chargés avec succès. ${errors.length} erreurs.`, 'warning');
                         console.log('Erreurs:', errors);
                     } else {
-                        showNotification(`${allData.length} sourires comparés avec succès!`, 'success');
+                        showNotification(`${allData.length} smiles comparés avec succès!`, 'success');
                     }
                     
                 } else {
@@ -2222,7 +2169,7 @@
                 }
                 
             } catch (e) {
-                console.error('Erreur lors de la comparaison des sourires:', e);
+                console.error('Erreur lors de la comparaison des smiles:', e);
                 const chartDiv = document.getElementById('smile-chart');
                 chartDiv.innerHTML = `<div class="chart-error"><div class="chart-error-icon"><i data-lucide="x-circle" style="width: 24px; height: 24px; color: #ef4444;"></i></div><div class="chart-error-title">Erreur de connexion</div><div class="chart-error-message">${e.message}</div></div>`;
             }

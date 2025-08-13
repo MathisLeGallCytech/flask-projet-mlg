@@ -11,6 +11,12 @@ Le système de tests couvre :
 - ✅ **Tests d'API** : Endpoints REST
 - ✅ **Tests de gestion d'erreurs** : Robustesse de l'application
 
+## 🌐 Accès à l'Application
+
+**Application déployée :** [https://flask-projet-natixis-mlg.onrender.com](https://flask-projet-natixis-mlg.onrender.com)
+
+**Développement local :** `http://localhost:5000`
+
 ## 🚀 Exécution des Tests
 
 ### Méthode 1 : Script automatique (Recommandé)

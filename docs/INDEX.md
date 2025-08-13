@@ -4,6 +4,12 @@
 
 Ce document sert d'index complet pour naviguer dans toute la documentation du projet **Dashboard Dérivés Actions**. Chaque section est organisée par thème pour faciliter la recherche d'informations spécifiques.
 
+## 🌐 Accès à l'Application
+
+**Application déployée :** [https://flask-projet-natixis-mlg.onrender.com](https://flask-projet-natixis-mlg.onrender.com)
+
+**Développement local :** `http://localhost:5000`
+
 ## 🚀 Documentation Principale
 
 ### [README_PRINCIPAL.md](README_PRINCIPAL.md)

@@ -102,6 +102,10 @@ python app.py
 ```
 
 7. **Ouvrir dans le navigateur**
+
+**Application déployée :** [https://flask-projet-natixis-mlg.onrender.com](https://flask-projet-natixis-mlg.onrender.com)
+
+**Développement local :**
 ```
 http://localhost:5000
 ```
