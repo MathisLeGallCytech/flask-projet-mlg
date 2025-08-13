@@ -51,7 +51,7 @@
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
                         <i data-lucide="calculator"></i>
-                        <span>Analyse des Grecques</span>
+                        <span>Analyse des Greeks</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -132,8 +132,9 @@
                     <div id="indices-strip" class="indices-grid"></div>
                 </div>
 
+                <!-- Section Graphique et Actions -->
                 <section class="chart-section">
-                    <!-- Colonne centrale: Graphique (max largeur) -->
+                    <!-- Partie Graphique -->
                     <div class="indices-actions-chart-container">
                         <div class="indices-actions-chart-header">
                             <h3 class="indices-actions-chart-title">
@@ -195,7 +196,6 @@
                                             <option value="BABA">Alibaba Group Holding Limited</option>
                                         </optgroup>
                                     </select>
-                                    <i data-lucide="chevron-down" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; pointer-events: none; color: #9ca3af;"></i>
                                     </div>
                                     <div style="position: relative; display: inline-block;">
                                         <select id="chart-timeframe" class="indices-actions-chart-select">
@@ -209,7 +209,6 @@
                                         <option value="5y">5 Ans</option>
                                         <option value="max">Max</option>
                                     </select>
-                                    <i data-lucide="chevron-down" style="position: absolute; right: 8px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; pointer-events: none; color: #9ca3af;"></i>
                                     </div>
                                 </div>
                             </div>
@@ -219,18 +218,16 @@
                         </div>
                     </div>
 
-                    <!-- Colonne droite: Actions -->
-                    <div class="stocks-sidebar">
-                        <div class="stocks-container">
-                            <h3 class="section-title">
-                                <i data-lucide="building-2" class="section-icon"></i>
-                                Actions
-                            </h3>
-                            <div id="stocks-container" class="stocks-grid">
-                                <div class="loading-spinner">
-                                    <i data-lucide="refresh-cw" style="width: 24px; height: 24px; animation: spin 1s linear infinite; margin-bottom: 8px;"></i>
-                                    <p>Chargement des données...</p>
-                                </div>
+                    <!-- Partie Actions -->
+                    <div class="stocks-container">
+                        <h3 class="section-title">
+                            <i data-lucide="building-2" class="section-icon"></i>
+                            Actions
+                        </h3>
+                        <div id="stocks-container" class="stocks-grid">
+                            <div class="loading-spinner">
+                                <i data-lucide="refresh-cw" style="width: 24px; height: 24px; animation: spin 1s linear infinite; margin-bottom: 8px;"></i>
+                                <p>Chargement des données...</p>
                             </div>
                         </div>
                     </div>
@@ -239,6 +236,121 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_head %}
+<style>
+    /* Layout responsive - Vertical sur petits écrans, horizontal sur grands écrans */
+    .chart-section {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 2rem !important;
+        width: 100% !important;
+        padding: 1.5rem !important;
+        background: rgba(255, 255, 255, 0.02) !important;
+        border-radius: 12px !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    }
+    
+    .stocks-container {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 300px !important;
+        margin-top: 1rem !important;
+    }
+    
+    .indices-actions-chart-container {
+        width: 100% !important;
+        height: auto !important;
+        min-height: 400px !important;
+    }
+    
+    .indices-actions-chart-canvas-container {
+        height: 450px !important;
+        min-height: 400px !important;
+        width: 100% !important;
+    }
+    
+    /* Layout horizontal sur grands écrans (1800px et plus) */
+    @media (min-width: 1800px) {
+        .chart-section {
+            flex-direction: row !important;
+            gap: 1rem !important;
+            align-items: stretch !important;
+        }
+        
+        .indices-actions-chart-container {
+            flex: 3 !important;
+            min-width: 0 !important;
+            margin-right: 0.5rem !important;
+        }
+        
+        .stocks-container {
+            flex: 1 !important;
+            min-width: 0 !important;
+            margin-top: 0 !important;
+            margin-left: 0.5rem !important;
+        }
+        
+        .indices-actions-chart-canvas-container {
+            height: 100% !important;
+            min-height: 400px !important;
+        }
+        
+        .stocks-container {
+            min-height: 400px !important;
+        }
+        
+        /* Ajuster la grille des actions pour 2 colonnes */
+        .stocks-grid {
+            display: grid !important;
+            grid-template-columns: 1fr 1fr !important;
+            gap: 1rem !important;
+        }
+    }
+    
+    /* Styles pour écrans très grands */
+    @media (min-width: 1600px) {
+        .indices-actions-chart-canvas-container {
+            height: 100% !important;
+            min-height: 500px !important;
+        }
+        
+        .stocks-container {
+            min-height: 500px !important;
+        }
+    }
+    
+    /* Styles pour écrans moyens */
+    @media (min-width: 768px) and (max-width: 1799px) {
+        .indices-actions-chart-canvas-container {
+            height: 500px !important;
+            min-height: 500px !important;
+        }
+        
+        .stocks-container {
+            min-height: 350px !important;
+        }
+    }
+    
+    /* Styles pour écrans très petits */
+    @media (max-width: 767px) {
+        .chart-section {
+            gap: 1.5rem !important;
+            padding: 1rem !important;
+        }
+        
+        .stocks-container {
+            min-height: 250px !important;
+            margin-top: 0.5rem !important;
+        }
+        
+        .indices-actions-chart-canvas-container {
+            height: 350px !important;
+            min-height: 300px !important;
+        }
+    }
+</style>
 {% endblock %}
 
 {% block extra_scripts %}

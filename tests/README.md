@@ -4,6 +4,12 @@
 
 Ce dossier contient tous les tests pour l'application Flask **Dashboard Dérivés Actions**. Le système de tests est complet et couvre toutes les fonctionnalités de l'application.
 
+## 🌐 Accès à l'Application
+
+**Application déployée :** [https://flask-projet-natixis-mlg.onrender.com](https://flask-projet-natixis-mlg.onrender.com)
+
+**Développement local :** `http://localhost:5000`
+
 ## 📁 Structure du Dossier
 
 ```
