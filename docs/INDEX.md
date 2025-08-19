@@ -6,7 +6,7 @@ Ce document sert d'index complet pour naviguer dans toute la documentation du pr
 
 ## 🌐 Accès à l'Application
 
-**Application déployée :** [https://flask-projet-natixis-mlg.onrender.com](https://flask-projet-natixis-mlg.onrender.com)
+**Application déployée :** [https://flask-projet-mlg.onrender.com](https://flask-projet-mlg.onrender.com)
 
 **Développement local :** `http://localhost:5000`
 
@@ -212,7 +212,7 @@ Ce document sert d'index complet pour naviguer dans toute la documentation du pr
 ## 📊 Structure du Projet
 
 ```
-flaskProjectNatixisMathisLeGall/
+flaskProjectMathisLeGall/
 ├── app.py                          # Application Flask principale
 ├── api/                            # Modules API
 │   ├── yahoo_finance_api.py        # Données de marché
