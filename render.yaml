@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: flask-mathis-app
+    name: flask-financial-analysis-app
     env: python
     plan: free
     autoDeploy: false
