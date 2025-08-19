@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: flask-financial-analysis-app
+    name: flask-financial-app-mlg
     env: python
     plan: free
     autoDeploy: false
