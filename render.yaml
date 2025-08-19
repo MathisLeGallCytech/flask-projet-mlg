@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: flask-natixis-app
+    name: flask-mathis-app
     env: python
     plan: free
     autoDeploy: false

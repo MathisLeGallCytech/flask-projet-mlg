@@ -103,7 +103,7 @@ python app.py
 
 7. **Ouvrir dans le navigateur**
 
-**Application déployée :** [https://flask-projet-natixis-mlg.onrender.com](https://flask-projet-natixis-mlg.onrender.com)
+**Application déployée :** [https://flask-projet-mlg.onrender.com](https://flask-projet-mlg.onrender.com)
 
 **Développement local :**
 ```
@@ -113,7 +113,7 @@ http://localhost:5000
 ## 🏗️ Structure du Projet
 
 ```
-flaskProjectNatixisMathisLeGall/
+flaskProjectMathisLeGall/
 ├── app.py                 # Application Flask principale
 ├── api/                   # Modules API
 │   ├── __init__.py
@@ -165,7 +165,7 @@ flaskProjectNatixisMathisLeGall/
 │   ├── js/
 │   │   └── app.js
 │   └── images/
-│       └── logo_natixis.png
+│       └── logo.png
 ├── templates/            # Templates HTML Jinja2
 │   ├── base.html         # Template de base
 │   ├── base_flask.html   # Template Flask

@@ -1,4 +1,4 @@
-# Flask Project Natixis - Mathis Le Gall
+# Flask Project - Mathis Le Gall
 
 ## 📚 Documentation
 
@@ -28,7 +28,7 @@ Toute la documentation du projet se trouve dans le dossier [`docs/`](docs/).
 ```bash
 # Cloner le projet
 git clone [URL_DU_REPO]
-cd flaskProjectNatixisMathisLeGall
+cd flaskProjectMathisLeGall
 
 # Créer un environnement virtuel
 python -m venv venv
@@ -61,7 +61,7 @@ python tests/run_tests.py --coverage
 
 ### 🌐 Accès à l'Application
 
-**Application déployée :** [https://flask-projet-natixis-mlg.onrender.com](https://flask-projet-natixis-mlg.onrender.com)
+**Application déployée :** [https://flask-projet-mlg.onrender.com](https://flask-projet-mlg.onrender.com)
 
 **Développement local :** Ouvrez votre navigateur et allez sur : `http://localhost:5000`
 
@@ -71,4 +71,4 @@ Consultez le dossier [`docs/`](docs/) pour une documentation détaillée de tout
 
 ---
 
-**Développé par Mathis Le Gall** - Projet Natixis
+**Développé par Mathis Le Gall**

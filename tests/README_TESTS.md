@@ -13,7 +13,7 @@ Le système de tests couvre :
 
 ## 🌐 Accès à l'Application
 
-**Application déployée :** [https://flask-projet-natixis-mlg.onrender.com](https://flask-projet-natixis-mlg.onrender.com)
+**Application déployée :** [https://flask-projet-mlg.onrender.com](https://flask-projet-mlg.onrender.com)
 
 **Développement local :** `http://localhost:5000`
 

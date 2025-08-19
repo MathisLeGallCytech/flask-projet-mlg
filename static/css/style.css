@@ -1136,74 +1136,7 @@ nav a.active {
     text-align: right;
 }
 
-.natixis-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
 
-.natixis-logo {
-    height: 40px;
-    width: auto;
-    max-width: 120px;
-    object-fit: contain;
-    filter: brightness(1.1) contrast(1.1); /* Améliore la visibilité sur fond sombre */
-}
-
-.natixis-text {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    color: #a855f7;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
-}
-
-@media (max-width: 1400px) {
-    .natixis-brand {
-        gap: 10px;
-    }
-    
-    .natixis-logo {
-        height: 36px;
-        max-width: 100px;
-    }
-    
-    .natixis-text {
-        font-size: 22px;
-    }
-}
-
-@media (max-width: 1200px) {
-    .natixis-brand {
-        gap: 8px;
-    }
-    
-    .natixis-logo {
-        height: 32px;
-        max-width: 90px;
-    }
-    
-    .natixis-text {
-        font-size: 20px;
-    }
-}
-
-@media (max-width: 1024px) {
-    .natixis-brand {
-        gap: 6px;
-    }
-    
-    .natixis-logo {
-        height: 28px;
-        max-width: 80px;
-    }
-    
-    .natixis-text {
-        font-size: 18px;
-    }
-}
 
 .content-header h1 {
     font-size: 1.5rem;
@@ -1262,11 +1195,6 @@ nav a.active {
         justify-content: flex-start;
     }
     
-    /* Masquer le logo Natixis spécifiquement sur la page indices_actions */
-    body[data-page="indices_actions"] .natixis-brand {
-        display: none;
-    }
-    
     body[data-page="indices_actions"] .header-flex {
         justify-content: flex-end;
     }
@@ -1288,11 +1216,6 @@ nav a.active {
     
     .main-header-flex {
         justify-content: flex-start;
-    }
-    
-    /* Masquer le logo Natixis spécifiquement sur la page indices_actions */
-    body[data-page="indices_actions"] .natixis-brand {
-        display: none;
     }
     
     body[data-page="indices_actions"] .header-flex {
@@ -1512,18 +1435,7 @@ nav a.active {
         text-align: left;
     }
     
-    .natixis-brand {
-        gap: 8px;
-    }
-    
-    .natixis-logo {
-        height: 24px;
-        max-width: 60px;
-    }
-    
-    .natixis-text {
-        font-size: 16px;
-    }
+
     
     .header-title {
         font-size: 1.125rem;
@@ -1547,18 +1459,7 @@ nav a.active {
         min-height: 56px;
     }
     
-    .natixis-brand {
-        gap: 6px;
-    }
-    
-    .natixis-logo {
-        height: 20px;
-        max-width: 50px;
-    }
-    
-    .natixis-text {
-        font-size: 14px;
-    }
+
     
     .header-title {
         font-size: 1rem;

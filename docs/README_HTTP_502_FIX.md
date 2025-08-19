@@ -69,7 +69,7 @@ if not FINNHUB_API_KEY:
 ### 1. Configuration sur Render
 
 1. **Accédez à votre dashboard Render**
-2. **Sélectionnez votre service** `flask-natixis-app`
+2. **Sélectionnez votre service** `flask-app`
 3. **Allez dans l'onglet "Environment"**
 4. **Ajoutez les variables suivantes** :
 
