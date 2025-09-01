@@ -14,25 +14,25 @@
                 <li class="nav-item">
                     <a href="{{ url_for('index') }}" class="nav-link">
                         <i data-lucide="home"></i>
-                        <span>Accueil</span>
+                        <span>Home</span>
                     </a>
                 </li>
                                     <li class="nav-item">
                         <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
                             <i data-lucide="user"></i>
-                            <span>CV Mathis Le Gall</span>
+                            <span>Mathis Le Gall CV</span>
                         </a>
                     </li>
                 <li class="nav-item">
                     <a href="{{ url_for('indices_actions') }}" class="nav-link">
                         <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Actions</span>
+                        <span>Indices & Stocks</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
                         <i data-lucide="activity"></i>
-                        <span>Analyse Actions & Indices</span>
+                        <span>Stocks & Indices Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -45,19 +45,19 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
-                        <span>Volatility Surface</span>
+                        <span>Implied Volatility</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
                         <i data-lucide="calculator"></i>
-                        <span>Analyse des Greeks</span>
+                        <span>Greeks Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('description_app') }}" class="nav-link">
                         <i data-lucide="info"></i>
-                        <span>Description App</span>
+                        <span>App Description</span>
                     </a>
                 </li>
             </ul>
@@ -72,7 +72,7 @@
                 <div class="main-header-left">
                 </div>
                 <div class="main-header-center">
-                    <!-- Espace pour équilibrer le layout -->
+                    <!-- Space to balance the layout -->
                 </div>
                 <div class="main-header-right">
                     <h1 class="header-title">Call & Put Options</h1>
@@ -88,10 +88,10 @@
                     <div class="header-content">
                         <div class="header-left">
                             <h1 class="page-title">
-                                Options Call & Put
+                                Call & Put Options
                             </h1>
                             <p class="page-subtitle">
-                                Calcul et visualisation des options européennes avec modèles Black-Scholes et Monte Carlo
+                                Calculation and visualization of European options with Black-Scholes and Monte Carlo models
                             </p>
                         </div>
                     </div>
@@ -104,19 +104,19 @@
                         <div class="form-header">
                             <h3 class="form-title">
                                 <i data-lucide="settings" class="form-icon"></i>
-                                Paramètres de marché
+                                Market Parameters
                             </h3>
-                            <p class="form-subtitle">Configurez les paramètres pour le calcul des options</p>
+                            <p class="form-subtitle">Configure market parameters for option calculation</p>
                         </div>
                         
                         <form id="options-form" class="options-form">
                             <!-- Paramètres principaux -->
                             <div class="form-section">
-                                <h4 class="section-title">Paramètres de base</h4>
+                                <h4 class="section-title">Basic Parameters</h4>
                                 <div class="call-put-form-grid">
                                                                          <div class="call-put-form-field">
                                          <label for="spot-price" class="call-put-field-label">
-                                             Prix spot (S)
+                                             Spot Price (S)
                                          </label>
                                         <input 
                                             type="number" 
@@ -128,12 +128,12 @@
                                             placeholder="100.00"
                                             class="call-put-form-input"
                                         >
-                                        <span class="call-put-field-hint">Prix actuel de l'actif sous-jacent</span>
+                                        <span class="call-put-field-hint">Current price of the underlying asset</span>
                                     </div>
 
                                                                          <div class="call-put-form-field">
                                          <label for="strike-price" class="call-put-field-label">
-                                             Prix d'exercice (K)
+                                             Strike Price (K)
                                          </label>
                                         <input 
                                             type="number" 
@@ -145,12 +145,12 @@
                                             placeholder="100.00"
                                             class="call-put-form-input"
                                         >
-                                        <span class="call-put-field-hint">Prix d'exercice de l'option</span>
+                                        <span class="call-put-field-hint">Option exercise price</span>
                                     </div>
 
                                                                          <div class="call-put-form-field">
                                          <label for="time-maturity" class="call-put-field-label">
-                                             Échéance (T) en années
+                                             Maturity (T) in years
                                          </label>
                                         <input 
                                             type="number" 
@@ -162,12 +162,12 @@
                                             placeholder="1.00"
                                             class="call-put-form-input"
                                         >
-                                        <span class="call-put-field-hint">Temps jusqu'à l'échéance</span>
+                                        <span class="call-put-field-hint">Time until maturity</span>
                                     </div>
 
                                                                          <div class="call-put-form-field">
                                          <label for="risk-free-rate" class="call-put-field-label">
-                                             Taux sans risque (r)
+                                             Risk-Free Rate (r)
                                          </label>
                                         <input 
                                             type="number" 
@@ -180,12 +180,12 @@
                                             placeholder="0.05"
                                             class="call-put-form-input"
                                         >
-                                        <span class="call-put-field-hint">Format décimal (ex: 0.05 = 5%)</span>
+                                        <span class="call-put-field-hint">Decimal (e.g., 0.05 = 5%)</span>
                                     </div>
 
                                                                          <div class="call-put-form-field">
                                          <label for="volatility" class="call-put-field-label">
-                                             Volatilité (σ)
+                                             Volatility (σ)
                                          </label>
                                         <input 
                                             type="number" 
@@ -198,12 +198,12 @@
                                             placeholder="0.20"
                                             class="call-put-form-input"
                                         >
-                                        <span class="call-put-field-hint">Format décimal (ex: 0.2 = 20%)</span>
+                                        <span class="call-put-field-hint">Decimal (e.g., 0.2 = 20%)</span>
                                     </div>
 
                                                                          <div class="call-put-form-field">
                                          <label for="option-type" class="call-put-field-label">
-                                             Type d'option
+                                             Option Type
                                          </label>
                                         <select 
                                             id="option-type" 
@@ -213,19 +213,19 @@
                                             <option value="call">Call</option>
                                             <option value="put">Put</option>
                                         </select>
-                                        <span class="call-put-field-hint">Type d'option à calculer</span>
+                                        <span class="call-put-field-hint">Type of option to calculate</span>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Paramètres Monte Carlo -->
                             <div class="form-section">
-                                <h4 class="section-title">Paramètres Monte Carlo</h4>
+                                <h4 class="section-title">Monte Carlo Parameters</h4>
                                 <div class="call-put-form-grid">
                                     <div class="call-put-form-field">
                                         <label for="num-simulations" class="call-put-field-label">
                                             <i data-lucide="repeat" class="field-icon"></i>
-                                            Nombre de simulations
+                                            Number of simulations
                                         </label>
                                         <input 
                                             type="number" 
@@ -236,13 +236,13 @@
                                             min="1000"
                                             class="call-put-form-input"
                                         >
-                                        <span class="call-put-field-hint">Nombre de trajectoires simulées</span>
+                                        <span class="call-put-field-hint">Number of simulated paths</span>
                                     </div>
 
                                     <div class="call-put-form-field">
                                         <label for="num-steps" class="call-put-field-label">
                                             <i data-lucide="layers" class="field-icon"></i>
-                                            Nombre d'étapes
+                                            Number of steps
                                         </label>
                                         <input 
                                             type="number" 
@@ -253,13 +253,13 @@
                                             min="1"
                                             class="call-put-form-input"
                                         >
-                                        <span class="call-put-field-hint">Étapes temporelles par simulation</span>
+                                        <span class="call-put-field-hint">Time steps per simulation</span>
                                     </div>
 
                                     <div class="call-put-form-field">
                                         <label for="num-paths" class="call-put-field-label">
                                             <i data-lucide="trending-up" class="field-icon"></i>
-                                            Chemins affichés
+                                            Paths displayed
                                         </label>
                                         <input 
                                             type="number" 
@@ -271,13 +271,13 @@
                                             max="200"
                                             class="call-put-form-input"
                                         >
-                                        <span class="call-put-field-hint">Trajectoires tracées (0-200)</span>
+                                        <span class="call-put-field-hint">Paths displayed (0-200)</span>
                                     </div>
 
                                     <div class="call-put-form-field">
                                         <label for="confidence-level" class="call-put-field-label">
                                             <i data-lucide="shield" class="field-icon"></i>
-                                            Niveau de confiance
+                                            Confidence level
                                         </label>
                                         <input 
                                             type="number" 
@@ -289,7 +289,7 @@
                                             max="0.999"
                                             class="call-put-form-input"
                                         >
-                                        <span class="call-put-field-hint">Intervalle de confiance (0.5-0.999)</span>
+                                        <span class="call-put-field-hint">Confidence interval (0.5-0.999)</span>
                                     </div>
                                 </div>
                             </div>
@@ -302,7 +302,7 @@
                                         <div id="calc-chips" class="progress-chips"></div>
                                     </div>
                                     <div class="progress-labels">
-                                        <span id="progress-label">Prêt</span>
+                                        <span id="progress-label">Ready</span>
                                         <span id="timing-label"></span>
                                     </div>
                                 </div>
@@ -312,7 +312,7 @@
                                     class="calculate-btn"
                                 >
                                     <i data-lucide="play" class="btn-icon"></i>
-                                    <span class="btn-text">Calculer le prix</span>
+                                    <span class="btn-text">Calculate Price</span>
                                 </button>
                             </div>
                         </form>
@@ -323,16 +323,16 @@
                         <div class="results-header">
                             <h3 class="results-title">
                                 <i data-lucide="bar-chart-3" class="results-icon"></i>
-                                Résultats du calcul
+                                Calculation Results
                             </h3>
-                            <p class="results-subtitle">Comparaison des modèles Black-Scholes et Monte Carlo</p>
+                            <p class="results-subtitle">Comparison of Black-Scholes and Monte Carlo models</p>
                         </div>
                         
                         <!-- Métriques principales -->
                         <div class="metrics-grid">
                                                          <div class="metric-card">
                                  <div class="metric-header">
-                                     <span class="metric-label">Prix de l'option</span>
+                                     <span class="metric-label">Option Price</span>
                                  </div>
                                 <div class="metric-values">
                                     <div class="metric-value">
@@ -432,11 +432,11 @@
                                  </div>
                                 <div class="metric-values">
                                     <div class="metric-value">
-                                        <span class="value-label">Temps MC (ms)</span>
+                                        <span class="value-label">MC Time (ms)</span>
                                         <span class="value-number" id="time-mc-ms">-</span>
                                     </div>
                                     <div class="metric-value">
-                                        <span class="value-label">Temps BS (ms)</span>
+                                        <span class="value-label">BS Time (ms)</span>
                                         <span class="value-number" id="time-bs-ms">-</span>
                                     </div>
                                 </div>
@@ -447,19 +447,19 @@
                         <div id="confidence-interval" class="confidence-section hidden">
                             <div class="confidence-header">
                                 <i data-lucide="shield-check" class="confidence-icon"></i>
-                                <h4 class="confidence-title">Intervalle de confiance Monte Carlo (<span id="ci-level">95%</span>)</h4>
+                                <h4 class="confidence-title">Monte Carlo Confidence Interval (<span id="ci-level">95%</span>)</h4>
                             </div>
                             <div class="confidence-grid">
                                 <div class="confidence-card">
-                                    <span class="confidence-label">Borne inférieure</span>
+                                    <span class="confidence-label">Lower Bound</span>
                                     <span class="confidence-value" id="ci-lower">-</span>
                                 </div>
                                 <div class="confidence-card primary">
-                                    <span class="confidence-label">Prix estimé</span>
+                                    <span class="confidence-label">Estimated Price</span>
                                     <span class="confidence-value" id="ci-mean">-</span>
                                 </div>
                                 <div class="confidence-card">
-                                    <span class="confidence-label">Borne supérieure</span>
+                                    <span class="confidence-label">Upper Bound</span>
                                     <span class="confidence-value" id="ci-upper">-</span>
                                 </div>
                             </div>
@@ -470,15 +470,15 @@
                              <div class="call-put-chart-header">
                                  <h4 class="call-put-chart-title">
                                      <i data-lucide="trending-up" class="call-put-chart-icon"></i>
-                                     Visualisation des trajectoires Monte Carlo
+                                     Monte Carlo Path Visualization
                                  </h4>
-                                 <p class="call-put-chart-subtitle">Simulation des chemins de prix de l'actif sous-jacent</p>
+                                 <p class="call-put-chart-subtitle">Simulation of underlying asset price paths</p>
                              </div>
                                                            <div class="call-put-chart-container">
                                   <div class="call-put-monte-carlo-chart">
                                       <canvas id="mc-paths-chart"></canvas>
                                   </div>
-                                  <div class="paths-distribution-bar">
+                                  <div class="paths-distribution-bar" id="distribution-bar">
                                       <h5 class="distribution-title">Distribution</h5>
                                       <div class="distribution-container">
                                           <div class="distribution-bars" id="distribution-bars">
@@ -490,10 +490,14 @@
                                           </div>
                                       </div>
                                   </div>
+                                  <!-- Bouton pour basculer la distribution sur petit écran -->
+                                  <button id="toggle-distribution" class="toggle-distribution-btn" title="Toggle distribution">
+                                      <i data-lucide="bar-chart-3"></i>
+                                  </button>
                               </div>
                               <div class="chart-note">
                                   <i data-lucide="info" class="note-icon"></i>
-                                  <span class="note-text">La distribution à droite montre où se terminent exactement les chemins Monte Carlo affichés dans le graphique principal.</span>
+                                  <span class="note-text">The distribution on the right shows where exactly the Monte Carlo paths displayed in the main graph end.</span>
                               </div>
                          </div>
                     </div>
@@ -558,16 +562,16 @@
     function validateParams(params) {
         const errors = [];
         
-        if (params.spotPrice <= 0) errors.push('Le prix spot doit être positif');
-        if (params.strikePrice <= 0) errors.push('Le prix d\'exercice doit être positif');
-        if (params.timeMaturity <= 0) errors.push('L\'échéance doit être positive');
-        if (params.riskFreeRate < 0 || params.riskFreeRate > 1) errors.push('Le taux sans risque doit être entre 0 et 1');
-        if (params.volatility < 0 || params.volatility > 1) errors.push('La volatilité doit être entre 0 et 1');
-        if (params.confidenceLevel < 0.5 || params.confidenceLevel > 0.999) errors.push('Le niveau de confiance doit être entre 0.5 et 0.999');
-        if (params.numPaths < 0 || params.numPaths > 200) errors.push('Le nombre de chemins doit être entre 0 et 200');
+        if (params.spotPrice <= 0) errors.push('Spot price must be positive');
+        if (params.strikePrice <= 0) errors.push('Strike price must be positive');
+        if (params.timeMaturity <= 0) errors.push('Maturity must be positive');
+        if (params.riskFreeRate < 0 || params.riskFreeRate > 1) errors.push('Risk-free rate must be between 0 and 1');
+        if (params.volatility < 0 || params.volatility > 1) errors.push('Volatility must be between 0 and 1');
+        if (params.confidenceLevel < 0.5 || params.confidenceLevel > 0.999) errors.push('Confidence level must be between 0.5 and 0.999');
+        if (params.numPaths < 0 || params.numPaths > 200) errors.push('Number of paths must be between 0 and 200');
         
         if (errors.length > 0) {
-            showNotification('Erreurs de validation:\n' + errors.join('\n'), 'error');
+            showNotification('Validation errors:\n' + errors.join('\n'), 'error');
             return false;
         }
         
@@ -581,7 +585,7 @@
             // Afficher un indicateur de chargement
             const calculateBtn = document.getElementById('calculate-btn');
             originalText = calculateBtn.innerHTML;
-            calculateBtn.innerHTML = '<i data-lucide="loader-2" class="btn-icon spinning"></i><span class="btn-text">Calcul en cours...</span>';
+            calculateBtn.innerHTML = '<i data-lucide="loader-2" class="btn-icon spinning"></i><span class="btn-text">Calculating...</span>';
             calculateBtn.disabled = true;
             lucide.createIcons();
             
@@ -597,7 +601,7 @@
             const result = await response.json();
             
             if (!response.ok) {
-                throw new Error(result.error || 'Erreur lors du calcul');
+                throw new Error(result.error || 'Error during calculation');
             }
             
             // Afficher les résultats
@@ -605,7 +609,7 @@
             
         } catch (error) {
             console.error('Erreur:', error);
-            showNotification('Erreur lors du calcul: ' + error.message, 'error');
+            showNotification('Error during calculation: ' + error.message, 'error');
         } finally {
             // Restaurer le bouton
             const calculateBtn = document.getElementById('calculate-btn');
@@ -765,7 +769,7 @@
             }
 
             const datasets = result.paths.map((path, idx) => ({
-                label: `Chemin ${idx + 1}`,
+                label: `Path ${idx + 1}`,
                 data: result.timeGrid.map((t, i) => ({ x: t, y: path[i] })),
                 borderColor: `hsla(${(idx * 47) % 360}, 70%, 60%, 0.6)`,
                 backgroundColor: `hsla(${(idx * 47) % 360}, 70%, 60%, 0.1)`,
@@ -777,6 +781,10 @@
 
             if (mcChart) mcChart.destroy();
 
+            // Détecter la taille de l'écran pour adapter les options
+            const isSmallScreen = window.innerWidth <= 768;
+            const isVerySmallScreen = window.innerWidth <= 480;
+            
             mcChart = new Chart(ctx, {
                 type: 'line',
                 data: { datasets },
@@ -784,17 +792,20 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: {
-                        duration: 1000,
+                        duration: isSmallScreen ? 500 : 1000, // Animation plus rapide sur petit écran
                         easing: 'easeInOutQuart'
                     },
                     scales: {
                         x: {
                             type: 'linear',
                             title: { 
-                                display: true, 
-                                text: 'Temps (années)',
+                                display: !isVerySmallScreen, // Masquer le titre sur très petit écran
+                                text: 'Time (years)',
                                 color: '#e5e7eb',
-                                font: { size: 14, weight: '600' }
+                                font: { 
+                                    size: isSmallScreen ? 12 : 14, 
+                                    weight: '600' 
+                                }
                             },
                             grid: { 
                                 color: 'rgba(255,255,255,0.1)',
@@ -802,16 +813,20 @@
                             },
                             ticks: { 
                                 color: '#9ca3af',
-                                font: { size: 12 }
+                                font: { size: isSmallScreen ? 10 : 12 },
+                                maxTicksLimit: isSmallScreen ? 5 : 10 // Moins de ticks sur petit écran
                             },
                             border: { color: 'rgba(255,255,255,0.2)' }
                         },
                         y: {
                             title: { 
-                                display: true, 
-                                text: 'Prix de l\'actif sous-jacent',
+                                display: !isVerySmallScreen, // Masquer le titre sur très petit écran
+                                text: 'Underlying Asset Price',
                                 color: '#e5e7eb',
-                                font: { size: 14, weight: '600' }
+                                font: { 
+                                    size: isSmallScreen ? 12 : 14, 
+                                    weight: '600' 
+                                }
                             },
                             grid: { 
                                 color: 'rgba(255,255,255,0.1)',
@@ -819,7 +834,8 @@
                             },
                             ticks: { 
                                 color: '#9ca3af',
-                                font: { size: 12 }
+                                font: { size: isSmallScreen ? 10 : 12 },
+                                maxTicksLimit: isSmallScreen ? 4 : 8 // Moins de ticks sur petit écran
                             },
                             border: { color: 'rgba(255,255,255,0.2)' }
                         },
@@ -833,7 +849,9 @@
                             borderColor: '#374151',
                             borderWidth: 1,
                             cornerRadius: 8,
-                            displayColors: false
+                            displayColors: false,
+                            titleFont: { size: isSmallScreen ? 12 : 14 },
+                            bodyFont: { size: isSmallScreen ? 11 : 13 }
                         }
                     },
                     interaction: {
@@ -909,7 +927,7 @@
                 // Tooltip avec informations
                 const binStart = min + index * binSize;
                 const binEnd = min + (index + 1) * binSize;
-                bar.title = `Prix: ${binStart.toFixed(1)} - ${binEnd.toFixed(1)}\nChemins: ${count} (${((count/paths.length)*100).toFixed(1)}%)`;
+                bar.title = `Price: ${binStart.toFixed(1)} - ${binEnd.toFixed(1)}\nPaths: ${count} (${((count/paths.length)*100).toFixed(1)}%)`;
                 
                 distributionBars.appendChild(bar);
             });
@@ -978,6 +996,45 @@
             sidebar.classList.remove('mobile-open');
         }
     });
+
+    // Gestion du redimensionnement de la fenêtre pour le graphique
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            if (mcChart) {
+                mcChart.resize();
+                mcChart.render();
+            }
+        }, 250); // Délai pour éviter trop de recalculs
+    });
+
+    // Gestion du bouton de basculement de la distribution
+    const toggleDistributionBtn = document.getElementById('toggle-distribution');
+    const distributionBar = document.getElementById('distribution-bar');
+    
+    if (toggleDistributionBtn && distributionBar) {
+        toggleDistributionBtn.addEventListener('click', function() {
+            distributionBar.classList.toggle('hidden');
+            
+            // Redimensionner le graphique après l'animation
+            setTimeout(() => {
+                if (mcChart) {
+                    mcChart.resize();
+                    mcChart.render();
+                }
+            }, 300);
+            
+            // Mettre à jour l'icône du bouton
+            const icon = this.querySelector('i');
+            if (distributionBar.classList.contains('hidden')) {
+                icon.setAttribute('data-lucide', 'eye');
+            } else {
+                icon.setAttribute('data-lucide', 'bar-chart-3');
+            }
+            lucide.createIcons();
+        });
+    }
 </script>
 {% endblock %}
 

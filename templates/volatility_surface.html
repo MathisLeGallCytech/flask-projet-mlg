@@ -1,6 +1,6 @@
 {% extends "base_flask.html" %}
 
-{% block title %}Surface de Volatilité – Volatilité Implicite{% endblock %}
+{% block title %}Implied Volatility Surface{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
@@ -14,25 +14,25 @@
                 <li class="nav-item">
                     <a href="{{ url_for('index') }}" class="nav-link">
                         <i data-lucide="home"></i>
-                        <span>Accueil</span>
+                        <span>Home</span>
                     </a>
                 </li>
                                     <li class="nav-item">
                         <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
                             <i data-lucide="user"></i>
-                            <span>CV Mathis Le Gall</span>
+                            <span>Mathis Le Gall CV</span>
                         </a>
                     </li>
                 <li class="nav-item">
                     <a href="{{ url_for('indices_actions') }}" class="nav-link">
                         <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Actions</span>
+                        <span>Indices & Stocks</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
                         <i data-lucide="activity"></i>
-                        <span>Analyse Actions & Indices</span>
+                        <span>Stocks & Indices Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -45,19 +45,19 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link active">
                         <i data-lucide="thermometer"></i>
-                        <span>Volatility Surface</span>
+                        <span>Implied Volatility</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
                         <i data-lucide="calculator"></i>
-                        <span>Analyse des Greeks</span>
+                        <span>Greeks Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('description_app') }}" class="nav-link">
                         <i data-lucide="info"></i>
-                        <span>Description App</span>
+                        <span>App Description</span>
                     </a>
                 </li>
             </ul>
@@ -72,10 +72,10 @@
                 <div class="main-header-left">
                 </div>
                 <div class="main-header-center">
-                    <!-- Espace pour équilibrer le layout -->
+                    <!-- Space to balance the layout -->
                 </div>
                 <div class="main-header-right">
-                    <h1 class="header-title">Volatility Surface</h1>
+                    <h1 class="header-title">Implied Volatility Surface</h1>
                 </div>
             </div>
         </header>
@@ -88,18 +88,28 @@
                     <div class="header-left">
                         <h1 class="page-title">
                             <i data-lucide="thermometer" class="title-icon"></i>
-                            Surface de Volatilité Implicite
+                            Implied Volatility Surface
                         </h1>
                         <p class="page-subtitle">
-                            Analyse interactive de la volatilité implicite basée sur les données d'options réelles du marché
+                            Interactive analysis of implied volatility based on real market options data
                         </p>
+                        
+                        <!-- Free API Warning -->
+                        <div class="api-warning-card">
+                            <div class="warning-content">
+                                <div class="warning-title">⚠️ Free API - Important Information</div>
+                                <div class="warning-text">
+                                    This surface uses a free API with limitations. The data may be imprecise and the loading time may reach 1 minute. For optimal results, we recommend patience.
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <!-- Indicateur de statut API -->
+                    <!-- API Status Indicator -->
                     <div id="api-status" class="api-status-card">
                         <div class="status-indicator">
                             <div id="api-status-indicator" class="status-dot"></div>
-                            <span id="api-status-text" class="status-text">Vérification API...</span>
+                            <span id="api-status-text" class="status-text">Checking API...</span>
                         </div>
                         <div class="status-details">
                             <div class="api-name">Options API</div>
@@ -107,7 +117,7 @@
                         </div>
                         <div class="status-meta">
                             <i data-lucide="database" class="meta-icon"></i>
-                            <span class="meta-text">Données Options</span>
+                            <span class="meta-text">Options Data</span>
                         </div>
                     </div>
                 </div>
@@ -118,16 +128,16 @@
                     <!-- Configuration Section -->
                     <div class="options-form-container">
                         <div class="options-form">
-                            <!-- Paramètres principaux -->
+                            <!-- Main Parameters -->
                             <div class="form-section">
                                 <div class="form-grid">
                                     <div class="form-field">
                                         <label for="vs-symbol-select" class="field-label">
                                             <i data-lucide="building-2" class="field-icon"></i>
-                                            Symbole
+                                            Symbol
                                         </label>
                                         <select id="vs-symbol-select" class="form-input">
-                                            <option value="SPY">SPY - SPDR S&P 500 ETF (Recommandé)</option>
+                                            <option value="SPY">SPY - SPDR S&P 500 ETF (Recommended)</option>
                                             <option value="QQQ">QQQ - Invesco QQQ Trust</option>
                                             <option value="IWM">IWM - iShares Russell 2000 ETF</option>
                                             <option value="AAPL">AAPL - Apple Inc.</option>
@@ -137,17 +147,17 @@
                                             <option value="TSLA">TSLA - Tesla Inc.</option>
                                             <option value="META">META - Meta Platforms Inc.</option>
                                             <option value="NVDA">NVDA - NVIDIA Corp.</option>
-                                            <option value="__custom__">Personnalisé...</option>
+                                            <option value="__custom__">Custom...</option>
                                         </select>
                                         <div id="vs-custom-wrap" class="hidden">
-                                            <input type="text" id="vs-symbol" class="form-input" placeholder="Entrez un symbole (ex: AAPL)">
+                                            <input type="text" id="vs-symbol" class="form-input" placeholder="Enter a symbol (ex: AAPL)">
                                         </div>
                                     </div>
                                     
                                     <div class="form-field">
                                         <label for="vs-provider" class="field-label">
                                             <i data-lucide="database" class="field-icon"></i>
-                                            Fournisseur de données
+                                            Data Provider
                                         </label>
                                         <select id="vs-provider" class="form-input">
                                             <option value="finnhub">Finnhub API</option>
@@ -160,7 +170,7 @@
                                     <div class="form-field">
                                         <label for="vs-span" class="field-label">
                                             <i data-lucide="target" class="field-icon"></i>
-                                            Écart autour du spot
+                                            Spot Range
                                         </label>
                                         <select id="vs-span" class="form-input">
                                             <option value="0.1">10%</option>
@@ -175,7 +185,7 @@
                                                          <div class="form-actions">
                                  <button id="vs-load" class="calculate-btn">
                                      <i data-lucide="play" class="btn-icon"></i>
-                                     Charger la Surface
+                                     Load Surface
                                  </button>
                              </div>
                         </div>
@@ -186,16 +196,16 @@
                         <div class="form-header">
                             <h3 class="form-title">
                                 <i data-lucide="bar-chart-3" class="form-icon"></i>
-                                Paramètres de Calcul
+                                Calculation Parameters
                             </h3>
-                            <p class="form-subtitle">Informations détaillées sur l'analyse de volatilité</p>
+                            <p class="form-subtitle">Detailed information about implied volatility analysis</p>
                         </div>
                         
                         <div class="metrics-grid">
                             <div class="metric-card">
                                 <div class="metric-header">
                                     <i data-lucide="dollar-sign" class="metric-icon"></i>
-                                    <div class="metric-label">Prix Spot</div>
+                                    <div class="metric-label">Spot Price</div>
                                 </div>
                                 <div class="metric-values">
                                     <div class="metric-value">
@@ -219,7 +229,7 @@
                             <div class="metric-card">
                                 <div class="metric-header">
                                     <i data-lucide="calendar" class="metric-icon"></i>
-                                    <div class="metric-label">Maturités</div>
+                                    <div class="metric-label">Maturities</div>
                                 </div>
                                 <div class="metric-values">
                                     <div class="metric-value">
@@ -243,7 +253,7 @@
                             <div class="metric-card">
                                 <div class="metric-header">
                                     <i data-lucide="trending-up" class="metric-icon"></i>
-                                    <div class="metric-label">Taux Sans Risque</div>
+                                    <div class="metric-label">Risk-Free Rate</div>
                                 </div>
                                 <div class="metric-values">
                                     <div class="metric-value">
@@ -255,7 +265,7 @@
                             <div class="metric-card">
                                 <div class="metric-header">
                                     <i data-lucide="percent" class="metric-icon"></i>
-                                    <div class="metric-label">Dividende</div>
+                                    <div class="metric-label">Dividend Yield</div>
                                 </div>
                                 <div class="metric-values">
                                     <div class="metric-value">
@@ -291,7 +301,7 @@
                             <div class="metric-card">
                                 <div class="metric-header">
                                     <i data-lucide="bar-chart-2" class="metric-icon"></i>
-                                    <div class="metric-label">IV Moyenne</div>
+                                    <div class="metric-label">IV Average</div>
                                 </div>
                                 <div class="metric-values">
                                     <div class="metric-value">
@@ -312,21 +322,21 @@
                          
                          <div class="debug-content">
                              <div class="debug-tabs">
-                                 <button class="debug-tab active" data-tab="summary">Résumé</button>
-                                 <button class="debug-tab" data-tab="options">Options Détaillées</button>
-                                 <button class="debug-tab" data-tab="iv-matrix">Matrice IV</button>
-                                 <button class="debug-tab" data-tab="raw">JSON Brut</button>
+                                 <button class="debug-tab active" data-tab="summary">Summary</button>
+                                 <button class="debug-tab" data-tab="options">Detailed Options</button>
+                                 <button class="debug-tab" data-tab="iv-matrix">IV Matrix</button>
+                                 <button class="debug-tab" data-tab="raw">Raw JSON</button>
                              </div>
                              
                              <div class="debug-panels">
                                  <div id="summary-panel" class="debug-panel active">
                                      <div class="summary-grid">
                                          <div class="summary-item">
-                                             <span class="summary-label">Symbole</span>
+                                             <span class="summary-label">Symbol</span>
                                              <span class="summary-value" id="debug-symbol">-</span>
                                          </div>
                                          <div class="summary-item">
-                                             <span class="summary-label">Prix Spot</span>
+                                             <span class="summary-label">Spot Price</span>
                                              <span class="summary-value" id="debug-spot-price">-</span>
                                          </div>
                                          <div class="summary-item">
@@ -346,7 +356,7 @@
                                              <span class="summary-value" id="debug-puts-count">-</span>
                                          </div>
                                          <div class="summary-item">
-                                             <span class="summary-label">Maturités</span>
+                                             <span class="summary-label">Maturities</span>
                                              <span class="summary-value" id="debug-maturities-count">-</span>
                                          </div>
                                          <div class="summary-item">
@@ -362,7 +372,7 @@
                                              <span class="summary-value" id="debug-iv-max">-</span>
                                          </div>
                                          <div class="summary-item">
-                                             <span class="summary-label">IV Moyenne</span>
+                                             <span class="summary-label">IV Average</span>
                                              <span class="summary-value" id="debug-iv-avg">-</span>
                                          </div>
 
@@ -380,10 +390,10 @@
                                          <table id="debug-options-table" class="options-table">
                                              <thead>
                                                  <tr>
-                                                     <th>Contrat</th>
+                                                     <th>Contract</th>
                                                      <th>Type</th>
                                                      <th>Strike</th>
-                                                     <th>Prix</th>
+                                                     <th>Price</th>
                                                      <th>IV (%)</th>
                                                      <th>Expiration</th>
                                                  </tr>
@@ -396,9 +406,9 @@
                                  
                                  <div id="iv-matrix-panel" class="debug-panel">
                                      <div class="iv-matrix-container">
-                                         <h4>Matrice de Volatilité Implicite</h4>
+                                         <h4>Implied Volatility Matrix</h4>
                                          <div class="matrix-info">
-                                             <p>Lignes: Maturités (années) | Colonnes: Strikes ($)</p>
+                                             <p>Lines: Maturities (years) | Columns: Strikes ($)</p>
                                          </div>
                                          <div id="debug-iv-matrix" class="iv-matrix"></div>
                                      </div>
@@ -413,9 +423,9 @@
                              <div>
                                  <div class="volatility-3d-chart-title">
                                      <i data-lucide="layers" class="volatility-3d-chart-icon"></i>
-                                     Surface de Volatilité 3D
+                                     Implied Volatility 3D Surface
                                  </div>
-                                 <p class="volatility-3d-chart-subtitle">Visualisation interactive de la volatilité implicite en trois dimensions avec données Finnhub</p>
+                                 <p class="volatility-3d-chart-subtitle">Interactive visualization of implied volatility in three dimensions with Finnhub data</p>
                              </div>
 
                          </div>
@@ -425,18 +435,18 @@
                                  <div class="volatility-3d-placeholder-icon">
                             <i data-lucide="bar-chart-3" style="width: 48px; height: 48px; color: #6b7280;"></i>
                         </div>
-                                 <div class="volatility-3d-placeholder-title">Prêt à analyser</div>
-                                 <div class="volatility-3d-placeholder-text">Sélectionnez un symbole et cliquez sur "Charger la Surface" pour afficher la visualisation 3D interactive</div>
+                                 <div class="volatility-3d-placeholder-title">Ready to analyze</div>
+                                 <div class="volatility-3d-placeholder-text">Select a symbol and click "Load Surface" to display the 3D interactive visualization</div>
                              </div>
                          </div>
                          
-                         <!-- Conteneur pour les statistiques - SUPPRIMÉ selon demande utilisateur -->
+                         <!-- Container for statistics - SUPPRIMÉ selon demande utilisateur -->
                          <!-- Les statistiques sont maintenant affichées dans la section Debug -->
                      </div>
 
 
 
-                    <!-- Bloc de contrôles séparé - AU-DESSUS -->
+                    <!-- Separate control block - ABOVE -->
                     <div class="options-form-container">
                         <div class="options-form">
                             <div class="form-section">
@@ -444,10 +454,10 @@
                                     <div class="form-field">
                                         <label for="smile-add-select" class="field-label">
                                             <i data-lucide="plus-circle" class="field-icon"></i>
-                                            Ajouter un ticker
+                                            Add a ticker
                                         </label>
                                         <select id="smile-add-select" class="form-input">
-                                            <option value="">Sélectionner un ticker...</option>
+                                            <option value="">Select a ticker...</option>
                                             <option value="SPY">SPY - SPDR S&P 500 ETF</option>
                                             <option value="QQQ">QQQ - Invesco QQQ Trust</option>
                                             <option value="IWM">IWM - iShares Russell 2000 ETF</option>
@@ -458,17 +468,17 @@
                                     <div class="form-field">
                                         <label class="field-label">
                                             <i data-lucide="check-square" class="field-icon"></i>
-                                            Tickers sélectionnés
+                                            Selected tickers
                                         </label>
                                         <div id="smile-chips" class="tag-chips">
-                                            <span style="color: white;"><i data-lucide="building-2" style="width: 16px; height: 16px; margin-right: 8px; color: #6b7280;"></i>Aucun ticker sélectionné</span>
+                                            <span style="color: white;"><i data-lucide="building-2" style="width: 16px; height: 16px; margin-right: 8px; color: #6b7280;"></i>No tickers selected</span>
                                         </div>
                                     </div>
                                     
                                     <div class="form-field">
                                         <label for="smile-span" class="field-label">
                                             <i data-lucide="target" class="field-icon"></i>
-                                            Écart autour du spot
+                                            Spot Range
                                         </label>
                                         <select id="smile-span" class="form-input">
                                             <option value="0.1">10%</option>
@@ -483,21 +493,21 @@
                             <div class="form-actions">
                                 <button id="smile-compare-btn" class="calculate-btn">
                                     <i data-lucide="bar-chart-3" class="btn-icon"></i>
-                                    Comparer les Smiles
+                                    Compare Smiles
                                 </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Smile de Volatilité Section -->
+                    <!-- Smile of Volatility Section -->
                     <div class="volatility-3d-chart-container">
                         <div class="volatility-3d-chart-header">
                             <div>
                                 <div class="volatility-3d-chart-title">
                                     <i data-lucide="trending-up" class="volatility-3d-chart-icon"></i>
-                                    Comparaison des Smiles de Volatilité
+                                    Comparison of Volatility Smiles
                                 </div>
-                                <p class="volatility-3d-chart-subtitle">Comparez les smiles de volatilité implicite entre différents titres pour une maturité spécifique</p>
+                                <p class="volatility-3d-chart-subtitle">Compare implied volatility smiles between different stocks for a specific maturity</p>
                             </div>
                         </div>
                         
@@ -510,8 +520,8 @@
                                     <div class="placeholder-icon">
                                         <i data-lucide="bar-chart-3" style="width: 48px; height: 48px; color: #6b7280;"></i>
                                     </div>
-                                    <h4>Comparaison des Smiles</h4>
-                                    <p>Ajoutez des tickers et cliquez sur "Comparer les Smiles" pour afficher les courbes de volatilité implicite</p>
+                                    <h4>Comparison of Smiles</h4>
+                                    <p>Add tickers and click "Compare Smiles" to display the implied volatility curves</p>
                                 </div>
                             </div>
                         </div>
@@ -520,7 +530,7 @@
                         <div id="smile-statistics" class="chart-container statistics-container hidden">
                             <div class="chart-header">
                                 <div class="chart-title">
-                                    Statistiques de Comparaison
+                                    Comparison Statistics
                                 </div>
                             </div>
                             
@@ -574,19 +584,19 @@
         switch(status) {
             case 'connected':
                 indicator.classList.add('connected');
-                statusText.textContent = 'API Connectée';
+                statusText.textContent = 'API Connected';
                 if (responseTime) {
                     responseTimeEl.textContent = `${responseTime}ms`;
                 }
                 break;
             case 'error':
                 indicator.classList.add('error');
-                statusText.textContent = 'API Hors ligne';
-                responseTimeEl.textContent = 'Erreur';
+                statusText.textContent = 'API Offline';
+                responseTimeEl.textContent = 'Error';
                 break;
             case 'checking':
                 indicator.classList.add('checking');
-                statusText.textContent = 'Vérification API...';
+                statusText.textContent = 'Checking API...';
                 responseTimeEl.textContent = '--';
                 break;
         }
@@ -670,7 +680,7 @@
         // Ajouter l'option personnalisée
         const customOption = document.createElement('option');
         customOption.value = '__custom__';
-        customOption.textContent = 'Personnalisé...';
+        customOption.textContent = 'Custom...';
         selectSymbol.appendChild(customOption);
         
         // Définir QQQ comme valeur par défaut (le meilleur)
@@ -760,6 +770,77 @@
         });
     }
     
+    // Fonction pour mettre à jour la barre de progression et les étapes
+    function updateProgress(step, totalSteps, message) {
+        const progressFill = document.getElementById('vs-progress-fill');
+        const progressPercentage = document.getElementById('vs-progress-percentage');
+        const loadingText = document.getElementById('vs-loading-text');
+        
+        if (progressFill && progressPercentage && loadingText) {
+            const percentage = Math.round((step / totalSteps) * 100);
+            progressFill.style.width = `${percentage}%`;
+            progressPercentage.textContent = `${percentage}%`;
+            loadingText.textContent = message;
+        }
+        
+        // Mettre à jour les étapes (4 carrés)
+        updateStepSquares(step);
+    }
+    
+    // Fonction pour mettre à jour les carrés d'étapes
+    function updateStepSquares(currentStep) {
+        const steps = [
+            { id: 'step-1', label: 'Verification' },
+            { id: 'step-2', label: 'API Connection' },
+            { id: 'step-3', label: 'Data Retrieval' },
+            { id: 'step-4', label: 'Calculation' }
+        ];
+        
+        steps.forEach((step, index) => {
+            const stepElement = document.getElementById(step.id);
+            if (stepElement) {
+                // Retirer toutes les classes
+                stepElement.classList.remove('active', 'completed');
+                
+                // Ajouter la classe appropriée
+                if (index + 1 < currentStep) {
+                    // Étape terminée
+                    stepElement.classList.add('completed');
+                } else if (index + 1 === currentStep) {
+                    // Étape active
+                    stepElement.classList.add('active');
+                }
+            }
+        });
+    }
+    
+    // Fonction pour simuler les étapes de chargement
+    async function simulateLoadingSteps(symbol, span, provider) {
+        const steps = [
+            { step: 1, message: 'Verification du symbole...' },
+            { step: 2, message: 'Connecting to API...' },
+            { step: 3, message: 'Retrieving options data...' },
+            { step: 4, message: 'Calculating implied volatilities...' }
+        ];
+        
+        const totalSteps = steps.length;
+        
+        // Simuler les étapes avec des délais variables
+        for (let i = 0; i < steps.length - 1; i++) { // S'arrêter avant la dernière étape
+            updateProgress(steps[i].step, totalSteps, steps[i].message);
+            
+            // Délai variable selon l'étape
+            let delay;
+                    if (i === 0) delay = 400; // Verification
+        else if (i === 1) delay = 600; // API Connection
+        else if (i === 2) delay = 1000; // Data Retrieval (longer)
+            
+            await new Promise(resolve => setTimeout(resolve, delay));
+        }
+        
+        // La dernière étape sera gérée après le chargement réel
+    }
+    
     // Fonction pour charger les données de volatilité surface 3D
     async function fetchVolatilitySurface(symbol, span, provider) {
         // Utiliser la nouvelle API 3D optimisée (sans maxExp - utilise toutes les maturités disponibles)
@@ -808,13 +889,57 @@
             const placeholder = document.getElementById('vs-plot-placeholder');
             
             if (placeholder) {
-                placeholder.innerHTML = '<div class="volatility-3d-loading"><div class="volatility-3d-loading-spinner"></div><div class="volatility-3d-loading-text">Chargement des données de volatilité surface 3D...</div></div>';
+                placeholder.innerHTML = `
+                    <div class="volatility-3d-loading">
+                        <div class="loading-square">
+                            <!-- Barre de chargement en haut -->
+                            <div class="loading-bar-container">
+                                <div class="loading-bar">
+                                    <div class="loading-bar-fill" id="vs-progress-fill"></div>
+                                </div>
+                                <div class="loading-percentage" id="vs-progress-percentage">0%</div>
+                            </div>
+                            
+                            <!-- 4 sous-carrés pour les étapes -->
+                            <div class="steps-grid">
+                                <div class="step-square" id="step-1">
+                                    <div class="step-number">1</div>
+                                    <div class="step-label">Verification</div>
+                                </div>
+                                <div class="step-square" id="step-2">
+                                    <div class="step-number">2</div>
+                                    <div class="step-label">API Connection</div>
+                                </div>
+                                <div class="step-square" id="step-3">
+                                    <div class="step-number">3</div>
+                                    <div class="step-label">Data Retrieval</div>
+                                </div>
+                                <div class="step-square" id="step-4">
+                                    <div class="step-number">4</div>
+                                    <div class="step-label">Calculation</div>
+                                </div>
+                            </div>
+                            
+                            <!-- Message de statut -->
+                            <div class="loading-status" id="vs-loading-text">Preparing loading...</div>
+                        </div>
+                    </div>`;
             }
+            
+            // Démarrer la simulation de chargement en parallèle
+            const loadingPromise = simulateLoadingSteps(symbol, span, provider);
             
             const startTime = performance.now();
             const res = await fetchVolatilitySurface(symbol, span, provider);
             const endTime = performance.now();
             const responseTime = Math.round(endTime - startTime);
+            
+            // Finaliser la progression après le chargement réel
+            updateProgress(4, 4, 'Loading completed!');
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
+            // Attendre que la simulation de chargement soit terminée
+            await loadingPromise;
             
             console.log('Réponse API:', res);
             
@@ -875,7 +1000,7 @@
                     placeholder.innerHTML = '';
                 }
                 
-                let errorMessage = res.error || 'Erreur lors du chargement des données';
+                let errorMessage = res.error || 'Error loading data';
                 
                 // Messages d'erreur plus informatifs
                 if (errorMessage.includes('Aucune date d\'expiration')) {
@@ -889,7 +1014,7 @@
                                 <div class="volatility-3d-error-icon">
                                     <i data-lucide="x-circle" style="width: 24px; height: 24px; color: #ef4444;"></i>
                                 </div>
-                        <div class="volatility-3d-error-title">Erreur de chargement</div>
+                        <div class="volatility-3d-error-title">Loading Error</div>
                         <div class="volatility-3d-error-message">${errorMessage}</div>
                         <div style="margin-top: 1.5rem; padding: 1rem; background: rgba(55, 65, 81, 0.5); border-radius: 0.5rem; border: 1px solid #374151;">
                             <h5 style="color: #3b82f6; margin-bottom: 0.75rem;">
@@ -899,7 +1024,7 @@
                             <ul style="margin: 0.5rem 0; padding-left: 1.5rem; color: #d1d5db; font-size: 0.875rem;">
                                 <li>Essayez SPY, QQQ ou IWM (ETF avec beaucoup d'options)</li>
                                 <li>Vérifiez que le symbole est correct</li>
-                                <li>Réduisez le nombre de maturités (maxExp)</li>
+                                <li>Reduce the number of maturities (maxExp)</li>
                                 <li>Augmentez l'écart autour du spot (span)</li>
                             </ul>
                         </div>
@@ -916,7 +1041,7 @@
              console.error('Erreur lors du chargement:', e);
              updateApiStatus('error');
              const plotDiv = document.getElementById('vs-plot');
-             plotDiv.innerHTML = `<div class="error-message">Erreur de connexion: ${e.message}</div>`;
+             plotDiv.innerHTML = `<div class="error-message">Connection error: ${e.message}</div>`;
          }
      });
      }
@@ -927,24 +1052,24 @@
     function create3DVolatilitySurface(data, symbol) {
         const plotDiv = document.getElementById('vs-plot');
         
-        console.log('Création graphique 3D avec données:', data);
+        console.log('Creating 3D chart with data:', data);
         
         if (!data.iv || !data.maturities || !data.strikes) {
-                            plotDiv.innerHTML = '<div class="volatility-3d-error"><div class="volatility-3d-error-icon"><i data-lucide="x-circle" style="width: 24px; height: 24px; color: #ef4444;"></i></div><div class="volatility-3d-error-title">Données insuffisantes</div><div class="volatility-3d-error-message">Les données de volatilité implicite ne sont pas suffisantes pour créer le graphique 3D</div></div>';
+                            plotDiv.innerHTML = '<div class="volatility-3d-error"><div class="volatility-3d-error-icon"><i data-lucide="x-circle" style="width: 24px; height: 24px; color: #ef4444;"></i></div><div class="volatility-3d-error-title">Insufficient Data</div><div class="volatility-3d-error-message">Implied volatility data is not sufficient to create the 3D chart</div></div>';
             return;
         }
         
-        // Convertir les strikes en pourcentage du spot (spot = 100%)
+        // Convert strikes to percentage of spot (spot = 100%)
         const spotPrice = data.spot_price || 100;
         const x = data.strikes.map(strike => (strike / spotPrice) * 100);
         const y = data.maturities; // Déjà en années
         const z = data.iv; // Matrice 2D déjà formatée
         
-        // Paramètres de contrôle (valeurs par défaut)
+        // Control parameters (default values)
         const viewType = 'surface';
         const colorscale = 'Viridis';
         
-        // Créer la trace de surface principale
+        // Create main surface trace
         let trace;
         
         if (viewType === 'wireframe') {
@@ -954,15 +1079,15 @@
                 z: z,
                 type: 'surface',
                 colorscale: colorscale,
-                name: 'Volatilité Implicite',
+                name: 'Implied Volatility',
                 hovertemplate: 
-                    '<b>Strike:</b> %{x:.1f}% du spot<br>' +
-                    '<b>Maturité:</b> %{y:.2f} ans<br>' +
+                    '<b>Strike:</b> %{x:.1f}% of spot<br>' +
+                    '<b>Maturity:</b> %{y:.2f} years<br>' +
                     '<b>IV:</b> %{z:.2%}<br>' +
                     '<extra></extra>',
                 showscale: true,
                 colorbar: {
-                    title: "Volatilité Implicite",
+                    title: "Implied Volatility",
                     titleside: "right",
                     tickformat: ".1%",
                     len: 0.8
@@ -984,15 +1109,15 @@
                 z: z,
                 type: 'contour',
                 colorscale: colorscale,
-                name: 'Volatilité Implicite',
+                name: 'Implied Volatility',
                 hovertemplate: 
-                    '<b>Strike:</b> %{x:.1f}% du spot<br>' +
-                    '<b>Maturité:</b> %{y:.2f} ans<br>' +
+                    '<b>Strike:</b> %{x:.1f}% of spot<br>' +
+                    '<b>Maturity:</b> %{y:.2f} years<br>' +
                     '<b>IV:</b> %{z:.2%}<br>' +
                     '<extra></extra>',
                 showscale: true,
                 colorbar: {
-                    title: "Volatilité Implicite",
+                    title: "Implied Volatility",
                     titleside: "right",
                     tickformat: ".1%",
                     len: 0.8
@@ -1003,22 +1128,22 @@
                 }
             };
         } else {
-            // Vue surface par défaut
+            // Default surface view
             trace = {
                 x: x,
                 y: y,
                 z: z,
                 type: 'surface',
                 colorscale: colorscale,
-                name: 'Volatilité Implicite',
+                name: 'Implied Volatility',
                 hovertemplate: 
-                    '<b>Strike:</b> %{x:.1f}% du spot<br>' +
-                    '<b>Maturité:</b> %{y:.2f} ans<br>' +
+                    '<b>Strike:</b> %{x:.1f}% of spot<br>' +
+                    '<b>Maturity:</b> %{y:.2f} years<br>' +
                     '<b>IV:</b> %{z:.2%}<br>' +
                     '<extra></extra>',
                 showscale: true,
                 colorbar: {
-                    title: "Volatilité Implicite",
+                    title: "Implied Volatility",
                     titleside: "right",
                     tickformat: ".1%",
                     len: 0.8
@@ -1028,19 +1153,19 @@
         
         const traces = [trace];
         
-        // Note: Ligne du prix spot supprimée selon la demande utilisateur
+        // Note: Spot price line removed as per user request
         
-        // Layout avec fond transparent et styles améliorés
+        // Layout with transparent background and improved styles
         const layout = {
             title: {
-                text: `Surface de Volatilité Implicite - ${symbol}`,
+                text: `Implied Volatility Surface - ${symbol}`,
                 font: { color: '#ffffff', size: 18, family: 'Segoe UI' },
                 x: 0.5,
                 xanchor: 'center'
             },
             scene: {
                 xaxis: {
-                    title: 'Strike (% du Spot)',
+                    title: 'Strike (% of Spot)',
                     gridcolor: 'rgba(55, 65, 81, 0.3)',
                     zerolinecolor: 'rgba(107, 114, 128, 0.5)',
                     showbackground: false,
@@ -1050,7 +1175,7 @@
                     zeroline: true
                 },
                 yaxis: {
-                    title: 'Maturité (années)',
+                    title: 'Maturity (years)',
                     gridcolor: 'rgba(55, 65, 81, 0.3)',
                     zerolinecolor: 'rgba(107, 114, 128, 0.5)',
                     showbackground: false,
@@ -1060,7 +1185,7 @@
                     zeroline: true
                 },
                 zaxis: {
-                    title: 'Volatilité Implicite',
+                    title: 'Implied Volatility',
                     gridcolor: 'rgba(55, 65, 81, 0.3)',
                     zerolinecolor: 'rgba(107, 114, 128, 0.5)',
                     tickformat: '.1%',
@@ -1074,7 +1199,7 @@
                     eye: {x: 1.5, y: 1.5, z: 1.5},
                     center: {x: 0, y: 0, z: 0}
                 },
-                bgcolor: 'rgba(0,0,0,0)', // Fond transparent
+                bgcolor: 'rgba(0,0,0,0)', // Transparent background
                 aspectmode: 'cube'
             },
             paper_bgcolor: 'rgba(0,0,0,0)', // Fond transparent
@@ -1102,7 +1227,7 @@
             }
         };
         
-        // Configuration Plotly optimisée
+        // Optimized Plotly configuration
         const config = {
             responsive: true,
             displayModeBar: true,
@@ -1127,12 +1252,105 @@
             }]
         };
         
+        // Ajuster les marges selon la taille d'écran
+        function adjustMarginsForScreenSize() {
+            const isMobile = window.innerWidth <= 768;
+            const isSmallMobile = window.innerWidth <= 480;
+            const isTinyMobile = window.innerWidth <= 360;
+            
+            if (isTinyMobile) {
+                layout.margin.r = 10; // Marge très réduite sur très petits écrans
+                layout.margin.l = 15; // Marge gauche très réduite
+                layout.margin.t = 60;
+                layout.margin.b = 30;
+            } else if (isSmallMobile) {
+                layout.margin.r = 15; // Marge réduite sur petits écrans
+                layout.margin.l = 20; // Marge gauche réduite
+                layout.margin.t = 70;
+                layout.margin.b = 35;
+            } else if (isMobile) {
+                layout.margin.r = 20; // Marge réduite sur mobile
+                layout.margin.l = 25; // Marge gauche réduite
+                layout.margin.t = 75;
+                layout.margin.b = 40;
+            } else {
+                layout.margin.r = 80; // Marge normale pour la barre de couleur sur grand écran
+                layout.margin.l = 50;
+                layout.margin.t = 80;
+                layout.margin.b = 50;
+            }
+            
+            // Masquer la barre de couleur sur mobile, l'afficher sur grand écran
+            traces.forEach(trace => {
+                if (trace.showscale !== undefined) {
+                    trace.showscale = !isMobile; // true sur grand écran, false sur mobile
+                }
+            });
+        }
+        
+        // Ajuster les marges avant de créer le graphique
+        adjustMarginsForScreenSize();
+        
         // Utiliser la configuration de la classe si disponible
         if (data.plot_config) {
             Object.assign(config, data.plot_config);
         }
         
         Plotly.newPlot(plotDiv, traces, layout, config);
+        
+        // Forcer le redimensionnement après le chargement
+        setTimeout(() => {
+            if (plotDiv && plotDiv.data) {
+                adjustMarginsForScreenSize();
+                Plotly.relayout(plotDiv, {
+                    'margin.r': layout.margin.r,
+                    'margin.l': layout.margin.l,
+                    'margin.t': layout.margin.t,
+                    'margin.b': layout.margin.b
+                });
+                
+                // Masquer la barre de couleur sur mobile via CSS
+                const isMobile = window.innerWidth <= 768;
+                if (isMobile) {
+                    const colorbars = plotDiv.querySelectorAll('.colorbar');
+                    colorbars.forEach(colorbar => {
+                        colorbar.style.display = 'none';
+                        colorbar.style.visibility = 'hidden';
+                        colorbar.style.width = '0';
+                        colorbar.style.height = '0';
+                    });
+                }
+            }
+        }, 500);
+        
+        // Gestionnaire pour redimensionner le graphique quand la fenêtre change
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                if (plotDiv && plotDiv.data) {
+                    adjustMarginsForScreenSize();
+                    Plotly.relayout(plotDiv, {
+                        'margin.r': layout.margin.r,
+                        'margin.l': layout.margin.l,
+                        'margin.t': layout.margin.t,
+                        'margin.b': layout.margin.b
+                    });
+                    
+                    // Masquer la barre de couleur sur mobile via CSS
+                    const isMobile = window.innerWidth <= 768;
+                    if (isMobile) {
+                        const colorbars = plotDiv.querySelectorAll('.colorbar');
+                        colorbars.forEach(colorbar => {
+                            colorbar.style.display = 'none';
+                            colorbar.style.visibility = 'hidden';
+                            colorbar.style.width = '0';
+                            colorbar.style.height = '0';
+                        });
+                    }
+                }
+            }, 250);
+        });
         
         // Les statistiques sont maintenant affichées dans la section debug
         // Pas besoin d'afficher les statistiques sous le graphique
@@ -1148,7 +1366,7 @@
     // ===== SECTION SMILE DE VOLATILITÉ =====
     
     // Gestion des tickers pour la comparaison des sourires (INDÉPENDANTE de la surface 3D)
-    let smileComparisonTickers = [];
+    let smileComparisonTickers = ['AAPL', 'SPY'];
     
     function renderSmileChips() {
         const wrap = document.getElementById('smile-chips');
@@ -1157,7 +1375,7 @@
         wrap.innerHTML = '';
         
         if (smileComparisonTickers.length === 0) {
-            wrap.innerHTML = '<span style="color: white;"><i data-lucide="building-2" style="width: 16px; height: 16px; margin-right: 8px; color: #6b7280;"></i>Aucun ticker sélectionné</span>';
+            wrap.innerHTML = '<span style="color: white;"><i data-lucide="building-2" style="width: 16px; height: 16px; margin-right: 8px; color: #6b7280;"></i>No tickers selected</span>';
             return;
         }
         
@@ -1460,7 +1678,7 @@
                  const data = result.data;
                  html += `
                      <div class="metric-row">
-                         <span class="metric-label">Prix Spot:</span>
+                         <span class="metric-label">Spot Price:</span>
                          <span class="metric-value">$${data.spot_price ? data.spot_price.toFixed(2) : 'N/A'}</span>
                      </div>
                      <div class="metric-row">
@@ -1468,7 +1686,7 @@
                          <span class="metric-value">${data.total_options || 0}</span>
                      </div>
                      <div class="metric-row">
-                         <span class="metric-label">Maturités:</span>
+                         <span class="metric-label">Maturities:</span>
                          <span class="metric-value">${data.maturities ? data.maturities.length : 0}</span>
                      </div>
                      <div class="metric-row">
@@ -1525,7 +1743,7 @@
                          <h6>Informations générales</h6>
                          <div class="detail-grid">
                              <div class="detail-item">
-                                 <span class="detail-label">Prix Spot:</span>
+                                 <span class="detail-label">Spot Price:</span>
                                  <span class="detail-value">$${data.spot_price ? data.spot_price.toFixed(2) : 'N/A'}</span>
                              </div>
                              <div class="detail-item">
@@ -1570,7 +1788,7 @@
                      </div>
                      
                      <div class="detail-section">
-                         <h6>Maturités disponibles</h6>
+                         <h6>Available Maturities</h6>
                          <div class="maturities-list">
                              ${data.maturities ? data.maturities.map(m => `${m.toFixed(2)}a`).join(', ') : 'Aucune'}
                          </div>
@@ -1648,9 +1866,9 @@
          
          if (traces.length > 0) {
              const layout = {
-                 title: 'Comparaison des courbes de volatilité implicite',
+                 title: 'Comparison of Implied Volatility Curves',
                  xaxis: { title: 'Strike Price ($)' },
-                 yaxis: { title: 'Volatilité Implicite (%)' },
+                                    yaxis: { title: 'Implied Volatility (%)' },
                  paper_bgcolor: '#1a1a1a',
                  plot_bgcolor: '#1a1a1a',
                  font: { color: '#ffffff' },
@@ -1932,15 +2150,15 @@
                 
                 traces.push({
                     x: [100, 100], // Prix spot = 100%
-                    y: [0, maxIV * 1.1],
+                    y: [-15, maxIV * 1.1], // Commencer bien en dessous de 0 pour passer sous le label
                     type: 'scatter',
                     mode: 'lines',
-                    name: `${symbol} - Prix Spot`,
+                    name: `${symbol} - Spot Price`,
                     line: { color: color, width: 2, dash: 'dot' },
                     showlegend: false,
                     hovertemplate: 
-                        `<b>${symbol} - Prix Spot</b><br>` +
-                        '<b>Prix:</b> 100% du spot<br>' +
+                        `<b>${symbol} - Spot Price</b><br>` +
+                                                  '<b>Price:</b> 100% of spot<br>' +
                         '<extra></extra>'
                 });
             }
@@ -1949,7 +2167,7 @@
         // Layout avec fond transparent et styles améliorés
         const layout = {
             title: {
-                text: `Comparaison des Smiles de Volatilité (${maturity} jours)`,
+                text: `Comparison of Volatility Smiles (${maturity} days)`,
                 font: { color: '#ffffff', size: 18, family: 'Segoe UI' },
                 x: 0.5,
                 xanchor: 'center'
@@ -1965,14 +2183,15 @@
                 zeroline: true
             },
             yaxis: {
-                title: 'Volatilité Implicite (%)',
+                title: 'Implied Volatility (%)',
                 gridcolor: 'rgba(55, 65, 81, 0.3)',
                 zerolinecolor: 'rgba(107, 114, 128, 0.5)',
                 showbackground: false,
                 titlefont: { color: '#ffffff', size: 14, family: 'Segoe UI' },
                 tickfont: { color: '#d1d5db', size: 12, family: 'Segoe UI' },
                 showgrid: true,
-                zeroline: true
+                zeroline: true,
+                range: [0, null] // Revenir à 0 pour éviter les valeurs négatives
             },
             paper_bgcolor: 'rgba(0,0,0,0)', // Fond transparent
             plot_bgcolor: 'rgba(0,0,0,0)',  // Fond transparent
@@ -1983,7 +2202,7 @@
             margin: {
                 l: 60,
                 r: 40,
-                b: 60,
+                b: 120, // Augmenter la marge du bas pour permettre à la ligne de passer sous le label
                 t: 80
             },
             showlegend: true,
@@ -1999,6 +2218,38 @@
             },
             hovermode: 'closest'
         };
+        
+        // Fonction pour ajuster les marges selon la taille d'écran
+        function adjustSmileMarginsForScreenSize() {
+            const isMobile = window.innerWidth <= 768;
+            const isSmallMobile = window.innerWidth <= 480;
+            const isTinyMobile = window.innerWidth <= 360;
+            
+            if (isTinyMobile) {
+                layout.margin.b = 120; // Marge augmentée pour permettre à la ligne de passer sous le label
+                layout.margin.l = 50;
+                layout.margin.t = 60;
+                layout.margin.r = 30;
+            } else if (isSmallMobile) {
+                layout.margin.b = 140; // Marge augmentée pour permettre à la ligne de passer sous le label
+                layout.margin.l = 55;
+                layout.margin.t = 70;
+                layout.margin.r = 35;
+            } else if (isMobile) {
+                layout.margin.b = 160; // Marge augmentée pour permettre à la ligne de passer sous le label
+                layout.margin.l = 60;
+                layout.margin.t = 75;
+                layout.margin.r = 40;
+            } else {
+                layout.margin.b = 180; // Marge augmentée pour permettre à la ligne de passer sous le label
+                layout.margin.l = 60;
+                layout.margin.t = 80;
+                layout.margin.r = 40;
+            }
+        }
+        
+        // Ajuster les marges avant de créer le graphique
+        adjustSmileMarginsForScreenSize();
         
         // Configuration Plotly
         const config = {
@@ -2016,6 +2267,23 @@
         };
         
         Plotly.newPlot(chartDiv, traces, layout, config);
+        
+        // Gestionnaire pour redimensionner le graphique quand la fenêtre change
+        let smileResizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(smileResizeTimeout);
+            smileResizeTimeout = setTimeout(function() {
+                if (chartDiv && chartDiv.data) {
+                    adjustSmileMarginsForScreenSize();
+                    Plotly.relayout(chartDiv, {
+                        'margin.b': layout.margin.b,
+                        'margin.l': layout.margin.l,
+                        'margin.t': layout.margin.t,
+                        'margin.r': layout.margin.r
+                    });
+                }
+            }, 250);
+        });
     }
     
     // Fonction pour mettre à jour les statistiques de comparaison
@@ -2039,7 +2307,7 @@
                     </div>
                     <div class="stat-card-content">
                         <div class="stat-row">
-                            <span class="stat-label">Maturité:</span>
+                            <span class="stat-label">Maturity:</span>
                             <span class="stat-value">${data.maturity_days} jours</span>
                         </div>
                         <div class="stat-row">

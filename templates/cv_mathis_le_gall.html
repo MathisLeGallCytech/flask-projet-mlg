@@ -1,6 +1,6 @@
 {% extends "base_flask.html" %}
 
-{% block title %}CV Mathis Le Gall – Equity Derivatives Dashboard{% endblock %}
+{% block title %}Mathis Le Gall CV – Equity Derivatives Dashboard{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
@@ -14,25 +14,25 @@
                 <li class="nav-item">
                     <a href="{{ url_for('index') }}" class="nav-link">
                         <i data-lucide="home"></i>
-                        <span>Accueil</span>
+                        <span>Home</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link active">
                         <i data-lucide="user"></i>
-                        <span>CV Mathis Le Gall</span>
+                        <span>Mathis Le Gall CV</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('indices_actions') }}" class="nav-link">
                         <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Actions</span>
+                        <span>Indices & Stocks</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
                         <i data-lucide="activity"></i>
-                        <span>Analyse Actions & Indices</span>
+                        <span>Stocks & Indices Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -44,19 +44,19 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
-                        <span>Volatility Surface</span>
+                        <span>Implied Volatility</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
                         <i data-lucide="calculator"></i>
-                        <span>Analyse des Greeks</span>
+                        <span>Greeks Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('description_app') }}" class="nav-link">
                         <i data-lucide="info"></i>
-                        <span>Description App</span>
+                        <span>App Description</span>
                     </a>
                 </li>
             </ul>
@@ -69,13 +69,13 @@
         <header class="content-header">
             <div class="main-header-flex">
                 <div class="main-header-left">
-                    <!-- Espace pour équilibrer le layout -->
+                    <!-- Space to balance the layout -->
                 </div>
                 <div class="main-header-center">
-                    <!-- Espace pour équilibrer le layout -->
+                    <!-- Space to balance the layout -->
                 </div>
                 <div class="main-header-right">
-                    <h1 class="header-title">CV Mathis Le Gall</h1>
+                    <h1 class="header-title">Mathis Le Gall CV</h1>
                 </div>
             </div>
         </header>
@@ -104,20 +104,7 @@
                         <div class="cv-section-block">
                             <h2><i data-lucide="briefcase" style="width: 20px; height: 20px; margin-right: 10px;"></i>EXPERIENCE</h2>
                             
-                            <div class="experience-item">
-                                <div class="experience-header">
-                                    <h3>Natixis Corporate & Investment Bank</h3>
-                                    <span class="experience-role">STRUCTURER - EQUITY DERIVATIVES (INTERNSHIP)</span>
-                                    <span class="experience-location"><i data-lucide="map-pin" style="width: 14px; height: 14px; margin-right: 6px;"></i>Paris, France</span>
-                                    <span class="experience-date"><i data-lucide="calendar-days" style="width: 14px; height: 14px; margin-right: 6px;"></i>Sep. 2024 - Mar. 2025</span>
-                                </div>
-                                <ul class="experience-details">
-                                    <li>Priced and structured exotic equity derivatives, delivered live prices to European sales teams on notionals from €5 to €10 million.</li>
-                                    <li>Developed and implemented Quantitative Investment Strategies (QIS), enhancing product offerings and driving innovative solutions.</li>
-                                    <li>Improved desk tools by creating 5+ Python programs, including backtesting strategies, decision support tools, and process automation.</li>
-                                    <li>Collaborated with sales, traders and quants to conduct market analysis and product simulations, designing customized derivative solutions.</li>
-                                </ul>
-                            </div>
+
 
                             <div class="experience-item">
                                 <div class="experience-header">

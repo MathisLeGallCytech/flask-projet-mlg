@@ -1,6 +1,6 @@
 {% extends "base_flask.html" %}
 
-{% block title %}Indices & Actions – Marchés{% endblock %}
+{% block title %}Indices & Stocks – Markets{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
@@ -14,25 +14,25 @@
                 <li class="nav-item">
                     <a href="{{ url_for('index') }}" class="nav-link">
                         <i data-lucide="home"></i>
-                        <span>Accueil</span>
+                        <span>Home</span>
                     </a>
                 </li>
                                     <li class="nav-item">
                         <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
                             <i data-lucide="user"></i>
-                            <span>CV Mathis Le Gall</span>
+                            <span>Mathis Le Gall CV</span>
                             </a>
                     </li>
                 <li class="nav-item">
                     <a href="{{ url_for('indices_actions') }}" class="nav-link active">
                         <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Actions</span>
+                        <span>Indices & Stocks</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
                         <i data-lucide="activity"></i>
-                        <span>Analyse Actions & Indices</span>
+                        <span>Stocks & Indices Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -45,19 +45,19 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
-                        <span>Volatility Surface</span>
+                        <span>Implied Volatility</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
                         <i data-lucide="calculator"></i>
-                        <span>Analyse des Greeks</span>
+                        <span>Greeks Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('description_app') }}" class="nav-link">
                         <i data-lucide="info"></i>
-                        <span>Description App</span>
+                        <span>App Description</span>
                     </a>
                 </li>
             </ul>
@@ -72,15 +72,15 @@
                                     <div class="header-controls">
                         <button id="refresh-btn" class="btn btn-primary">
                             <i data-lucide="refresh-cw"></i>
-                            <span>Actualiser</span>
+                            <span>Refresh</span>
                         </button>
                         <span id="last-update" class="last-update">
                             <i data-lucide="clock" style="width: 14px; height: 14px; margin-right: 6px;"></i>
-                            Dernière mise à jour: --
+                            Last update: --
                         </span>
                         <span id="next-update" class="next-update">
                             <i data-lucide="zap" style="width: 14px; height: 14px; margin-right: 6px;"></i>
-                            Prochaine mise à jour: --
+                            Next update: --
                         </span>
                     </div>
             </div>
@@ -93,10 +93,10 @@
                     <div class="header-left">
                         <h1 class="page-title">
                             <i data-lucide="candlestick-chart" class="title-icon"></i>
-                            Indices & Actions
+                            Indices & Stocks
                         </h1>
                         <p class="page-subtitle">
-                            Données en temps réel des principaux indices et actions
+                            Real-time data of major indices and stocks
                         </p>
                     </div>
                     
@@ -434,7 +434,7 @@
             
             // Mettre à jour la dernière mise à jour
             document.getElementById('last-update').textContent = 
-                `Dernière mise à jour: ${new Date().toLocaleTimeString('fr-FR')}`;
+                `Last update: ${new Date().toLocaleTimeString('fr-FR')}`;
             
             // Démarrer le compte à rebours si c'est le premier chargement
             if (!countdownInterval) {
@@ -679,7 +679,7 @@
     function updateCountdownDisplay(seconds) {
         const nextUpdateEl = document.getElementById('next-update');
         if (nextUpdateEl) {
-            nextUpdateEl.textContent = `Prochaine mise à jour: ${formatTimeRemaining(seconds)}`;
+            nextUpdateEl.textContent = `Next update: ${formatTimeRemaining(seconds)}`;
         }
     }
 

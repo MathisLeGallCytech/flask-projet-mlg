@@ -1,6 +1,6 @@
 {% extends "base_flask.html" %}
 
-{% block title %}Analyse – Comparaison de performances{% endblock %}
+{% block title %}Analysis – Performance Comparison{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
@@ -14,25 +14,25 @@
                 <li class="nav-item">
                     <a href="{{ url_for('index') }}" class="nav-link">
                         <i data-lucide="home"></i>
-                        <span>Accueil</span>
+                        <span>Home</span>
                     </a>
                 </li>
                                     <li class="nav-item">
                         <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
                             <i data-lucide="user"></i>
-                            <span>CV Mathis Le Gall</span>
+                            <span>Mathis Le Gall CV</span>
                         </a>
                     </li>
                 <li class="nav-item">
                     <a href="{{ url_for('indices_actions') }}" class="nav-link">
                         <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Actions</span>
+                        <span>Indices & Stocks</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link active">
                         <i data-lucide="activity"></i>
-                        <span>Analyse Actions & Indices</span>
+                        <span>Stocks & Indices Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -45,19 +45,19 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
-                        <span>Volatility Surface</span>
+                        <span>Implied Volatility</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
                         <i data-lucide="calculator"></i>
-                        <span>Analyse des Greeks</span>
+                        <span>Greeks Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('description_app') }}" class="nav-link">
                         <i data-lucide="info"></i>
-                        <span>Description App</span>
+                        <span>App Description</span>
                     </a>
                 </li>
             </ul>
@@ -72,10 +72,10 @@
                 <div class="main-header-left">
                 </div>
                 <div class="main-header-center">
-                    <!-- Espace pour équilibrer le layout -->
+                    <!-- Space to balance the layout -->
                 </div>
                 <div class="main-header-right">
-                    <h1 class="header-title">Analyse - Comparaison de performances</h1>
+                    <h1 class="header-title">Analysis - Performance Comparison</h1>
                 </div>
             </div>
         </header>
@@ -87,18 +87,18 @@
                     <div class="header-left">
                         <h1 class="page-title">
                             <i data-lucide="activity" class="title-icon"></i>
-                            Analyse Actions & Indices
+                            Stocks & Indices Analysis
                         </h1>
                         <p class="page-subtitle">
-                            Comparaison de performances et métriques de risque
+                            Performance comparison and risk metrics
                         </p>
                     </div>
                     
-                    <!-- Indicateur de statut API -->
+                    <!-- API Status Indicator -->
                     <div id="api-status" class="api-status-card">
                         <div class="status-indicator">
                             <div id="api-status-indicator" class="status-dot"></div>
-                            <span id="api-status-text" class="status-text">Vérification API...</span>
+                            <span id="api-status-text" class="status-text">Checking API...</span>
                         </div>
                         <div class="status-details">
                             <div class="api-name">Yahoo Finance API</div>
@@ -114,40 +114,40 @@
 
             <main class="main-content-area">
                 <section class="analysis-section">
-                <h3>Comparaison de performances (Base 100)</h3>
+                <h3>Performance Comparison (Base 100)</h3>
                 <div class="search-container">
                     <div class="search-input">
-                        <label>Recherche</label>
-                        <input id="tag-search" type="text" placeholder="Tapez un symbole ou un nom..." />
+                        <label>Search</label>
+                        <input id="tag-search" type="text" placeholder="Type a symbol or name..." />
                         <div id="tag-suggestions" class="suggestions-dropdown"></div>
                     </div>
                     <div class="dropdown-container">
-                        <label>Liste déroulante</label>
+                        <label>Dropdown</label>
                         <select id="tag-dropdown">
-                            <option value="">Choisir un instrument…</option>
+                            <option value="">Choose an instrument…</option>
                         </select>
                     </div>
                     <div class="date-input">
-                        <label for="tag-start">Date de départ</label>
+                        <label for="tag-start">Start Date</label>
                         <input id="tag-start" type="date" value="2015-01-01" />
                     </div>
                     <div class="date-input">
-                        <label for="tag-end">Date de fin</label>
+                        <label for="tag-end">End Date</label>
                         <input id="tag-end" type="date" />
                     </div>
                     <div class="scale-container">
-                        <label>Échelle</label>
+                        <label>Scale</label>
                         <div class="scale-toggle">
                             <input id="perf-log-scale" type="checkbox" />
-                            <span>Logarithmique</span>
+                            <span>Logarithmic</span>
                         </div>
                     </div>
                     <div class="action-button">
-                        <button id="tag-plot">Tracer</button>
+                        <button id="tag-plot">Plot</button>
                     </div>
                 </div>
                 <div class="selection-container">
-                    <div class="selection-label">Sélection</div>
+                    <div class="selection-label">Selection</div>
                     <div id="tag-selected" class="tag-chips"></div>
                 </div>
                 <div class="analysis-chart-container">
@@ -156,19 +156,19 @@
                     </div>
                 </div>
                 
-                <!-- Tableau des métriques de risque -->
+                <!-- Table of Risk Metrics -->
                 <div class="risk-metrics-section">
-                    <h3>Métriques de Risque</h3>
+                    <h3>Risk Metrics</h3>
                     <div class="risk-metrics-table">
                         <table>
                             <thead>
                                 <tr>
-                                    <th>Métrique</th>
-                                    <!-- Les en-têtes des colonnes seront générés dynamiquement -->
+                                    <th>Metric</th>
+                                    <!-- Column headers will be generated dynamically -->
                                 </tr>
                             </thead>
                             <tbody id="risk-table-body" >
-                                <!-- Le contenu sera généré dynamiquement -->
+                                <!-- Content will be generated dynamically -->
                             </tbody>
                         </table>
                     </div>
@@ -216,19 +216,19 @@
         switch(status) {
             case 'connected':
                 indicator.classList.add('connected');
-                statusText.textContent = 'API Connectée';
+                statusText.textContent = 'API Connected';
                 if (responseTime) {
                     responseTimeEl.textContent = `${responseTime}ms`;
                 }
                 break;
             case 'error':
                 indicator.classList.add('error');
-                statusText.textContent = 'API Hors ligne';
-                responseTimeEl.textContent = 'Erreur';
+                statusText.textContent = 'API Offline';
+                responseTimeEl.textContent = 'Error';
                 break;
             case 'checking':
                 indicator.classList.add('checking');
-                statusText.textContent = 'Vérification API...';
+                statusText.textContent = 'Checking API...';
                 responseTimeEl.textContent = '--';
                 break;
         }
@@ -269,7 +269,7 @@
             if (already) return;
             const row = document.createElement('div');
             row.className = 'flex items-center justify-between p-2 rounded hover: cursor-pointer';
-            row.innerHTML = `<span class="truncate">${item.label} <span >(${item.symbol})</span></span><button class="px-2 py-1 text-xs   rounded">Ajouter</button>`;
+            row.innerHTML = `<span class="truncate">${item.label} <span >(${item.symbol})</span></span><button class="px-2 py-1 text-xs   rounded">Add</button>`;
             row.querySelector('button').addEventListener('click', (e) => {
                 e.stopPropagation();
                 tagSelected.push(item);
@@ -306,7 +306,7 @@
                 availableInstruments.push({ symbol, label: (s.name || symbol) });
             });
             const dd = document.getElementById('tag-dropdown');
-            dd.innerHTML = '<option value="">Choisir un instrument…</option>' + availableInstruments
+            dd.innerHTML = '<option value="">Choose an instrument…</option>' + availableInstruments
                 .map(x => `<option value="${x.symbol}">${x.label} (${x.symbol})</option>`)
                 .join('');
         } catch (error) {
@@ -319,7 +319,7 @@
         const start = document.getElementById('tag-start').value;
         const end = document.getElementById('tag-end').value || new Date().toISOString().split('T')[0];
         const syms = tagSelected.map(s => s.symbol);
-        if (!syms.length) { alert('Ajoutez au moins un titre'); return; }
+        if (!syms.length) { alert('Add at least one instrument'); return; }
         
         const qs = start ? `&start=${encodeURIComponent(start)}` : '';
         const qsEnd = end ? `&end=${encodeURIComponent(end)}` : '';
@@ -350,7 +350,7 @@
         });
         
         if (series.length === 0) { 
-            alert('Données indisponibles'); 
+            alert('Data not available'); 
             return; 
         }
         const masterLabelsISO = Array.from(new Set(series.flatMap(s => s.points.map(pt => pt.x)))).sort();
@@ -463,7 +463,29 @@
             th.className = 'px-4 py-3 text-center text-foreground font-medium border-b ';
             // Utiliser le label (nom) au lieu du symbole
             const instrument = availableInstruments.find(i => i.symbol === s.symbol);
-            th.textContent = instrument ? instrument.label : s.symbol;
+            const displayName = instrument ? instrument.label : s.symbol;
+            
+            // Tronquer les noms trop longs pour éviter les problèmes d'affichage
+            let shortName = displayName;
+            if (displayName.length > 15) {
+                // Essayer de tronquer intelligemment
+                if (displayName.includes(' ')) {
+                    const words = displayName.split(' ');
+                    if (words.length >= 2) {
+                        shortName = words[0] + ' ' + words[1];
+                        if (shortName.length > 15) {
+                            shortName = words[0].substring(0, 12) + '...';
+                        }
+                    } else {
+                        shortName = displayName.substring(0, 12) + '...';
+                    }
+                } else {
+                    shortName = displayName.substring(0, 12) + '...';
+                }
+            }
+            
+            th.textContent = shortName;
+            th.title = displayName; // Tooltip avec le nom complet
             headerRow.appendChild(th);
         });
         
@@ -476,28 +498,64 @@
             return fetch(url).then(r => r.json());
         })).then(metricsData => {
             
+            // Optimiser la largeur du tableau selon le nombre de colonnes
+            const table = document.querySelector('.risk-metrics-table table');
+            if (series.length <= 2) {
+                table.classList.add('few-columns');
+            } else {
+                table.classList.remove('few-columns');
+            }
+            
             // Générer le contenu du tableau
             bodyContainer.innerHTML = '';
             
             const metricRows = [
-                { key: 'annualized_return', label: 'Rendement Annuel (%)', format: (v) => v.toFixed(2) + '%' },
-                { key: 'volatility', label: 'Volatilité Annuelle (%)', format: (v) => v.toFixed(2) + '%' },
-                { key: 'sharpe_ratio', label: 'Ratio de Sharpe', format: (v) => v.toFixed(3) },
-                { key: 'max_drawdown', label: 'Max Drawdown (%)', format: (v) => v.toFixed(2) + '%' },
-                { key: 'var_95', label: 'VaR 95% (%)', format: (v) => v.toFixed(2) + '%' },
-                { key: 'total_return', label: 'Rendement Total (%)', format: (v) => v.toFixed(2) + '%' }
+                { key: 'annualized_return', label: 'Annualized Return (%)', shortLabel: 'Annual Return (%)', format: (v) => {
+                    const formatted = v.toFixed(2) + '%';
+                    return formatted.length > 10 ? v.toFixed(1) + '%' : formatted;
+                }},
+                { key: 'volatility', label: 'Annual Volatility (%)', shortLabel: 'Volatility (%)', format: (v) => {
+                    const formatted = v.toFixed(2) + '%';
+                    return formatted.length > 10 ? v.toFixed(1) + '%' : formatted;
+                }},
+                { key: 'sharpe_ratio', label: 'Sharpe Ratio', shortLabel: 'Sharpe', format: (v) => v.toFixed(3) },
+                { key: 'max_drawdown', label: 'Max Drawdown (%)', shortLabel: 'Max DD (%)', format: (v) => {
+                    const formatted = v.toFixed(2) + '%';
+                    return formatted.length > 10 ? v.toFixed(1) + '%' : formatted;
+                }},
+                { key: 'var_95', label: 'VaR 95% (%)', shortLabel: 'VaR 95%', format: (v) => {
+                    const formatted = v.toFixed(2) + '%';
+                    return formatted.length > 10 ? v.toFixed(1) + '%' : formatted;
+                }},
+                { key: 'total_return', label: 'Total Return (%)', shortLabel: 'Total Return (%)', format: (v) => {
+                    // Pour les rendements très élevés, utiliser une notation compacte
+                    if (v > 1000) {
+                        return (v/1000).toFixed(1) + 'k%';
+                    } else if (v > 100) {
+                        return v.toFixed(0) + '%';
+                    } else {
+                        const formatted = v.toFixed(2) + '%';
+                        return formatted.length > 10 ? v.toFixed(1) + '%' : formatted;
+                    }
+                }}
             ];
             
             metricRows.forEach(metric => {
                 const row = document.createElement('tr');
                 
-                // Cellule métrique
+                // Metric cell
                 const metricCell = document.createElement('td');
                 metricCell.className = 'px-4 py-3 text-foreground font-medium border-b ';
-                metricCell.textContent = metric.label;
+                
+                // Use short label on mobile, full label on desktop
+                const isMobile = window.innerWidth <= 768;
+                const displayLabel = isMobile ? metric.shortLabel : metric.label;
+                metricCell.textContent = displayLabel;
+                metricCell.title = metric.label; // Tooltip with full name
+                
                 row.appendChild(metricCell);
                 
-                // Cellules valeurs
+                // Value cells
                 series.forEach(s => {
                     const metricData = metricsData.find(m => m.symbol === s.symbol);
                     const cell = document.createElement('td');
@@ -507,9 +565,9 @@
                          const value = metricData[metric.key];
                          cell.textContent = metric.format(value);
                          
-                         // Code couleur amélioré : Vert (bon) / Orange (moyen) / Rouge (mauvais)
+                         // Improved color coding: Green (good) / Orange (medium) / Red (bad)
                          if (metric.key === 'volatility') {
-                             // Volatilité : Plus c'est bas, mieux c'est
+                             // Volatility: Lower is better
                              if (value < 0.15) {
                                  cell.className += ' text-green-500 font-semibold';
                                  cell.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
@@ -524,7 +582,7 @@
                                  cell.style.borderLeft = '3px solid #ef4444';
                              }
                          } else if (metric.key === 'var_95') {
-                             // VaR : Plus c'est proche de 0, mieux c'est
+                             // VaR: Closer to 0 is better
                              if (value > -0.02) {
                                  cell.className += ' text-green-500 font-semibold';
                                  cell.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
@@ -539,7 +597,7 @@
                                  cell.style.borderLeft = '3px solid #ef4444';
                              }
                          } else if (metric.key === 'max_drawdown') {
-                             // Max Drawdown : Plus c'est bas, mieux c'est
+                             // Max Drawdown: Lower is better
                              if (value < 0.15) {
                                  cell.className += ' text-green-500 font-semibold';
                                  cell.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
@@ -554,7 +612,7 @@
                                  cell.style.borderLeft = '3px solid #ef4444';
                              }
                          } else if (metric.key === 'sharpe_ratio') {
-                             // Ratio de Sharpe : Plus c'est haut, mieux c'est
+                             // Sharpe Ratio: Higher is better
                              if (value > 1.0) {
                                  cell.className += ' text-green-500 font-semibold';
                                  cell.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
@@ -569,7 +627,7 @@
                                  cell.style.borderLeft = '3px solid #ef4444';
                              }
                          } else if (metric.key === 'total_return') {
-                             // Rendement total : Plus c'est haut, mieux c'est
+                             // Total Return: Higher is better
                              if (value > 0.20) {
                                  cell.className += ' text-green-500 font-semibold';
                                  cell.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
@@ -588,7 +646,7 @@
                                  cell.style.borderLeft = '3px solid #ef4444';
                              }
                          } else if (metric.key === 'annualized_return') {
-                             // Rendement annuel : Plus c'est haut, mieux c'est
+                             // Annual Return: Higher is better
                              if (value > 0.12) {
                                  cell.className += ' text-green-500 font-semibold';
                                  cell.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
@@ -621,7 +679,7 @@
                 bodyContainer.appendChild(row);
             });
         }).catch(error => {
-            bodyContainer.innerHTML = '<tr><td colspan="' + (series.length + 1) + '" class="px-4 py-3 text-center ">Erreur lors du calcul des métriques</td></tr>';
+            bodyContainer.innerHTML = '<tr><td colspan="' + (series.length + 1) + '" class="px-4 py-3 text-center ">Error calculating metrics</td></tr>';
         });
     }
 
@@ -644,7 +702,7 @@
         try { await plotPerformanceComparisonTags(); } catch (e) { /* ignore */ }
     });
     
-    // Vérification périodique du statut de l'API (toutes les 30 secondes)
+    // Periodic API status check (every 30 seconds)
     setInterval(() => {
         fetch('/api/market-data')
             .then(response => response.json())
@@ -659,6 +717,18 @@
                 updateApiStatus('error');
             });
     }, 30000);
+    
+    // Update table labels when window size changes
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            // Recalculate table if it already exists
+            if (perfChart && tagSelected.length > 0) {
+                plotPerformanceComparisonTags();
+            }
+        }, 300);
+    });
 </script>
 {% endblock %}
 

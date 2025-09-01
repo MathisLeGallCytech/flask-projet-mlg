@@ -1,6 +1,6 @@
 {% extends "base_flask.html" %}
 
-{% block title %}Equity Derivatives Dashboard – Analyse des Greeks{% endblock %}
+{% block title %}Equity Derivatives Dashboard – Greeks Analysis{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
@@ -14,25 +14,25 @@
                 <li class="nav-item">
                     <a href="{{ url_for('index') }}" class="nav-link">
                         <i data-lucide="home"></i>
-                        <span>Accueil</span>
+                        <span>Home</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
                         <i data-lucide="user"></i>
-                        <span>CV Mathis Le Gall</span>
+                        <span>Mathis Le Gall CV</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('indices_actions') }}" class="nav-link">
                         <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Actions</span>
+                        <span>Indices & Stocks</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
                         <i data-lucide="activity"></i>
-                        <span>Analyse Actions & Indices</span>
+                        <span>Stocks & Indices Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -44,19 +44,19 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
-                        <span>Volatility Surface</span>
+                        <span>Implied Volatility</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_greeks') }}" class="nav-link active">
                         <i data-lucide="calculator"></i>
-                        <span>Analyse des Greeks</span>
+                        <span>Greeks Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('description_app') }}" class="nav-link">
                         <i data-lucide="info"></i>
-                        <span>Description App</span>
+                        <span>App Description</span>
                     </a>
                 </li>
             </ul>
@@ -71,10 +71,10 @@
                 <div class="main-header-left">
                 </div>
                 <div class="main-header-center">
-                    <!-- Espace pour équilibrer le layout -->
+                    <!-- Space to balance the layout -->
                 </div>
                 <div class="main-header-right">
-                    <h1 class="header-title">Analyse des Greeks</h1>
+                    <h1 class="header-title">Greeks Analysis</h1>
                 </div>
             </div>
         </header>
@@ -84,9 +84,9 @@
             <div class="max-w-7xl mx-auto">
                 <!-- Hero Section -->
                 <section class="hero-section">
-                    <h1 class="hero-title">Analyse des Greeks</h1>
+                    <h1 class="hero-title">Greeks Analysis</h1>
                     <p class="hero-subtitle">
-                        Calcul et visualisation des sensibilités des options (Delta, Gamma, Theta, Vega, Rho)
+                        Calculation and visualization of option sensitivities (Delta, Gamma, Theta, Vega, Rho)
                     </p>
                 </section>
 
@@ -94,8 +94,8 @@
                 <section class="main-section">
                     <div class="content-card">
                         <div class="card-header">
-                            <h2>Analyse des Sensibilités</h2>
-                            <p>Cette page sera dédiée à l'analyse des greeks des options</p>
+                            <h2>Sensitivity Analysis</h2>
+                            <p>This page will be dedicated to option greeks analysis</p>
                         </div>
                         
                         <div class="card-content">
@@ -103,16 +103,16 @@
                                 <div class="placeholder-icon">
                                     <i data-lucide="calculator" class="text-6xl text-gray-400"></i>
                                 </div>
-                                <h3 class="placeholder-title">Page en cours de développement</h3>
+                                <h3 class="placeholder-title">Page Under Development</h3>
                                 <p class="placeholder-text">
-                                    Cette section permettra d'analyser les différents greeks des options :
+                                    This section will allow analysis of different option greeks:
                                 </p>
                                 <ul class="placeholder-list">
-                                    <li><strong>Delta</strong> : Sensibilité du prix de l'option par rapport au prix du sous-jacent</li>
-                                    <li><strong>Gamma</strong> : Sensibilité du Delta par rapport au prix du sous-jacent</li>
-                                    <li><strong>Theta</strong> : Sensibilité du prix de l'option par rapport au temps</li>
-                                    <li><strong>Vega</strong> : Sensibilité du prix de l'option par rapport à la volatilité</li>
-                                    <li><strong>Rho</strong> : Sensibilité du prix de l'option par rapport au taux d'intérêt</li>
+                                    <li><strong>Delta</strong> : Sensitivity of option price to underlying asset price</li>
+                                    <li><strong>Gamma</strong> : Sensitivity of Delta to underlying asset price</li>
+                                    <li><strong>Theta</strong> : Sensitivity of option price to time</li>
+                                    <li><strong>Vega</strong> : Sensitivity of option price to volatility</li>
+                                    <li><strong>Rho</strong> : Sensitivity of option price to interest rate</li>
                                 </ul>
                             </div>
                         </div>

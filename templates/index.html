@@ -1,6 +1,6 @@
 {% extends "base_flask.html" %}
 
-{% block title %}Equity Derivatives Dashboard – Accueil{% endblock %}
+{% block title %}Equity Derivatives Dashboard – Home{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
@@ -14,25 +14,25 @@
                 <li class="nav-item">
                     <a href="{{ url_for('index') }}" class="nav-link active">
                         <i data-lucide="home"></i>
-                        <span>Accueil</span>
+                        <span>Home</span>
                     </a>
                 </li>
                                     <li class="nav-item">
                         <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
                             <i data-lucide="user"></i>
-                            <span>CV Mathis Le Gall</span>
+                            <span>Mathis Le Gall CV</span>
                         </a>
                     </li>
                 <li class="nav-item">
                     <a href="{{ url_for('indices_actions') }}" class="nav-link">
                         <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Actions</span>
+                        <span>Indices & Stocks</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
                         <i data-lucide="activity"></i>
-                        <span>Analyse Actions & Indices</span>
+                        <span>Stocks & Indices Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -45,19 +45,19 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
-                        <span>Volatility Surface</span>
+                        <span>Implied Volatility</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
                         <i data-lucide="calculator"></i>
-                        <span>Analyse des Greeks</span>
+                        <span>Greeks Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('description_app') }}" class="nav-link">
                         <i data-lucide="info"></i>
-                        <span>Description App</span>
+                        <span>App Description</span>
                     </a>
                 </li>
             </ul>
@@ -72,7 +72,7 @@
                 <div class="main-header-left">
                 </div>
                 <div class="main-header-center">
-                    <!-- Espace pour équilibrer le layout -->
+                    <!-- Space to balance the layout -->
                 </div>
                 <div class="main-header-right">
                     <h1 class="header-title">Equity Derivatives Dashboard</h1>
@@ -87,7 +87,7 @@
                 <section class="hero-section">
                     <h1 class="hero-title">Equity Derivatives Dashboard</h1>
                     <p class="hero-subtitle">
-                        Analyse interactive des options vanilles et instruments dérivés
+                        Interactive analysis of vanilla options and derivative instruments
                     </p>
                 </section>
 
@@ -97,9 +97,9 @@
                         <div class="feature-card">
                             <div class="card-header">
                                 <i data-lucide="user" class="card-icon"></i>
-                                <h3>CV Mathis Le Gall</h3>
+                                <h3>Mathis Le Gall CV</h3>
                             </div>
-                            <p>Consultez mon CV et découvrez mon parcours professionnel</p>
+                            <p>View my CV and discover my professional background</p>
                         </div>
                     </a>
 
@@ -107,9 +107,9 @@
                         <div class="feature-card">
                             <div class="card-header">
                                 <i data-lucide="candlestick-chart" class="card-icon"></i>
-                                <h3>Indices & Actions</h3>
+                                <h3>Indices & Stocks</h3>
                             </div>
-                            <p>Aperçu des indices et actions avec graphiques en temps réel et données de marché</p>
+                            <p>Overview of indices and stocks with real-time charts and market data</p>
                         </div>
                     </a>
 
@@ -117,9 +117,9 @@
                         <div class="feature-card">
                             <div class="card-header">
                                 <i data-lucide="activity" class="card-icon"></i>
-                                <h3>Analyse Actions & Indices</h3>
+                                <h3>Stocks & Indices Analysis</h3>
                             </div>
-                            <p>Comparaison de performances multi-instruments avec base 100</p>
+                            <p>Multi-instrument performance comparison with base 100</p>
                         </div>
                     </a>
 
@@ -129,7 +129,7 @@
                                 <i data-lucide="line-chart" class="card-icon"></i>
                                 <h3>Call & Put</h3>
                             </div>
-                            <p>Visualisation et calcul des options européennes de type Call et Put</p>
+                            <p>Visualization and calculation of European Call and Put options</p>
                         </div>
                     </a>
 
@@ -137,9 +137,9 @@
                         <div class="feature-card">
                             <div class="card-header">
                                 <i data-lucide="thermometer" class="card-icon"></i>
-                                <h3>Volatility Surface</h3>
+                                <h3>Implied Volatility</h3>
                             </div>
-                            <p>Visualisation 3D de la surface de volatilité implicite</p>
+                            <p>3D visualization of implied volatility surface</p>
                         </div>
                     </a>
 
@@ -147,9 +147,9 @@
                         <div class="feature-card">
                             <div class="card-header">
                                 <i data-lucide="calculator" class="card-icon"></i>
-                                <h3>Analyse des Greeks</h3>
+                                <h3>Greeks Analysis</h3>
                             </div>
-                            <p>Calcul et visualisation des sensibilités des options (Delta, Gamma, Theta, Vega, Rho)</p>
+                            <p>Calculation and visualization of option sensitivities (Delta, Gamma, Theta, Vega, Rho)</p>
                         </div>
                     </a>
 
@@ -157,9 +157,9 @@
                         <div class="feature-card">
                             <div class="card-header">
                                 <i data-lucide="info" class="card-icon"></i>
-                                <h3>Description App</h3>
+                                <h3>App Description</h3>
                             </div>
-                            <p>Découvrez les fonctionnalités et l'architecture de l'application</p>
+                            <p>Discover the features and architecture of the application</p>
                         </div>
                     </a>
                 </section>
