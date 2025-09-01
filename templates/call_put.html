@@ -95,10 +95,23 @@
                             </p>
                         </div>
                     </div>
+                    
+                    <!-- Boîte d'information -->
+                    <div class="info-box">
+                        <div class="info-box-content">
+                            <i data-lucide="info" class="info-icon"></i>
+                            <div class="info-text">
+                                <h4 class="info-title">Options Call & Put - Information</h4>
+                                                                   <p class="info-message">Monte Carlo with constant volatility using the Black-Scholes model consists of simulating many possible future asset prices assuming a log-normal distribution, then averaging the discounted payoffs to estimate the option's value:</p>
+                                   <p class="info-formula">S<sub>T</sub> = S<sub>0</sub> exp ((r - (1/2)σ²)T + σ√(T)Z), Z ~ N(0, 1).</p>
+                            </div>
+                        </div>
+                    </div>
                 </header>
 
                 <!-- Main Content Area -->
                 <main class="options-main-content">
+
                     <!-- Formulaire de saisie -->
                     <div class="options-form-container">
                         <div class="form-header">
@@ -232,11 +245,12 @@
                                             id="num-simulations" 
                                             name="num-simulations" 
                                             value="10000" 
-                                            step="1000" 
-                                            min="1000"
+                                            step="100" 
+                                            min="100"
+                                            max="1000000"
                                             class="call-put-form-input"
                                         >
-                                        <span class="call-put-field-hint">Number of simulated paths</span>
+                                        <span class="call-put-field-hint">Number of simulated paths (100-1,000,000)</span>
                                     </div>
 
                                     <div class="call-put-form-field">
@@ -567,6 +581,7 @@
         if (params.timeMaturity <= 0) errors.push('Maturity must be positive');
         if (params.riskFreeRate < 0 || params.riskFreeRate > 1) errors.push('Risk-free rate must be between 0 and 1');
         if (params.volatility < 0 || params.volatility > 1) errors.push('Volatility must be between 0 and 1');
+        if (params.numSimulations < 100 || params.numSimulations > 1000000) errors.push('Number of simulations must be between 100 and 1,000,000');
         if (params.confidenceLevel < 0.5 || params.confidenceLevel > 0.999) errors.push('Confidence level must be between 0.5 and 0.999');
         if (params.numPaths < 0 || params.numPaths > 200) errors.push('Number of paths must be between 0 and 200');
         

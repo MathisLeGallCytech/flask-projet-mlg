@@ -104,7 +104,7 @@
                     <div id="api-status" class="api-status-card">
                         <div class="status-indicator">
                             <div id="api-status-indicator" class="status-dot"></div>
-                            <span id="api-status-text" class="status-text">Vérification API...</span>
+                            <span id="api-status-text" class="status-text">Checking API...</span>
                         </div>
                         <div class="status-details">
                             <div class="api-name">Yahoo Finance API</div>
@@ -112,7 +112,7 @@
                         </div>
                         <div class="status-meta">
                             <i data-lucide="database" class="meta-icon"></i>
-                            <span class="meta-text">30 actions</span>
+                            <span class="meta-text">30 stocks</span>
                         </div>
                     </div>
                 </div>
@@ -135,13 +135,13 @@
                         <div class="indices-actions-chart-header">
                             <h3 class="indices-actions-chart-title">
                                 <i data-lucide="bar-chart-3" class="indices-actions-chart-icon"></i>
-                                Graphique du marché
+                                                                 Market Chart
                             </h3>
                             <div class="indices-actions-chart-controls">
                                 <div class="indices-actions-chart-info">
                                     <i data-lucide="activity" style="width: 14px; height: 14px; margin-right: 6px;"></i>
                                     <span id="current-symbol">CAC 40</span> • 
-                                    <span id="current-timeframe">2 Ans</span>
+                                    <span id="current-timeframe">2 Years</span>
                                 </div>
                                 <div class="indices-actions-chart-selects">
                                     <div style="position: relative; display: inline-block;">
@@ -195,14 +195,14 @@
                                     </div>
                                     <div style="position: relative; display: inline-block;">
                                         <select id="chart-timeframe" class="indices-actions-chart-select">
-                                        <option value="1d">1 Jour</option>
-                                        <option value="5d">5 Jours</option>
-                                        <option value="1mo">1 Mois</option>
-                                        <option value="3mo">3 Mois</option>
-                                        <option value="6mo">6 Mois</option>
-                                        <option value="1y">1 An</option>
-                                        <option value="2y" selected>2 Ans</option>
-                                        <option value="5y">5 Ans</option>
+                                        <option value="1d">1 Day</option>
+                                        <option value="5d">5 Days</option>
+                                        <option value="1mo">1 Month</option>
+                                        <option value="3mo">3 Months</option>
+                                        <option value="6mo">6 Months</option>
+                                        <option value="1y">1 Year</option>
+                                        <option value="2y" selected>2 Years</option>
+                                        <option value="5y">5 Years</option>
                                         <option value="max">Max</option>
                                     </select>
                                     </div>
@@ -218,12 +218,12 @@
                     <div class="stocks-container">
                         <h3 class="section-title">
                             <i data-lucide="building-2" class="section-icon"></i>
-                            Actions
+                                                         Stocks
                         </h3>
                         <div id="stocks-container" class="stocks-grid">
                             <div class="loading-spinner">
                                 <i data-lucide="refresh-cw" style="width: 24px; height: 24px; animation: spin 1s linear infinite; margin-bottom: 8px;"></i>
-                                <p>Chargement des données...</p>
+                                <p>Loading data...</p>
                             </div>
                         </div>
                     </div>
@@ -379,6 +379,36 @@
         return `${sign}${Number(num).toFixed(decimals)}%`;
     }
 
+    // Fonction pour déterminer la devise en fonction du symbole
+    function getCurrency(symbol) {
+        // Indices européens
+        if (['^FCHI', '^STOXX50E', '^GDAXI', '^FTSE'].includes(symbol)) {
+            return 'EUR';
+        }
+        // Indices américains
+        if (['^GSPC', '^IXIC', '^DJI'].includes(symbol)) {
+            return 'USD';
+        }
+        // Indices asiatiques
+        if (['^N225'].includes(symbol)) {
+            return 'JPY';
+        }
+        
+        // Actions par extension
+        if (symbol.endsWith('.PA') || symbol.endsWith('.AS') || symbol.endsWith('.DE') || symbol.endsWith('.SW')) {
+            return 'EUR';
+        }
+        if (symbol.endsWith('.KS')) {
+            return 'KRW';
+        }
+        if (symbol.endsWith('.HK')) {
+            return 'HKD';
+        }
+        
+        // Actions américaines (par défaut)
+        return 'USD';
+    }
+
     // Fonction pour mettre à jour le statut de l'API
     function updateApiStatus(status, responseTime = null) {
         const indicator = document.getElementById('api-status-indicator');
@@ -388,18 +418,18 @@
         switch(status) {
             case 'checking':
                 indicator.className = 'status-dot checking';
-                text.textContent = 'Vérification...';
+                text.textContent = 'Checking...';
                 break;
             case 'connected':
                 indicator.className = 'status-dot connected';
-                text.textContent = 'Connecté';
+                text.textContent = 'Connected';
                 if (responseTime) {
                     responseTimeEl.textContent = `${responseTime}ms`;
                 }
                 break;
             case 'error':
                 indicator.className = 'status-dot error';
-                text.textContent = 'Erreur de connexion';
+                text.textContent = 'Connection error';
                 break;
         }
     }
@@ -434,7 +464,7 @@
             
             // Mettre à jour la dernière mise à jour
             document.getElementById('last-update').textContent = 
-                `Last update: ${new Date().toLocaleTimeString('fr-FR')}`;
+                `Last update: ${new Date().toLocaleTimeString('en-US')}`;
             
             // Démarrer le compte à rebours si c'est le premier chargement
             if (!countdownInterval) {
@@ -447,9 +477,9 @@
             
             // Afficher un message d'erreur
             document.getElementById('indices-strip').innerHTML = 
-                '<div class="error-message"><i data-lucide="alert-circle" style="width: 16px; height: 16px; margin-right: 8px;"></i>Erreur lors du chargement des données</div>';
+                '<div class="error-message"><i data-lucide="alert-circle" style="width: 16px; height: 16px; margin-right: 8px;"></i>Error loading data</div>';
             document.getElementById('stocks-container').innerHTML = 
-                '<div class="error-message"><i data-lucide="alert-circle" style="width: 16px; height: 16px; margin-right: 8px;"></i>Erreur lors du chargement des données</div>';
+                '<div class="error-message"><i data-lucide="alert-circle" style="width: 16px; height: 16px; margin-right: 8px;"></i>Error loading data</div>';
         }
     }
 
@@ -458,7 +488,7 @@
         const container = document.getElementById('indices-strip');
         
         if (!indices || Object.keys(indices).length === 0) {
-            container.innerHTML = '<div class="no-data"><i data-lucide="info" style="width: 16px; height: 16px; margin-right: 8px;"></i>Aucun indice disponible</div>';
+            container.innerHTML = '<div class="no-data"><i data-lucide="info" style="width: 16px; height: 16px; margin-right: 8px;"></i>No indices available</div>';
             return;
         }
         
@@ -500,7 +530,7 @@
         const container = document.getElementById('stocks-container');
         
         if (!stocks || Object.keys(stocks).length === 0) {
-            container.innerHTML = '<div class="no-data"><i data-lucide="info" style="width: 16px; height: 16px; margin-right: 8px;"></i>Aucune action disponible</div>';
+            container.innerHTML = '<div class="no-data"><i data-lucide="info" style="width: 16px; height: 16px; margin-right: 8px;"></i>No stocks available</div>';
             return;
         }
         
@@ -518,11 +548,13 @@
                 return name.substring(0, maxLength) + '...';
             };
             
+            const currency = getCurrency(symbol);
             return `
                 <div class="market-label ${isPositive ? 'positive' : 'negative'}">
                     <div class="label-header">
                         <h4 class="label-name" title="${data.name || symbol}">${truncateName(data.name || symbol)}</h4>
                         <span class="label-symbol">${cleanSymbol}</span>
+                        <span class="label-currency">${currency}</span>
                     </div>
                     <div class="label-values">
                         <div class="label-price">${formatNumber(data.price)}</div>
@@ -558,7 +590,7 @@
             ctx.fillStyle = '#666';
             ctx.font = '16px Arial';
             ctx.textAlign = 'center';
-            ctx.fillText('Erreur lors du chargement des données', canvas.width / 2, canvas.height / 2);
+            ctx.fillText('Error loading data', canvas.width / 2, canvas.height / 2);
         }
     }
 
@@ -571,7 +603,7 @@
         }
         
         if (!data.labels || !data.datasets || data.datasets.length === 0) {
-            ctx.getContext('2d').fillText('Aucune donnée disponible', ctx.width / 2, ctx.height / 2);
+            ctx.getContext('2d').fillText('No data available', ctx.width / 2, ctx.height / 2);
             return;
         }
         
@@ -623,7 +655,7 @@
                         display: true,
                         title: {
                             display: true,
-                            text: 'Prix'
+                            text: 'Price'
                         },
                         grid: {
                             display: true,

@@ -514,10 +514,14 @@ def api_calculate_option():
         if risk_free_rate < 0 or risk_free_rate > 1 or volatility < 0 or volatility > 1:
             return jsonify({'error': 'Le taux sans risque et la volatilité doivent être entre 0 et 1'}), 400
         
+        # Validation du nombre de simulations Monte Carlo
+        nb_simulations = int(data.get('numSimulations', 10000))
+        if nb_simulations < 100 or nb_simulations > 1000000:
+            return jsonify({'error': 'Le nombre de simulations doit être entre 100 et 1 000 000'}), 400
+        
         # Si Monte Carlo: simuler les trajectoires pour obtenir prix et IC
         # Toujours calculer Monte Carlo et Black-Scholes pour comparaison
         if True:
-            nb_simulations = int(data.get('numSimulations', 10000))
             nb_steps = int(data.get('numSteps', 252))
             confidence_level = float(data.get('confidenceLevel', 0.95))
 
