@@ -180,8 +180,8 @@ class OptionPricer:
             price_m = math.exp(-r * Tm) * float(np.mean(payoff_m))
             # Theta = dV/dt (calendrier). Quand le temps avance de dt, T diminue de dt.
             # Approximation: theta ≈ (V(T - dt) - V(T)) / dt
-            # Conversion en sensibilité à un changement de 1 jour (1/365)
-            theta = (price_m - price) / (theta_dt) * (1.0 / 365.0)
+            # Conversion en sensibilité à un changement de 1 jour de trading (1/252)
+            theta = (price_m - price) / (theta_dt) * (1.0 / 252.0)
         else:
             theta = float('nan')
 
@@ -255,12 +255,12 @@ class OptionPricer:
             theta = (
                 -(S * self._normal_pdf(d1) * sigma) / (2.0 * math.sqrt(T))
                 - r * K * math.exp(-r * T) * self._normal_cdf(d2)
-            ) * (1.0 / 365.0)  # Conversion en sensibilité à un changement de 1 jour
+            ) * (1.0 / 252.0)  # Conversion en sensibilité à un changement de 1 jour de trading
         else:
             theta = (
                 -(S * self._normal_pdf(d1) * sigma) / (2.0 * math.sqrt(T))
                 + r * K * math.exp(-r * T) * self._normal_cdf(-d2)
-            ) * (1.0 / 365.0)  # Conversion en sensibilité à un changement de 1 jour
+            ) * (1.0 / 252.0)  # Conversion en sensibilité à un changement de 1 jour de trading
         
         # Vega (sensibilité à un changement de 1% dans la volatilité)
         vega = S * self._normal_pdf(d1) * math.sqrt(T) * 0.01

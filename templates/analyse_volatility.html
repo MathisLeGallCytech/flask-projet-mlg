@@ -1,6 +1,6 @@
 {% extends "base_flask.html" %}
 
-{% block title %}Equity Derivatives Dashboard – Greeks Analysis{% endblock %}
+{% block title %}Equity Derivatives Dashboard – Tweet Analysis{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
@@ -23,16 +23,37 @@
                         <span>Mathis Le Gall CV</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('indices_actions') }}" class="nav-link">
-                        <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Stocks</span>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown(event)">
+                        <i data-lucide="trending-up"></i>
+                        <span>Market Overview</span>
+                        <i data-lucide="chevron-down" class="dropdown-arrow"></i>
                     </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('indices_actions') }}" class="nav-link">
+                                <i data-lucide="candlestick-chart"></i>
+                                <span>Indices & Stocks</span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('crypto') }}" class="nav-link">
+                                <i data-lucide="bar-chart"></i>
+                                <span>Cryptocurrencies</span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('rates_fx') }}" class="nav-link">
+                                <i data-lucide="trending-up"></i>
+                                <span>Rates & FX</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
                         <i data-lucide="activity"></i>
-                        <span>Stocks & Indices Analysis</span>
+                        <span>Market Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -44,13 +65,13 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
-                        <span>Implied Volatility</span>
+                        <span>Implied Volatility Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link active">
-                        <i data-lucide="calculator"></i>
-                        <span>Greeks Analysis</span>
+                    <a href="{{ url_for('analyse_volatility') }}" class="nav-link active">
+                        <i data-lucide="trending-up"></i>
+                        <span>Tweet Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -74,7 +95,7 @@
                     <!-- Space to balance the layout -->
                 </div>
                 <div class="main-header-right">
-                    <h1 class="header-title">Greeks Analysis</h1>
+                    <h1 class="header-title">Tweet Analysis</h1>
                 </div>
             </div>
         </header>
@@ -84,9 +105,9 @@
             <div class="max-w-7xl mx-auto">
                 <!-- Hero Section -->
                 <section class="hero-section">
-                    <h1 class="hero-title">Greeks Analysis</h1>
+                    <h1 class="hero-title">Tweet Analysis</h1>
                     <p class="hero-subtitle">
-                        Calculation and visualization of option sensitivities (Delta, Gamma, Theta, Vega, Rho)
+                        Analyse des tweets et des sentiments du marché - En développement
                     </p>
                 </section>
 
@@ -94,25 +115,26 @@
                 <section class="main-section">
                     <div class="content-card">
                         <div class="card-header">
-                            <h2>Sensitivity Analysis</h2>
-                            <p>This page will be dedicated to option greeks analysis</p>
+                            <h2>Analyse de Tweets</h2>
+                            <p>Cette page sera dédiée à l'analyse des tweets et des sentiments du marché - En développement</p>
                         </div>
                         
                         <div class="card-content">
                             <div class="placeholder-content">
                                 <div class="placeholder-icon">
-                                    <i data-lucide="calculator" class="text-6xl text-gray-400"></i>
+                                    <i data-lucide="trending-up" class="text-6xl text-gray-400"></i>
                                 </div>
-                                <h3 class="placeholder-title">Page Under Development</h3>
+                                <h3 class="placeholder-title">Page en Développement</h3>
                                 <p class="placeholder-text">
-                                    This section will allow analysis of different option greeks:
+                                    Cette section permettra l'analyse des tweets et des sentiments du marché :
                                 </p>
                                 <ul class="placeholder-list">
-                                    <li><strong>Delta</strong> : Sensitivity of option price to underlying asset price</li>
-                                    <li><strong>Gamma</strong> : Sensitivity of Delta to underlying asset price</li>
-                                    <li><strong>Theta</strong> : Sensitivity of option price to time</li>
-                                    <li><strong>Vega</strong> : Sensitivity of option price to volatility</li>
-                                    <li><strong>Rho</strong> : Sensitivity of option price to interest rate</li>
+                                    <li><strong>Analyse de Sentiment</strong> : Analyse des sentiments des tweets financiers</li>
+                                    <li><strong>Mots-clés Tendances</strong> : Identification des mots-clés populaires</li>
+                                    <li><strong>Influence des Utilisateurs</strong> : Analyse de l'impact des influenceurs</li>
+                                    <li><strong>Corrélation Prix-Tweets</strong> : Relation entre tweets et mouvements de prix</li>
+                                    <li><strong>Prédiction de Volatilité</strong> : Utilisation des tweets pour prédire la volatilité</li>
+                                    <li><strong>Alertes en Temps Réel</strong> : Notifications basées sur l'activité Twitter</li>
                                 </ul>
                             </div>
                         </div>

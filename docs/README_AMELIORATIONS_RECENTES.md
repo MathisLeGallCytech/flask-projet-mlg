@@ -441,7 +441,6 @@ def optimize_dataframe(df):
 # APIs
 FINNHUB_API_KEY=votre_clé_finnhub
 POLYGON_API_KEY=votre_clé_polygon
-ALPHA_VANTAGE_API_KEY=votre_clé_alpha_vantage
 
 # Configuration de l'application
 FLASK_ENV=production

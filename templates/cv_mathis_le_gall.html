@@ -23,16 +23,37 @@
                         <span>Mathis Le Gall CV</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('indices_actions') }}" class="nav-link">
-                        <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Stocks</span>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown(event)">
+                        <i data-lucide="trending-up"></i>
+                        <span>Market Overview</span>
+                        <i data-lucide="chevron-down" class="dropdown-arrow"></i>
                     </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('indices_actions') }}" class="nav-link">
+                                <i data-lucide="candlestick-chart"></i>
+                                <span>Indices & Stocks</span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('crypto') }}" class="nav-link">
+                                <i data-lucide="bar-chart"></i>
+                                <span>Cryptocurrencies</span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('rates_fx') }}" class="nav-link">
+                                <i data-lucide="trending-up"></i>
+                                <span>Rates & FX</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
                         <i data-lucide="activity"></i>
-                        <span>Stocks & Indices Analysis</span>
+                        <span>Market Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -44,13 +65,13 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
-                        <span>Implied Volatility</span>
+                        <span>Implied Volatility Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
-                        <i data-lucide="calculator"></i>
-                        <span>Greeks Analysis</span>
+                    <a href="{{ url_for('analyse_volatility') }}" class="nav-link">
+                        <i data-lucide="twitter"></i>
+                        <span>Tweet Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">

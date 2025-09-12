@@ -245,7 +245,7 @@
     // Fonction pour récupérer les données de surface
     async function fetchVolatilitySurface(symbol) {
         try {
-            updateStatus('loading', 'Récupération des données Alpha Vantage...');
+            updateStatus('loading', 'Récupération des données...');
             
             const response = await fetch(`/api/vol-surface/${encodeURIComponent(symbol)}`);
             const data = await response.json();
@@ -356,7 +356,7 @@
         if (warning) {
             updateStatus('success', `Données de démonstration (${warning})`);
         } else {
-            updateStatus('success', 'Données Alpha Vantage chargées');
+            updateStatus('success', 'Données chargées');
         }
         
         // Afficher les données techniques

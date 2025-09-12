@@ -1,6 +1,6 @@
 {% extends "base_flask.html" %}
 
-{% block title %}Indices & Stocks – Markets{% endblock %}
+{% block title %}Rates & FX – Markets{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
@@ -17,12 +17,12 @@
                         <span>Home</span>
                     </a>
                 </li>
-                                    <li class="nav-item">
-                        <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
-                            <i data-lucide="user"></i>
-                            <span>Mathis Le Gall CV</span>
-                            </a>
-                    </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('cv_mathis_le_gall') }}" class="nav-link">
+                        <i data-lucide="user"></i>
+                        <span>Mathis Le Gall CV</span>
+                    </a>
+                </li>
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown(event)">
                         <i data-lucide="trending-up"></i>
@@ -31,7 +31,7 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li class="dropdown-item">
-                            <a href="{{ url_for('indices_actions') }}" class="nav-link active">
+                            <a href="{{ url_for('indices_actions') }}" class="nav-link">
                                 <i data-lucide="candlestick-chart"></i>
                                 <span>Indices & Stocks</span>
                             </a>
@@ -43,7 +43,7 @@
                             </a>
                         </li>
                         <li class="dropdown-item">
-                            <a href="{{ url_for('rates_fx') }}" class="nav-link">
+                            <a href="{{ url_for('rates_fx') }}" class="nav-link active">
                                 <i data-lucide="trending-up"></i>
                                 <span>Rates & FX</span>
                             </a>
@@ -62,7 +62,6 @@
                         <span>Call & Put</span>
                     </a>
                 </li>
-
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
@@ -90,20 +89,20 @@
         <!-- Header -->
         <header class="content-header">
             <div class="header-flex">
-                                    <div class="header-controls">
-                        <button id="refresh-btn" class="btn btn-primary">
-                            <i data-lucide="refresh-cw"></i>
-                            <span>Refresh</span>
-                        </button>
-                        <span id="last-update" class="last-update">
-                            <i data-lucide="clock" style="width: 14px; height: 14px; margin-right: 6px;"></i>
-                            Last update: --
-                        </span>
-                        <span id="next-update" class="next-update">
-                            <i data-lucide="zap" style="width: 14px; height: 14px; margin-right: 6px;"></i>
-                            Next update: --
-                        </span>
-                    </div>
+                <div class="header-controls">
+                    <button id="refresh-btn" class="btn btn-primary">
+                        <i data-lucide="refresh-cw"></i>
+                        <span>Refresh</span>
+                    </button>
+                    <span id="last-update" class="last-update">
+                        <i data-lucide="clock" style="width: 14px; height: 14px; margin-right: 6px;"></i>
+                        Last update: --
+                    </span>
+                    <span id="next-update" class="next-update">
+                        <i data-lucide="zap" style="width: 14px; height: 14px; margin-right: 6px;"></i>
+                        Next update: --
+                    </span>
+                </div>
             </div>
         </header>
 
@@ -113,11 +112,11 @@
                 <div class="header-content">
                     <div class="header-left">
                         <h1 class="page-title">
-                            <i data-lucide="candlestick-chart" class="title-icon"></i>
-                            Indices & Stocks
+                            <i data-lucide="trending-up" class="title-icon"></i>
+                            Rates & FX
                         </h1>
                         <p class="page-subtitle">
-                            Real-time data of major indices and stocks
+                            Real-time data of major currencies and interest rates
                         </p>
                     </div>
                     
@@ -133,99 +132,86 @@
                         </div>
                         <div class="status-meta">
                             <i data-lucide="database" class="meta-icon"></i>
-                            <span class="meta-text">30 stocks</span>
+                            <span class="meta-text">30 currencies</span>
                         </div>
                     </div>
                 </div>
             </div>
 
             <main class="main-content-area">
-                <!-- Bandeau indices pleine largeur -->
+                <!-- Bandeau des 8 yields clés pleine largeur -->
                 <div class="indices-strip-container">
                     <h3 class="section-title">
                         <i data-lucide="trending-up" class="section-icon"></i>
-                        Indices
+                        Key Government Bond Yields
                     </h3>
-                    <div id="indices-strip" class="indices-grid"></div>
+                    <div id="rates-strip" class="indices-grid"></div>
                 </div>
 
-                <!-- Section Graphique et Actions -->
+                <!-- Section Graphique et Forex -->
                 <section class="chart-section">
                     <!-- Partie Graphique -->
                     <div class="indices-actions-chart-container">
                         <div class="indices-actions-chart-header">
                             <h3 class="indices-actions-chart-title">
                                 <i data-lucide="bar-chart" class="indices-actions-chart-icon"></i>
-                                                                 Market Chart
+                                Market Chart
                             </h3>
                             <div class="indices-actions-chart-controls">
                                 <div class="indices-actions-chart-info">
                                     <i data-lucide="activity" style="width: 14px; height: 14px; margin-right: 6px;"></i>
-                                    <span id="current-symbol">CAC 40</span> • 
+                                    <span id="current-symbol">US 10Y Treasury</span> • 
                                     <span id="current-timeframe">2 Years</span>
                                 </div>
                                 <div class="indices-actions-chart-selects">
                                     <div style="position: relative; display: inline-block;">
                                         <select id="chart-symbol" class="indices-actions-chart-select">
-                                        <optgroup label="Indices">
-                                            <option value="^FCHI">CAC 40</option>
-                                            <option value="^GSPC">S&P 500</option>
-                                            <option value="^IXIC">NASDAQ</option>
-                                            <option value="^DJI">Dow Jones</option>
-                                            <option value="^FTSE">FTSE 100</option>
-                                            <option value="^N225">Nikkei 225</option>
-                                            <option value="^GDAXI">DAX</option>
-                                            <option value="^STOXX50E">Euro STOXX 50</option>
-                                        </optgroup>
-                                        <optgroup label="Tech US">
-                                            <option value="AAPL">Apple Inc.</option>
-                                            <option value="MSFT">Microsoft Corporation</option>
-                                            <option value="GOOGL">Alphabet Inc.</option>
-                                            <option value="AMZN">Amazon.com Inc.</option>
-                                            <option value="TSLA">Tesla Inc.</option>
-                                            <option value="NVDA">NVIDIA Corporation</option>
-                                            <option value="META">Meta Platforms Inc.</option>
-                                            <option value="NFLX">Netflix Inc.</option>
-                                            <option value="ADBE">Adobe Inc.</option>
-                                            <option value="CRM">Salesforce Inc.</option>
-                                            <option value="INTC">Intel Corporation</option>
-                                            <option value="ORCL">Oracle Corporation</option>
-                                            <option value="CSCO">Cisco Systems Inc.</option>
-                                            <option value="PYPL">PayPal Holdings Inc.</option>
-                                            <option value="AVGO">Broadcom Inc.</option>
-                                            <option value="QCOM">Qualcomm Inc.</option>
-                                            <option value="TXN">Texas Instruments Inc.</option>
-                                            <option value="KLAC">KLA Corporation</option>
-                                            <option value="PANW">Palo Alto Networks Inc.</option>
-                                            <option value="SNPS">Synopsys Inc.</option>
-                                            <option value="CDNS">Cadence Design Systems Inc.</option>
-                                            <option value="FTNT">Fortinet Inc.</option>
-                                        </optgroup>
-                                        <optgroup label="CAC40">
-                                            <option value="LVMH.PA">LVMH Moët Hennessy Louis Vuitton</option>
-                                            <option value="ASML.AS">ASML Holding N.V.</option>
-                                            <option value="SAP.DE">SAP SE</option>
-                                            <option value="NESN.SW">Nestlé S.A.</option>
-                                        </optgroup>
-                                        <optgroup label="Actions Asiatiques">
-                                            <option value="005930.KS">Samsung Electronics Co., Ltd.</option>
-                                            <option value="0700.HK">Tencent Holdings Limited</option>
-                                            <option value="BABA">Alibaba Group Holding Limited</option>
-                                        </optgroup>
-                                    </select>
+                                            <optgroup label="Key Government Bond Yields">
+                                                <option value="^TNX" selected>CBOE Interest Rate 10 Year</option>
+                                                <option value="^IRX">13 WEEK TREASURY BILL</option>
+                                                <option value="^FVX">Treasury Yield 5 Years</option>
+                                                <option value="^TYX">Treasury Yield 30 Years</option>
+                                                <option value="2YY=F">2-Year Yield Futures</option>
+                                                <option value="ZN=F">10-Year T-Note Futures</option>
+                                            </optgroup>
+                                            <optgroup label="Major Forex Pairs">
+                                                <option value="EURUSD=X">EUR/USD</option>
+                                                <option value="GBPUSD=X">GBP/USD</option>
+                                                <option value="USDJPY=X">USD/JPY</option>
+                                                <option value="USDCHF=X">USD/CHF</option>
+                                                <option value="AUDUSD=X">AUD/USD</option>
+                                                <option value="USDCAD=X">USD/CAD</option>
+                                                <option value="NZDUSD=X">NZD/USD</option>
+                                            </optgroup>
+                                            <optgroup label="Cross Currency Pairs">
+                                                <option value="EURGBP=X">EUR/GBP</option>
+                                                <option value="EURJPY=X">EUR/JPY</option>
+                                                <option value="EURCHF=X">EUR/CHF</option>
+                                                <option value="EURAUD=X">EUR/AUD</option>
+                                                <option value="GBPJPY=X">GBP/JPY</option>
+                                                <option value="GBPCHF=X">GBP/CHF</option>
+                                                <option value="GBPAUD=X">GBP/AUD</option>
+                                                <option value="AUDCAD=X">AUD/CAD</option>
+                                                <option value="AUDCHF=X">AUD/CHF</option>
+                                                <option value="AUDJPY=X">AUD/JPY</option>
+                                                <option value="CADCHF=X">CAD/CHF</option>
+                                                <option value="CADJPY=X">CAD/JPY</option>
+                                                <option value="NZDJPY=X">NZD/JPY</option>
+                                            </optgroup>
+                                        </select>
                                     </div>
                                     <div style="position: relative; display: inline-block;">
                                         <select id="chart-timeframe" class="indices-actions-chart-select">
-                                        <option value="1d">1 Day</option>
-                                        <option value="5d">5 Days</option>
-                                        <option value="1mo">1 Month</option>
-                                        <option value="3mo">3 Months</option>
-                                        <option value="6mo">6 Months</option>
-                                        <option value="1y">1 Year</option>
-                                        <option value="2y" selected>2 Years</option>
-                                        <option value="5y">5 Years</option>
-                                        <option value="max">Max</option>
-                                    </select>
+                                            <option value="1d">1 Day</option>
+                                            <option value="5d">5 Days</option>
+                                            <option value="1mo">1 Month</option>
+                                            <option value="3mo">3 Months</option>
+                                            <option value="6mo">6 Months</option>
+                                            <option value="1y">1 Year</option>
+                                            <option value="2y" selected>2 Years</option>
+                                            <option value="5y">5 Years</option>
+                                            <option value="max">Max</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -235,13 +221,13 @@
                         </div>
                     </div>
 
-                    <!-- Partie Actions -->
+                    <!-- Partie Forex -->
                     <div class="stocks-container">
                         <h3 class="section-title">
-                            <i data-lucide="building-2" class="section-icon"></i>
-                                                         Stocks
+                            <i data-lucide="globe" class="section-icon"></i>
+                            Major Currency Pairs
                         </h3>
-                        <div id="stocks-container" class="stocks-grid">
+                        <div id="forex-container" class="stocks-grid">
                             <div class="loading-spinner">
                                 <i data-lucide="refresh-cw" style="width: 24px; height: 24px; animation: spin 1s linear infinite; margin-bottom: 8px;"></i>
                                 <p>Loading data...</p>
@@ -318,7 +304,7 @@
             min-height: 400px !important;
         }
         
-        /* Ajuster la grille des actions pour 2 colonnes */
+        /* Ajuster la grille des cryptomonnaies pour 2 colonnes */
         .stocks-grid {
             display: grid !important;
             grid-template-columns: 1fr 1fr !important;
@@ -378,14 +364,14 @@
 
     // Variables globales
     let marketChart = null;
-    let currentSymbol = '^FCHI';
+    let currentSymbol = '^TNX';
     let currentTimeframe = '2y'; // Timeframe par défaut à 2 ans
     let marketData = null;
     let nextUpdateTimer = null;
     let countdownInterval = null;
 
     // Fonction pour formater les nombres
-    function formatNumber(num, decimals = 2) {
+    function formatNumber(num, decimals = 4) {
         if (num === null || num === undefined || isNaN(num)) return '-';
         return Number(num).toLocaleString('fr-FR', {
             minimumFractionDigits: decimals,
@@ -398,36 +384,6 @@
         if (num === null || num === undefined || isNaN(num) || num === 0) return '-';
         const sign = num >= 0 ? '+' : '';
         return `${sign}${Number(num).toFixed(decimals)}%`;
-    }
-
-    // Fonction pour déterminer la devise en fonction du symbole
-    function getCurrency(symbol) {
-        // Indices européens
-        if (['^FCHI', '^STOXX50E', '^GDAXI', '^FTSE'].includes(symbol)) {
-            return 'EUR';
-        }
-        // Indices américains
-        if (['^GSPC', '^IXIC', '^DJI'].includes(symbol)) {
-            return 'USD';
-        }
-        // Indices asiatiques
-        if (['^N225'].includes(symbol)) {
-            return 'JPY';
-        }
-        
-        // Actions par extension
-        if (symbol.endsWith('.PA') || symbol.endsWith('.AS') || symbol.endsWith('.DE') || symbol.endsWith('.SW')) {
-            return 'EUR';
-        }
-        if (symbol.endsWith('.KS')) {
-            return 'KRW';
-        }
-        if (symbol.endsWith('.HK')) {
-            return 'HKD';
-        }
-        
-        // Actions américaines (par défaut)
-        return 'USD';
     }
 
     // Fonction pour mettre à jour le statut de l'API
@@ -474,11 +430,11 @@
             marketData = data;
             updateApiStatus('connected', responseTime);
             
-            // Afficher les indices
-            displayIndices(data.indices);
+            // Afficher les yields clés
+            displayRates(data.rates);
             
-            // Afficher les actions
-            displayStocks(data.stocks);
+            // Afficher le forex
+            displayForex(data.forex);
             
             // Charger le graphique initial
             loadChartData();
@@ -497,40 +453,50 @@
             updateApiStatus('error');
             
             // Afficher un message d'erreur
-            document.getElementById('indices-strip').innerHTML = 
+            document.getElementById('rates-strip').innerHTML = 
                 '<div class="error-message"><i data-lucide="alert-circle" style="width: 16px; height: 16px; margin-right: 8px;"></i>Error loading data</div>';
-            document.getElementById('stocks-container').innerHTML = 
+            document.getElementById('forex-container').innerHTML = 
                 '<div class="error-message"><i data-lucide="alert-circle" style="width: 16px; height: 16px; margin-right: 8px;"></i>Error loading data</div>';
         }
     }
 
-    // Fonction pour afficher les indices
-    function displayIndices(indices) {
-        const container = document.getElementById('indices-strip');
+    // Fonction pour afficher le forex
+    function displayForex(forex) {
+        const container = document.getElementById('forex-container');
         
-        if (!indices || Object.keys(indices).length === 0) {
-            container.innerHTML = '<div class="no-data"><i data-lucide="info" style="width: 16px; height: 16px; margin-right: 8px;"></i>No indices available</div>';
+        if (!forex || Object.keys(forex).length === 0) {
+            container.innerHTML = '<div class="no-data"><i data-lucide="info" style="width: 16px; height: 16px; margin-right: 8px;"></i>No forex data available</div>';
             return;
         }
         
-        const indicesHtml = Object.entries(indices).map(([symbol, data]) => {
+        // Afficher toutes les 20 paires de devises
+        const allPairs = [
+            // Paires majeures (7)
+            'EURUSD=X', 'GBPUSD=X', 'USDJPY=X', 'USDCHF=X', 'AUDUSD=X', 'USDCAD=X', 'NZDUSD=X',
+            // Paires croisées (13)
+            'EURGBP=X', 'EURJPY=X', 'EURCHF=X', 'EURAUD=X', 'GBPJPY=X', 'GBPCHF=X', 'GBPAUD=X',
+            'AUDCAD=X', 'AUDCHF=X', 'AUDJPY=X', 'CADCHF=X', 'CADJPY=X', 'NZDJPY=X'
+        ];
+        const filteredForex = {};
+        
+        allPairs.forEach(pair => {
+            if (forex[pair]) {
+                filteredForex[pair] = forex[pair];
+            }
+        });
+        
+        const forexHtml = Object.entries(filteredForex).map(([symbol, data]) => {
             const change = data.change || 0;
-            const changePercent = data.change_percent || 0; // Correction du nom du champ
+            const changePercent = data.change_percent || 0;
             const isPositive = change >= 0;
             
             // Nettoyer le symbole pour l'affichage
-            const cleanSymbol = symbol.replace(/[\^\.]/g, '');
-            
-            // Fonction pour tronquer le nom si nécessaire
-            const truncateName = (name, maxLength = 20) => {
-                if (name.length <= maxLength) return name;
-                return name.substring(0, maxLength) + '...';
-            };
+            const cleanSymbol = symbol.replace(/[=X]/g, '');
             
             return `
                 <div class="market-label ${isPositive ? 'positive' : 'negative'}">
                     <div class="label-header">
-                        <h4 class="label-name" title="${data.displayName || data.name || symbol}">${truncateName(data.displayName || data.name || symbol)}</h4>
+                        <h4 class="label-name" title="${data.name || symbol}">${data.name || cleanSymbol}</h4>
                         <span class="label-symbol">${cleanSymbol}</span>
                     </div>
                     <div class="label-values">
@@ -543,25 +509,35 @@
             `;
         }).join('');
         
-        container.innerHTML = indicesHtml;
+        container.innerHTML = forexHtml;
     }
 
-    // Fonction pour afficher les actions
-    function displayStocks(stocks) {
-        const container = document.getElementById('stocks-container');
+    // Fonction pour afficher les 8 yields clés
+    function displayRates(rates) {
+        const container = document.getElementById('rates-strip');
         
-        if (!stocks || Object.keys(stocks).length === 0) {
-            container.innerHTML = '<div class="no-data"><i data-lucide="info" style="width: 16px; height: 16px; margin-right: 8px;"></i>No stocks available</div>';
+        if (!rates || Object.keys(rates).length === 0) {
+            container.innerHTML = '<div class="no-data"><i data-lucide="info" style="width: 16px; height: 16px; margin-right: 8px;"></i>No yields data available</div>';
             return;
         }
         
-        const stocksHtml = Object.entries(stocks).map(([symbol, data]) => {
+        // Les 6 bonds clés dans l'ordre
+        const keyYields = ['^TNX', '^IRX', '^FVX', '^TYX', '2YY=F', 'ZN=F'];
+        const filteredRates = {};
+        
+        keyYields.forEach(symbol => {
+            if (rates[symbol]) {
+                filteredRates[symbol] = rates[symbol];
+            }
+        });
+        
+        const ratesHtml = Object.entries(filteredRates).map(([symbol, data]) => {
             const change = data.change || 0;
-            const changePercent = data.change_percent || 0; // Correction du nom du champ
+            const changePercent = data.change_percent || 0;
             const isPositive = change >= 0;
             
             // Nettoyer le symbole pour l'affichage
-            const cleanSymbol = symbol.replace(/[\^\.]/g, '');
+            const cleanSymbol = symbol.replace(/[\^:\.]/g, '');
             
             // Fonction pour tronquer le nom si nécessaire
             const truncateName = (name, maxLength = 20) => {
@@ -569,16 +545,17 @@
                 return name.substring(0, maxLength) + '...';
             };
             
-            const currency = getCurrency(symbol);
+            // Tous les yields sont en pourcentage
+            const priceDisplay = `${formatNumber(data.price, 2)}%`;
+            
             return `
                 <div class="market-label ${isPositive ? 'positive' : 'negative'}">
                     <div class="label-header">
                         <h4 class="label-name" title="${data.name || symbol}">${truncateName(data.name || symbol)}</h4>
                         <span class="label-symbol">${cleanSymbol}</span>
-                        <span class="label-currency">${currency}</span>
                     </div>
                     <div class="label-values">
-                        <div class="label-price">${formatNumber(data.price)}</div>
+                        <div class="label-price">${priceDisplay}</div>
                         <div class="label-change">
                             <span class="change-percent">${formatPercentage(changePercent)}</span>
                         </div>
@@ -587,7 +564,7 @@
             `;
         }).join('');
         
-        container.innerHTML = stocksHtml;
+        container.innerHTML = ratesHtml;
     }
 
     // Fonction pour charger les données du graphique
@@ -776,9 +753,6 @@
                 loadChartData();
             });
         }
-        
-        // Le rafraîchissement automatique est maintenant géré par le minuteur
-        // setInterval(refreshData, 300000); // 5 minutes = 300 000 millisecondes
     });
 </script>
 {% endblock %}

@@ -23,16 +23,37 @@
                             <span>Mathis Le Gall CV</span>
                         </a>
                     </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('indices_actions') }}" class="nav-link">
-                        <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Stocks</span>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown(event)">
+                        <i data-lucide="trending-up"></i>
+                        <span>Market Overview</span>
+                        <i data-lucide="chevron-down" class="dropdown-arrow"></i>
                     </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('indices_actions') }}" class="nav-link">
+                                <i data-lucide="candlestick-chart"></i>
+                                <span>Indices & Stocks</span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('crypto') }}" class="nav-link">
+                                <i data-lucide="bar-chart"></i>
+                                <span>Cryptocurrencies</span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('rates_fx') }}" class="nav-link">
+                                <i data-lucide="trending-up"></i>
+                                <span>Rates & FX</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link active">
                         <i data-lucide="activity"></i>
-                        <span>Stocks & Indices Analysis</span>
+                        <span>Market Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -45,13 +66,13 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
-                        <span>Implied Volatility</span>
+                        <span>Implied Volatility Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
-                        <i data-lucide="calculator"></i>
-                        <span>Greeks Analysis</span>
+                    <a href="{{ url_for('analyse_volatility') }}" class="nav-link">
+                        <i data-lucide="twitter"></i>
+                        <span>Tweet Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -75,7 +96,7 @@
                     <!-- Space to balance the layout -->
                 </div>
                 <div class="main-header-right">
-                    <h1 class="header-title">Analysis - Performance Comparison</h1>
+                    <h1 class="header-title">Market Analysis</h1>
                 </div>
             </div>
         </header>
@@ -87,7 +108,7 @@
                     <div class="header-left">
                         <h1 class="page-title">
                             <i data-lucide="activity" class="title-icon"></i>
-                            Stocks & Indices Analysis
+                            Market Analysis
                         </h1>
                         <p class="page-subtitle">
                             Performance comparison and risk metrics
@@ -299,16 +320,65 @@
             updateApiStatus('connected', responseTime);
             
             availableInstruments = [];
+            
+            // Ajouter les indices
             Object.entries(data.indices).forEach(([name, idx]) => {
-                availableInstruments.push({ symbol: idx.symbol, label: (idx.displayName || idx.symbol) });
+                availableInstruments.push({ 
+                    symbol: idx.symbol, 
+                    label: (idx.displayName || idx.symbol),
+                    category: 'Indices'
+                });
             });
+            
+            // Ajouter les actions
             Object.entries(data.stocks).forEach(([symbol, s]) => {
-                availableInstruments.push({ symbol, label: (s.name || symbol) });
+                availableInstruments.push({ 
+                    symbol, 
+                    label: (s.name || symbol),
+                    category: 'Actions'
+                });
             });
+            
+            // Ajouter le forex
+            if (data.forex) {
+                Object.entries(data.forex).forEach(([symbol, f]) => {
+                    availableInstruments.push({ 
+                        symbol, 
+                        label: (f.name || symbol),
+                        category: 'Forex'
+                    });
+                });
+            }
+            
+            // Ajouter les cryptomonnaies
+            if (data.crypto) {
+                Object.entries(data.crypto).forEach(([symbol, c]) => {
+                    availableInstruments.push({ 
+                        symbol, 
+                        label: (c.name || symbol),
+                        category: 'Cryptomonnaies'
+                    });
+                });
+            }
+            
+            // Construire la liste déroulante avec des groupes
             const dd = document.getElementById('tag-dropdown');
-            dd.innerHTML = '<option value="">Choose an instrument…</option>' + availableInstruments
-                .map(x => `<option value="${x.symbol}">${x.label} (${x.symbol})</option>`)
-                .join('');
+            let dropdownHTML = '<option value="">Choisir un instrument…</option>';
+            
+            // Grouper par catégorie
+            const categories = ['Indices', 'Actions', 'Forex', 'Cryptomonnaies'];
+            categories.forEach(category => {
+                const categoryInstruments = availableInstruments.filter(inst => inst.category === category);
+                if (categoryInstruments.length > 0) {
+                    dropdownHTML += `<optgroup label="${category}">`;
+                    categoryInstruments.forEach(inst => {
+                        dropdownHTML += `<option value="${inst.symbol}">${inst.label} (${inst.symbol})</option>`;
+                    });
+                    dropdownHTML += '</optgroup>';
+                }
+            });
+            
+            dd.innerHTML = dropdownHTML;
         } catch (error) {
             console.error('Erreur lors du chargement des données:', error);
             updateApiStatus('error');
@@ -366,26 +436,53 @@
             'rgb(244,63,94)','rgb(20,184,166)','rgb(250,204,21)','rgb(99,102,241)',
             'rgb(217,119,6)','rgb(16,185,129)'
         ];
+        // Séparer les devises des autres instruments
+        const fxSeries = [];
+        const nonFxSeries = [];
+        
+        series.forEach(s => {
+            const instrument = availableInstruments.find(i => i.symbol === s.symbol);
+            if (instrument && instrument.category === 'Forex') {
+                fxSeries.push(s);
+            } else {
+                nonFxSeries.push(s);
+            }
+        });
+        
+        // Vérifier s'il y a des devises sélectionnées
+        const hasForex = fxSeries.length > 0;
+        
         const datasets = series.map((s, idx) => {
             const map = new Map(); 
             s.points.forEach(pt => map.set(pt.x, Number(pt.y)));
             
-            // Trouver la première valeur valide pour la base
-            let base = null; 
-            for (let i = 0; i < masterLabelsISO.length; i++) { 
-                const v = map.get(masterLabelsISO[i]); 
-                if (isFinite(v) && v > 0) { 
-                    base = v; 
-                    break; 
-                } 
-            }
+            const instrument = availableInstruments.find(i => i.symbol === s.symbol);
+            const isForex = instrument && instrument.category === 'Forex';
             
-            // Calculer les données normalisées
-            const data = masterLabelsISO.map(iso => { 
-                const v = map.get(iso); 
-                if (!isFinite(v) || base === null || base === 0) return null; 
-                return (v / base) * 100.0; 
-            });
+            let data;
+            if (isForex) {
+                // Pour les devises, utiliser les valeurs brutes (pas de normalisation base 100)
+                data = masterLabelsISO.map(iso => { 
+                    const v = map.get(iso); 
+                    return isFinite(v) ? v : null; 
+                });
+            } else {
+                // Pour les autres instruments, normaliser en base 100
+                let base = null; 
+                for (let i = 0; i < masterLabelsISO.length; i++) { 
+                    const v = map.get(masterLabelsISO[i]); 
+                    if (isFinite(v) && v > 0) { 
+                        base = v; 
+                        break; 
+                    } 
+                }
+                
+                data = masterLabelsISO.map(iso => { 
+                    const v = map.get(iso); 
+                    if (!isFinite(v) || base === null || base === 0) return null; 
+                    return (v / base) * 100.0; 
+                });
+            }
             
             // Trouver le nom complet correspondant au symbole
             const selectedItem = tagSelected.find(item => item.symbol === s.symbol);
@@ -397,8 +494,12 @@
                 borderColor: palette[idx % palette.length], 
                 backgroundColor: palette[idx % palette.length].replace('rgb','rgba').replace(')',', 0.08)'), 
                 tension: 0.08, 
-                borderWidth: 1.2, 
-                fill: false 
+                borderWidth: 1.0, // Trait plus fin
+                pointRadius: 0, // Supprimer les points
+                pointHoverRadius: 3, // Point visible seulement au survol
+                pointHoverBorderWidth: 2,
+                fill: false,
+                yAxisID: isForex ? 'y1' : 'y' // Utiliser l'axe Y secondaire pour les devises
             };
         });
         if (perfChart) perfChart.destroy();
@@ -412,10 +513,20 @@
                 scales: {
                     y: {
                         type: isLog ? 'logarithmic' : 'linear',
+                        position: 'left',
                         title: { display: true, text: 'Base 100', color: '#ffffff', font: { size: 13 } },
                         ticks: { color: '#ffffff', font: { size: 12 }, callback: (v)=>{ try { return Number(v).toLocaleString('fr-FR'); } catch { return v; } } },
                         grid: { color: 'rgba(255,255,255,0.12)', lineWidth: 0.6 }
                     },
+                    ...(hasForex && {
+                        y1: {
+                            type: 'linear',
+                            position: 'right',
+                            title: { display: true, text: 'Taux de change', color: '#ffffff', font: { size: 13 } },
+                            ticks: { color: '#ffffff', font: { size: 12 }, callback: (v)=>{ try { return Number(v).toLocaleString('fr-FR', { minimumFractionDigits: 4, maximumFractionDigits: 4 }); } catch { return v; } } },
+                            grid: { drawOnChartArea: false, color: 'rgba(255,255,255,0.12)', lineWidth: 0.6 }
+                        }
+                    }),
                     x: {
                         grid: { color: 'rgba(255,255,255,0.10)', lineWidth: 0.6 },
                         ticks: {
@@ -442,8 +553,12 @@
             }
         });
         
-        // Mettre à jour le tableau des métriques de risque
-        updateRiskMetricsTable(series);
+        // Mettre à jour le tableau des métriques de risque (exclure les devises)
+        const seriesForTable = series.filter(s => {
+            const instrument = availableInstruments.find(i => i.symbol === s.symbol);
+            return !(instrument && instrument.category === 'Forex');
+        });
+        updateRiskMetricsTable(seriesForTable);
     }
 
     function updateRiskMetricsTable(series) {

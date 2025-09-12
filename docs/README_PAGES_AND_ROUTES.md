@@ -77,6 +77,18 @@ Ce document détaille toutes les pages et routes disponibles dans l'application 
   - Visualisation des grecques
   - Analyse de risque
 
+### Tweet Analysis
+- **Route** : `/analyse-volatility`
+- **Template** : `templates/analyse_volatility.html`
+- **Description** : Analyse des tweets et des sentiments du marché (en développement)
+- **Fonctionnalités** :
+  - Analyse de sentiment des tweets financiers
+  - Mots-clés tendances
+  - Influence des utilisateurs
+  - Corrélation prix-tweets
+  - Prédiction de volatilité
+  - Alertes en temps réel
+
 ### Description de l'Application
 - **Route** : `/description-app`
 - **Template** : `templates/description_app.html`

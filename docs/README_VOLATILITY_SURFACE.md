@@ -202,7 +202,7 @@ python test_complete_system.py
 ## Améliorations Futures
 
 1. **Cache Redis** pour les données d'options
-2. **Plus d'APIs** (Alpha Vantage, IEX Cloud)
+2. **Plus d'APIs** (IEX Cloud)
 3. **Analytics** avancées (P&L)
 4. **Export** des données (CSV, Excel)
 5. **Notifications** en temps réel

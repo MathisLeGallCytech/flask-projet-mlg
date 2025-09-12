@@ -20,10 +20,9 @@ Un dashboard moderne pour l'analyse des dérivés d'actions, développé avec Fl
   - Call & Put (calculs d'options)
   - Surface de Volatilité (2D et 3D)
   - Analyse Actions Indices (comparaison de performances)
-  - Analyse des Grecques (analyse avancée des options)
+  - Tweet Analysis (analyse des tweets et sentiments - en développement)
   - CV Mathis Le Gall (page personnelle)
   - Description de l'application
-  - Pages de debug et test
 
 ## 🎯 Fonctionnalités Avancées
 
@@ -92,8 +91,6 @@ pip install -r requirements.txt
 # Pour Polygon.io (données d'options avancées)
 # Ajouter votre clé API dans le code
 
-# Pour Alpha Vantage (données alternatives)
-# Ajouter votre clé API dans le code
 ```
 
 6. **Lancer l'application**
@@ -117,16 +114,12 @@ flaskProjectMathisLeGall/
 ├── app.py                 # Application Flask principale
 ├── api/                   # Modules API
 │   ├── __init__.py
-│   ├── alpha_vantage_api.py      # API Alpha Vantage
 │   ├── finnhub_config.py         # Configuration Finnhub
 │   ├── finnhub_implied_volatility.py  # Volatilité implicite Finnhub
 │   ├── finnhub_volatility_smile.py    # Smile de volatilité Finnhub
-│   ├── polygon_options_api.py         # API Polygon.io
 │   └── yahoo_finance_api.py           # API Yahoo Finance
 ├── models/                # Modèles de calcul
 │   ├── __init__.py
-│   ├── implied_volatility_extractor.py  # Extracteur de volatilité
-│   ├── implied_volatility_final.py      # Volatilité finale
 │   ├── options_pricing.py               # Calculs d'options
 │   ├── risk_metrics.py                  # Métriques de risque
 │   └── volatility_surface_3d.py         # Surface de volatilité 3D
@@ -199,7 +192,6 @@ L'interface utilise :
 - **Yahoo Finance** (gratuit, pas de clé requise) - Données de base
 - **Finnhub** (clé API requise) - Données d'options et volatilité implicite
 - **Polygon.io** (clé API requise) - Données d'options avancées
-- **Alpha Vantage** (optionnel, 500 requêtes/jour gratuites) - Données alternatives
 
 ### Indices suivis :
 - CAC 40 (^FCHI)

@@ -82,8 +82,8 @@ class VolatilitySurface3D:
             colorscale=colorscale,
             name='Volatilité Implicite',
             hovertemplate=(
-                f'<b>Strike:</b> {hover_x_format}<br>' +
-                '<b>Maturité:</b> %{y:.2f} ans<br>' +
+                f'<b>Strike:</b> %{{x:.1f}}% of spot<br>' +
+                '<b>Maturity:</b> %{y:.2f} years<br>' +
                 '<b>IV:</b> %{z:.2%}<br>' +
                 '<extra></extra>'
             ),

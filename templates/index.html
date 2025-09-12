@@ -23,16 +23,37 @@
                             <span>Mathis Le Gall CV</span>
                         </a>
                     </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('indices_actions') }}" class="nav-link">
-                        <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Stocks</span>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown(event)">
+                        <i data-lucide="trending-up"></i>
+                        <span>Market Overview</span>
+                        <i data-lucide="chevron-down" class="dropdown-arrow"></i>
                     </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('indices_actions') }}" class="nav-link">
+                                <i data-lucide="candlestick-chart"></i>
+                                <span>Indices & Stocks</span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('crypto') }}" class="nav-link">
+                                <i data-lucide="bar-chart"></i>
+                                <span>Cryptocurrencies</span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('rates_fx') }}" class="nav-link">
+                                <i data-lucide="trending-up"></i>
+                                <span>Rates & FX</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
                         <i data-lucide="activity"></i>
-                        <span>Stocks & Indices Analysis</span>
+                        <span>Market Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -45,13 +66,13 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
-                        <span>Implied Volatility</span>
+                        <span>Implied Volatility Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
-                        <i data-lucide="calculator"></i>
-                        <span>Greeks Analysis</span>
+                    <a href="{{ url_for('analyse_volatility') }}" class="nav-link">
+                        <i data-lucide="twitter"></i>
+                        <span>Tweet Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -112,33 +133,6 @@
                                         </div>
                                     </div>
                                     
-                                    <div class="feature-item">
-                                        <span class="feature-icon">₿</span>
-                                        <div class="feature-text">
-                                            <strong>Crypto and Forex Dashboard:</strong> Adding a dedicated page to track cryptocurrency and forex markets.
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="feature-item">
-                                        <span class="feature-icon">📈</span>
-                                        <div class="feature-text">
-                                            <strong>Improved Implied Volatility Data:</strong> Integration with a better API for implied volatility to enhance data accuracy and quality.
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="feature-item">
-                                        <span class="feature-icon">🎯</span>
-                                        <div class="feature-text">
-                                            <strong>Volatility Visualization:</strong> Enhancing volatility charts to display both the volatility smile and term structure more clearly.
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="feature-item">
-                                        <span class="feature-icon">⚖️</span>
-                                        <div class="feature-text">
-                                            <strong>Relative Value Comparison Tools:</strong> Tools to compare relative value across indices, individual stocks, and other assets.
-                                        </div>
-                                    </div>
                                     
                                     <div class="feature-item">
                                         <span class="feature-icon">🐦</span>
@@ -151,6 +145,35 @@
                                         <span class="feature-icon">🔍</span>
                                         <div class="feature-text">
                                             <strong>Reddit Screening for Opportunities:</strong> A page analyzing Reddit discussions to identify potential trading opportunities (e.g., GameStop), leveraging sentiment analysis and trend detection to flag emerging market movements.
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Fonctionnalités terminées -->
+                                    <div class="feature-item completed">
+                                        <span class="feature-icon">✅</span>
+                                        <div class="feature-text">
+                                            <strong>Crypto and Forex Dashboard:</strong> Adding a dedicated page to track cryptocurrency and forex markets.
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="feature-item completed">
+                                        <span class="feature-icon">✅</span>
+                                        <div class="feature-text">
+                                            <strong>Improved Implied Volatility Data:</strong> Integration with a better API for implied volatility to enhance data accuracy and quality.
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="feature-item completed">
+                                        <span class="feature-icon">✅</span>
+                                        <div class="feature-text">
+                                            <strong>Volatility Visualization:</strong> Enhancing volatility charts to display both the volatility smile and term structure more clearly.
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="feature-item completed">
+                                        <span class="feature-icon">✅</span>
+                                        <div class="feature-text">
+                                            <strong>Relative Value Comparison Tools:</strong> Tools to compare relative value across indices, individual stocks, and other assets.
                                         </div>
                                     </div>
                                 </div>
@@ -170,21 +193,33 @@
                         </div>
                     </a>
 
-                    <a href="{{ url_for('indices_actions') }}" class="card-link">
-                        <div class="feature-card">
-                            <div class="card-header">
-                                <i data-lucide="candlestick-chart" class="card-icon"></i>
-                                <h3>Indices & Stocks</h3>
-                            </div>
-                            <p>Overview of indices and stocks with real-time charts and market data</p>
+                    <!-- Market Overview Grouped Card -->
+                    <div class="feature-card market-overview-card">
+                        <div class="card-header">
+                            <i data-lucide="trending-up" class="card-icon"></i>
+                            <h3>Market Overview</h3>
                         </div>
-                    </a>
+                        <div class="market-overview-content">
+                            <a href="{{ url_for('indices_actions') }}" class="market-overview-item">
+                                <i data-lucide="candlestick-chart" class="market-overview-icon"></i>
+                                <span>Indices & Stocks</span>
+                            </a>
+                            <a href="{{ url_for('crypto') }}" class="market-overview-item">
+                                <i data-lucide="coins" class="market-overview-icon"></i>
+                                <span>Cryptocurrencies</span>
+                            </a>
+                            <a href="{{ url_for('rates_fx') }}" class="market-overview-item">
+                                <i data-lucide="trending-up" class="market-overview-icon"></i>
+                                <span>Rates & FX</span>
+                            </a>
+                        </div>
+                    </div>
 
                     <a href="{{ url_for('analyse_actions_indices') }}" class="card-link">
                         <div class="feature-card">
                             <div class="card-header">
                                 <i data-lucide="activity" class="card-icon"></i>
-                                <h3>Stocks & Indices Analysis</h3>
+                                <h3>Market Analysis</h3>
                             </div>
                             <p>Multi-instrument performance comparison with base 100</p>
                         </div>
@@ -204,19 +239,19 @@
                         <div class="feature-card">
                             <div class="card-header">
                                 <i data-lucide="thermometer" class="card-icon"></i>
-                                <h3>Implied Volatility</h3>
+                                <h3>Implied Volatility Analysis</h3>
                             </div>
                             <p>3D visualization of implied volatility surface</p>
                         </div>
                     </a>
 
-                    <a href="{{ url_for('analyse_greeks') }}" class="card-link">
+                    <a href="{{ url_for('analyse_volatility') }}" class="card-link">
                         <div class="feature-card">
                             <div class="card-header">
-                                <i data-lucide="calculator" class="card-icon"></i>
-                                <h3>Greeks Analysis</h3>
+                                <i data-lucide="twitter" class="card-icon"></i>
+                                <h3>Tweet Analysis</h3>
                             </div>
-                            <p>Calculation and visualization of option sensitivities (Delta, Gamma, Theta, Vega, Rho)</p>
+                            <p>Analysis of tweets and market sentiment (in development)</p>
                         </div>
                     </a>
 

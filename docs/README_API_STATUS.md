@@ -18,7 +18,6 @@ Un **indicateur de statut API** a été ajouté sur toutes les pages principales
 - **Finnhub** : Données d'options et volatilité implicite
 - **Polygon.io** : Données d'options avancées
 - **Yahoo Finance** : Données de base et prix
-- **Alpha Vantage** : Données alternatives
 
 ### Métriques Surveillées
 - **Statut de connexion** : Connecté/Hors ligne/En vérification
@@ -238,12 +237,10 @@ checkApiStatus();
 - **Yahoo Finance**: 200-500ms
 - **Finnhub**: 500-1500ms
 - **Polygon.io**: 800-2000ms
-- **Alpha Vantage**: 300-800ms
 
 ### Gestion des Limites
 - **Finnhub**: 60 requêtes/minute
 - **Polygon.io**: 5 requêtes/minute (gratuit)
-- **Alpha Vantage**: 500 requêtes/jour (gratuit)
 - **Yahoo Finance**: Pas de limite (gratuit)
 
 ## 🚀 Améliorations Futures

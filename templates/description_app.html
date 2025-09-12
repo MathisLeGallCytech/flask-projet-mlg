@@ -23,11 +23,32 @@
                         <span>Mathis Le Gall CV</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('indices_actions') }}" class="nav-link">
-                        <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Stocks</span>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown(event)">
+                        <i data-lucide="trending-up"></i>
+                        <span>Market Overview</span>
+                        <i data-lucide="chevron-down" class="dropdown-arrow"></i>
                     </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('indices_actions') }}" class="nav-link">
+                                <i data-lucide="candlestick-chart"></i>
+                                <span>Indices & Stocks</span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('crypto') }}" class="nav-link">
+                                <i data-lucide="bar-chart"></i>
+                                <span>Cryptocurrencies</span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('rates_fx') }}" class="nav-link">
+                                <i data-lucide="trending-up"></i>
+                                <span>Rates & FX</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
@@ -44,13 +65,13 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
-                        <span>Implied Volatility</span>
+                        <span>Implied Volatility Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
-                        <i data-lucide="calculator"></i>
-                        <span>Greeks Analysis</span>
+                    <a href="{{ url_for('analyse_volatility') }}" class="nav-link">
+                        <i data-lucide="twitter"></i>
+                        <span>Tweet Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -98,7 +119,7 @@
                     <li class="section-nav-item">
                         <a href="#analyse-actions" class="section-nav-link">
                             <i data-lucide="activity"></i>
-                            <span>Stocks & Indices Analysis</span>
+                            <span>Market Analysis</span>
                         </a>
                     </li>
                     <li class="section-nav-item">
@@ -110,7 +131,13 @@
                     <li class="section-nav-item">
                         <a href="#volatility-surface" class="section-nav-link">
                             <i data-lucide="thermometer"></i>
-                            <span>Implied Volatility</span>
+                            <span>Implied Volatility Analysis</span>
+                        </a>
+                    </li>
+                    <li class="section-nav-item">
+                        <a href="#tweet-analysis" class="section-nav-link">
+                            <i data-lucide="twitter"></i>
+                            <span>Tweet Analysis</span>
                         </a>
                     </li>
                     <li class="section-nav-item">
@@ -203,20 +230,16 @@
                                     </div>
                                     <div class="tech-list">
                                         <div class="tech-item">
+                                            <span class="tech-badge api-badge">Tradier API</span>
+                                            <span class="tech-description">Professional options data and implied volatility</span>
+                                        </div>
+                                        <div class="tech-item">
                                             <span class="tech-badge api-badge">Yahoo Finance</span>
-                                            <span class="tech-description">Real-time market data</span>
+                                            <span class="tech-description">Real-time market data and stock prices</span>
                                         </div>
                                         <div class="tech-item">
                                             <span class="tech-badge api-badge">Finnhub</span>
-                                            <span class="tech-description">Implied volatility and options</span>
-                                        </div>
-                                        <div class="tech-item">
-                                            <span class="tech-badge api-badge">Polygon.io</span>
-                                            <span class="tech-description">Options and volatility data</span>
-                                        </div>
-                                        <div class="tech-item">
-                                            <span class="tech-badge api-badge">Alpha Vantage</span>
-                                            <span class="tech-description">Historical data and technical analysis</span>
+                                            <span class="tech-description">Fallback options data and volatility</span>
                                         </div>
                                     </div>
                                 </div>
@@ -259,7 +282,7 @@
                                             <span class="tech-description">Pricing of European options</span>
                                         </div>
                                         <div class="tech-item">
-                                            <span class="tech-badge finance-badge">Implied Volatility</span>
+                                            <span class="tech-badge finance-badge">Implied Volatility Analysis</span>
                                             <span class="tech-description">Calculation and 3D visualization</span>
                                         </div>
                                         <div class="tech-item">
@@ -329,7 +352,7 @@
                                          <h4>🟡 Solutions for Improvement</h4>
                                          <ul>
                                              <li><strong>Paid APIs</strong> : Bloomberg Terminal, Reuters Eikon, IEX Cloud Pro</li>
-                                             <li><strong>Real-time Data</strong> : Alpha Vantage Premium, Polygon.io Pro, Finnhub Pro</li>
+                                             <li><strong>Real-time Data</strong> : Finnhub Pro</li>
                                              <li><strong>Multiple Backup</strong> : Implementation of multiple data sources</li>
                                              <li><strong>Intelligent Caching</strong> : Caching data to reduce API calls</li>
                                              <li><strong>Advanced Monitoring</strong> : Alert system in case of API failure</li>
@@ -451,12 +474,12 @@
                     <div class="description-card">
                         <div class="card-header">
                             <i data-lucide="activity" class="card-icon"></i>
-                            <h2>Stocks & Indices Analysis Page</h2>
+                            <h2>Market Analysis Page</h2>
                         </div>
                         <div class="card-content">
                             <div class="page-description">
                                 <h3>Overview</h3>
-                                <p>The "Stocks & Indices Analysis" page offers advanced comparative analysis of financial performance with normalization to base 100 and calculation of professional risk metrics.</p>
+                                <p>The "Market Analysis" page offers advanced comparative analysis of financial performance with normalization to base 100 and calculation of professional risk metrics.</p>
 
                                 <h3>Main Features</h3>
                                 <ul>
@@ -498,7 +521,6 @@
                                          <ul>
                                              <li><strong>Local Database</strong> : Storing historical data for long-term analysis</li>
                                              <li><strong>Specialized APIs</strong> : Quandl, FRED, World Bank for macroeconomic data</li>
-                                             <li><strong>Alternative Data</strong> : Alpha Vantage for advanced technical data</li>
                                              <li><strong>Advanced Calculations</strong> : Implementation of GARCH models for volatility</li>
                                              <li><strong>Machine Learning</strong> : Volatility prediction with ML models</li>
                                          </ul>
@@ -690,6 +712,16 @@
                                              <li><strong>Response</strong> : Price, Greeks, confidence interval, trajectories, calculation time</li>
                                          </ul>
                                      </div>
+                                     <div class="api-item">
+                                         <h4>Tradier API Integration</h4>
+                                         <ul>
+                                             <li><strong>Real Option Data</strong> : Live option chains from Tradier for validation</li>
+                                             <li><strong>Implied Volatility Analysis</strong> : Market-based IV for realistic calculations</li>
+                                             <li><strong>Strike Prices</strong> : Real strike prices available in the market</li>
+                                             <li><strong>Expiration Dates</strong> : Actual expiration dates for accurate time calculations</li>
+                                             <li><strong>Market Prices</strong> : Real bid/ask prices for comparison with model prices</li>
+                                         </ul>
+                                     </div>
                                  </div>
 
                                  <h3>Disadvantages and Limitations</h3>
@@ -699,7 +731,7 @@
                                          <ul>
                                              <li><strong>Black-Scholes Assumptions</strong> : Constant volatility, no jumps, constant risk-free rate</li>
                                              <li><strong>Limited Monte Carlo</strong> : Basic simulation, no advanced stochastic models</li>
-                                             <li><strong>No Real Data</strong> : Using manual parameters, no implied volatility</li>
+                                             <li><strong>Limited Real Data</strong> : Manual parameters still used, Tradier integration for validation only</li>
                                              <li><strong>Static Greeks</strong> : Point calculations, no time-dependent dynamics</li>
                                              <li><strong>Performance</strong> : Monte Carlo slow for large simulations</li>
                                          </ul>
@@ -708,8 +740,8 @@
                                          <h4>🟡 Solutions for Improvement</h4>
                                          <ul>
                                              <li><strong>Advanced Models</strong> : Heston, SABR, Local Volatility Models</li>
-                                             <li><strong>Real Option APIs</strong> : CBOE, OCC, Bloomberg for market data</li>
-                                             <li><strong>Implied Volatility</strong> : Integration with Finnhub/Polygon for real IV</li>
+                                             <li><strong>Real Option APIs</strong> : Enhanced Tradier integration, CBOE, OCC, Bloomberg for market data</li>
+                                             <li><strong>Implied Volatility Analysis</strong> : Full integration with Tradier for real-time IV calculations</li>
                                              <li><strong>Dynamic Greeks</strong> : Calculations in real-time with market movements</li>
                                              <li><strong>GPU Optimization</strong> : Utilization of CUDA for fast Monte Carlo</li>
                                          </ul>
@@ -900,17 +932,17 @@
                     <div class="description-card">
                         <div class="card-header">
                             <i data-lucide="thermometer" class="card-icon"></i>
-                            <h2>Implied Volatility Surface Page</h2>
+                            <h2>Implied Volatility Analysis Surface Page</h2>
                         </div>
                         <div class="card-content">
                             <div class="page-description">
                                 <h3>Overview</h3>
-                                <p>"Implied Volatility Surface" page offers an interactive analysis of implied volatility based on real-world option data, with advanced 3D visualization and comparison of volatility smiles.</p>
+                                <p>"Implied Volatility Analysis Surface" page offers an interactive analysis of implied volatility based on real-world option data, with advanced 3D visualization and comparison of volatility smiles.</p>
 
                                 <h3>Main Features</h3>
                                 <ul>
                                     <li><strong>3D Volatility Surface</strong> : Interactive visualization in three dimensions with Plotly</li>
-                                    <li><strong>Real-world Option Data</strong> : Utilization of Finnhub and Polygon.io APIs</li>
+                                    <li><strong>Real-world Option Data</strong> : Utilization of Finnhub API</li>
                                     <li><strong>Comparison of Smiles</strong> : Comparative analysis between different stocks</li>
                                     <li><strong>Configurable Parameters</strong> : Range around spot (10% to 50%), selection of provider</li>
                                     <li><strong>Detailed Metrics</strong> : Current spot, IV min/max/average, complete statistics</li>
@@ -921,21 +953,21 @@
                                                                  <h3>Used APIs</h3>
                                  <div class="api-details">
                                      <div class="api-item">
-                                         <h4>Finnhub API</h4>
+                                         <h4>Tradier API (Primary)</h4>
                                          <ul>
-                                             <li><strong>Main Endpoint</strong> : <code>/api/vol-surface-3d/&lt;symbol&gt;</code></li>
-                                             <li><strong>Data Retrieved</strong> : Complete option chains, spot price, implied volatility</li>
-                                             <li><strong>Advantages</strong> : Free data, wide coverage, real-time</li>
-                                             <li><strong>Limitations</strong> : Rate limits, sometimes incomplete data</li>
+                                             <li><strong>Main Endpoint</strong> : <code>/api/tradier/options/&lt;symbol&gt;</code></li>
+                                             <li><strong>Data Retrieved</strong> : Complete option chains, spot price, implied volatility, Greeks</li>
+                                             <li><strong>Advantages</strong> : Professional data, high accuracy, comprehensive coverage</li>
+                                             <li><strong>Features</strong> : Real-time data, multiple expirations, detailed option information</li>
                                          </ul>
                                      </div>
                                      <div class="api-item">
-                                         <h4>Polygon.io API</h4>
+                                         <h4>Finnhub API (Fallback)</h4>
                                          <ul>
-                                             <li><strong>Main Endpoint</strong> : <code>/api/vol-surface-3d/&lt;symbol&gt;?provider=polygon</code></li>
-                                             <li><strong>Data Retrieved</strong> : Detailed option contracts, price estimates</li>
-                                             <li><strong>Advantages</strong> : High-quality data, precise estimates</li>
-                                             <li><strong>Limitations</strong> : Strict rate limits, requires fallback</li>
+                                             <li><strong>Endpoint</strong> : <code>/api/vol-surface-3d/&lt;symbol&gt;</code></li>
+                                             <li><strong>Data Retrieved</strong> : Basic option chains, spot price, implied volatility</li>
+                                             <li><strong>Advantages</strong> : Free data, wide coverage</li>
+                                             <li><strong>Limitations</strong> : Rate limits, sometimes incomplete data</li>
                                          </ul>
                                      </div>
                                  </div>
@@ -943,21 +975,21 @@
                                  <h3>Disadvantages and Limitations</h3>
                                  <div class="limitations-section">
                                      <div class="limitation-item">
-                                         <h4>🔴 Limitations of Free APIs</h4>
+                                         <h4>🔴 Current Limitations</h4>
                                          <ul>
-                                             <li><strong>Finnhub Free</strong> : 60 calls/minute, limited data, no historical data</li>
-                                             <li><strong>Polygon Free</strong> : 5 calls/minute, very limited data, no options</li>
-                                             <li><strong>Data Quality</strong> : Sometimes incomplete data, missing strikes</li>
-                                             <li><strong>Maturity Limits</strong> : Few expirations available, no long-term data</li>
-                                             <li><strong>Limited Coverage</strong> : Limited to major stocks, no other securities</li>
-                                             <li><strong>No Historical Data</strong> : Unable to backtest strategies</li>
+                                             <li><strong>Tradier Rate Limits</strong> : 120 calls/minute, requires API key management</li>
+                                             <li><strong>Data Quality</strong> : Sometimes incomplete data, missing strikes for some symbols</li>
+                                             <li><strong>Maturity Limits</strong> : Limited expirations available, no long-term historical data</li>
+                                             <li><strong>Coverage</strong> : Primarily US stocks, limited international coverage</li>
+                                             <li><strong>Historical Data</strong> : Limited historical option data for backtesting</li>
                                          </ul>
                                      </div>
                                      <div class="limitation-item">
                                          <h4>🟡 Solutions for Improvement</h4>
                                          <ul>
+                                             <li><strong>Enhanced Tradier</strong> : Tradier Pro for higher rate limits and better data</li>
                                              <li><strong>Paid APIs</strong> : Bloomberg Terminal, Reuters Eikon, CBOE DataShop</li>
-                                             <li><strong>Professional Data</strong> : IEX Cloud Pro, Alpha Vantage Premium</li>
+                                             <li><strong>Professional Data</strong> : IEX Cloud Pro, Alpha Vantage Pro</li>
                                              <li><strong>Local Database</strong> : Storing historical volatility surfaces</li>
                                              <li><strong>Calibration Models</strong> : Interpolation and extrapolation of missing data</li>
                                              <li><strong>Alternative APIs</strong> : Quandl, FRED for macroeconomic data</li>
@@ -972,7 +1004,7 @@
                                         <h4>Parameter Validation</h4>
                                         <ul>
                                             <li>Verification of span (0-1) for range around spot</li>
-                                            <li>Validation of provider (finnhub/polygon)</li>
+                                            <li>Validation of provider (finnhub)</li>
                                             <li>Control of maximum number of expirations</li>
                                             <li>Validation of available symbols</li>
                                         </ul>
@@ -1023,7 +1055,7 @@
                                 <div class="data-section">
                                     <div class="data-category">
                                         <h4>Price and Source</h4>
-                                        <p>Current spot, data source (Finnhub/Polygon), number of maturities and strikes</p>
+                                        <p>Current spot, data source (Finnhub), number of maturities and strikes</p>
                                     </div>
                                     <div class="data-category">
                                         <h4>IV Statistics</h4>
@@ -1066,7 +1098,7 @@
                                      <div class="flow-arrow">→</div>
                                      <div class="flow-step">
                                          <div class="flow-circle">2</div>
-                                         <div class="flow-label">Finnhub/Polygon API</div>
+                                         <div class="flow-label">Finnhub API</div>
                                      </div>
                                      <div class="flow-arrow">→</div>
                                      <div class="flow-step">
@@ -1146,6 +1178,87 @@
                     </div>
                 </section>
 
+                <!-- Tweet Analysis Section -->
+                <section id="tweet-analysis" class="description-section">
+                    <div class="description-card">
+                        <div class="card-header">
+                            <i data-lucide="message-square" class="card-icon"></i>
+                            <h2>Tweet Analysis Page</h2>
+                        </div>
+                        <div class="card-content">
+                            <div class="page-description">
+                                <h3>Overview</h3>
+                                <p>The "Tweet Analysis" page is a new feature currently in development that will provide sentiment analysis of financial tweets and their correlation with market movements.</p>
+
+                                <h3>Planned Features</h3>
+                                <ul>
+                                    <li><strong>Sentiment Analysis</strong> : Analysis of financial tweets sentiment (positive, negative, neutral)</li>
+                                    <li><strong>Trending Keywords</strong> : Identification of popular financial keywords and hashtags</li>
+                                    <li><strong>User Influence</strong> : Analysis of impact from influential financial Twitter users</li>
+                                    <li><strong>Price-Tweet Correlation</strong> : Relationship between tweet sentiment and price movements</li>
+                                    <li><strong>Volatility Prediction</strong> : Using tweet sentiment to predict market volatility</li>
+                                    <li><strong>Real-time Alerts</strong> : Notifications based on Twitter activity and sentiment changes</li>
+                                </ul>
+
+                                <h3>Planned APIs</h3>
+                                <div class="api-details">
+                                    <div class="api-item">
+                                        <h4>Twitter API v2</h4>
+                                        <ul>
+                                            <li><strong>Endpoint</strong> : Twitter API v2 for real-time tweet data</li>
+                                            <li><strong>Data Retrieved</strong> : Financial tweets, user information, engagement metrics</li>
+                                            <li><strong>Features</strong> : Real-time streaming, historical data, user analytics</li>
+                                            <li><strong>Limitations</strong> : Rate limits, API costs, content filtering</li>
+                                        </ul>
+                                    </div>
+                                    <div class="api-item">
+                                        <h4>Sentiment Analysis APIs</h4>
+                                        <ul>
+                                            <li><strong>Natural Language Processing</strong> : AWS Comprehend, Google Cloud NLP</li>
+                                            <li><strong>Financial Sentiment</strong> : Specialized financial sentiment models</li>
+                                            <li><strong>Real-time Processing</strong> : Live sentiment scoring of tweets</li>
+                                            <li><strong>Machine Learning</strong> : Custom models trained on financial data</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <h3>Development Status</h3>
+                                <div class="status-section">
+                                    <div class="status-item">
+                                        <h4>🟡 In Development</h4>
+                                        <ul>
+                                            <li><strong>Current Status</strong> : Page structure created, functionality in development</li>
+                                            <li><strong>Next Steps</strong> : Twitter API integration, sentiment analysis implementation</li>
+                                            <li><strong>Timeline</strong> : Expected completion in Q2 2025</li>
+                                            <li><strong>Dependencies</strong> : Twitter API access, sentiment analysis models</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <h3>Use Cases</h3>
+                                <div class="data-section">
+                                    <div class="data-category">
+                                        <h4>Market Sentiment</h4>
+                                        <p>Real-time analysis of overall market sentiment based on Twitter activity</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Stock-Specific Analysis</h4>
+                                        <p>Sentiment analysis for specific stocks and their correlation with price movements</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Event Detection</h4>
+                                        <p>Detection of market-moving events through tweet volume and sentiment spikes</p>
+                                    </div>
+                                    <div class="data-category">
+                                        <h4>Risk Management</h4>
+                                        <p>Integration of social sentiment into risk models and volatility predictions</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- Glossaire Section -->
                 <section id="glossaire" class="description-section">
                     <div class="description-card">
@@ -1187,7 +1300,7 @@
                                     <h3><i data-lucide="trending-up" class="glossary-icon"></i>Financial Terms</h3>
                                     <div class="glossary-items">
                                         <div class="glossary-item">
-                                            <h4>Implied Volatility</h4>
+                                            <h4>Implied Volatility Analysis</h4>
                                             <p>Measure of market uncertainty derived from option prices. Higher = more uncertainty about the price of the underlying asset.</p>
                                         </div>
                                         <div class="glossary-item">

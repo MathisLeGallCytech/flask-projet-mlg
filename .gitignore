@@ -1,15 +1,32 @@
-# Environnement virtuel
+# ========================================
+# DOSSIERS D'EXPORT ET DONNÉES
+# ========================================
+# Dossier des exports de données (exclu du versioning)
+data_exports/
+
+# Fichiers de données et exports
+*.csv
+*.xlsx
+*.xls
+*.json
+*.xml
+*.txt
+!requirements.txt
+!README*.txt
+!README*.md
+
+# ========================================
+# ENVIRONNEMENTS VIRTUELS
+# ========================================
 venv_new/
 venv/
 env/
 ENV/
+.venv/
 
-# Variables d'environnement
-.env
-.env.local
-.env.production
-
-# Fichiers Python
+# ========================================
+# FICHIERS PYTHON
+# ========================================
 __pycache__/
 *.py[cod]
 *$py.class
@@ -31,30 +48,88 @@ wheels/
 .installed.cfg
 *.egg
 
-# Fichiers de configuration sensibles
+# ========================================
+# CONFIGURATION ET SÉCURITÉ
+# ========================================
+# Variables d'environnement
 .env
+.env.local
+.env.production
+.env.development
+
+# Fichiers de configuration sensibles
 config.py
 secrets.py
+api_keys.py
+credentials.py
 
+# ========================================
+# LOGS ET FICHIERS TEMPORAIRES
+# ========================================
 # Logs
 *.log
+logs/
+log/
 
 # Fichiers temporaires
 *.tmp
 *.temp
+*.bak
+*.backup
+*.swp
+*.swo
 
+# ========================================
+# ENVIRONNEMENTS DE DÉVELOPPEMENT
+# ========================================
 # IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS
+# ========================================
+# SYSTÈMES D'EXPLOITATION
+# ========================================
+# macOS
 .DS_Store
-Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 
-# Fichiers de données sensibles
-*.csv
-*.xlsx
-*.json
-!requirements.txt
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ========================================
+# FICHIERS SPÉCIFIQUES AU PROJET
+# ========================================
+# Exclure les exports d'options
+*_options_*.csv
+*_data.csv
+aapl_options_*.csv
+apple_options_*.csv
+
+# Garder les fichiers de documentation
+!docs/
+!*.md
+!*.rst

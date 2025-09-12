@@ -34,7 +34,6 @@ app.py
 api/
 ├── yahoo_finance_api.py           # Données de marché
 ├── finnhub_implied_volatility.py  # Données d'options
-└── polygon_options_api.py         # Données d'options avancées
 ```
 
 ### Endpoint Principal

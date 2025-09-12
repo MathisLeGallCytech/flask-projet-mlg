@@ -9,9 +9,7 @@ services:
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.7
-      - key: FINNHUB_API_KEY
-        sync: false
-      - key: POLYGON_API_KEY
+      - key: TRADIER_API_KEY
         sync: false
       - key: FLASK_ENV
         value: production

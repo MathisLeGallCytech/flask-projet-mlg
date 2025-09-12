@@ -1,6 +1,6 @@
 {% extends "base_flask.html" %}
 
-{% block title %}Call & Put – Options{% endblock %}
+{% block title %}Call & Put – Options Analysis{% endblock %}
 
 {% block content %}
 <div class="dashboard-container">
@@ -23,16 +23,37 @@
                             <span>Mathis Le Gall CV</span>
                         </a>
                     </li>
-                <li class="nav-item">
-                    <a href="{{ url_for('indices_actions') }}" class="nav-link">
-                        <i data-lucide="candlestick-chart"></i>
-                        <span>Indices & Stocks</span>
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" onclick="toggleDropdown(event)">
+                        <i data-lucide="trending-up"></i>
+                        <span>Market Overview</span>
+                        <i data-lucide="chevron-down" class="dropdown-arrow"></i>
                     </a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('indices_actions') }}" class="nav-link">
+                                <i data-lucide="candlestick-chart"></i>
+                                <span>Indices & Stocks</span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('crypto') }}" class="nav-link">
+                                <i data-lucide="bar-chart"></i>
+                                <span>Cryptocurrencies</span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item">
+                            <a href="{{ url_for('rates_fx') }}" class="nav-link">
+                                <i data-lucide="trending-up"></i>
+                                <span>Rates & FX</span>
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li class="nav-item">
                     <a href="{{ url_for('analyse_actions_indices') }}" class="nav-link">
                         <i data-lucide="activity"></i>
-                        <span>Stocks & Indices Analysis</span>
+                        <span>Market Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -45,13 +66,13 @@
                 <li class="nav-item">
                     <a href="{{ url_for('volatility_surface') }}" class="nav-link">
                         <i data-lucide="thermometer"></i>
-                        <span>Implied Volatility</span>
+                        <span>Implied Volatility Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="{{ url_for('analyse_greeks') }}" class="nav-link">
-                        <i data-lucide="calculator"></i>
-                        <span>Greeks Analysis</span>
+                    <a href="{{ url_for('analyse_volatility') }}" class="nav-link">
+                        <i data-lucide="twitter"></i>
+                        <span>Tweet Analysis</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -75,7 +96,7 @@
                     <!-- Space to balance the layout -->
                 </div>
                 <div class="main-header-right">
-                    <h1 class="header-title">Call & Put Options</h1>
+                    <h1 class="header-title">Call & Put Options Analysis</h1>
                 </div>
             </div>
         </header>
@@ -308,6 +329,7 @@
                                 </div>
                             </div>
 
+
                             <!-- Bouton de calcul -->
                             <div class="form-actions">
                                 <div class="progress-container">
@@ -336,7 +358,7 @@
                     <div id="results-section" class="results-section hidden">
                         <div class="results-header">
                             <h3 class="results-title">
-                                <i data-lucide="bar-chart-3" class="results-icon"></i>
+                                <i data-lucide="bar-chart" class="results-icon"></i>
                                 Calculation Results
                             </h3>
                             <p class="results-subtitle">Comparison of Black-Scholes and Monte Carlo models</p>
@@ -457,25 +479,313 @@
                             </div>
                         </div>
 
-                        <!-- Intervalle de confiance -->
-                        <div id="confidence-interval" class="confidence-section hidden">
-                            <div class="confidence-header">
-                                <i data-lucide="shield-check" class="confidence-icon"></i>
-                                <h4 class="confidence-title">Monte Carlo Confidence Interval (<span id="ci-level">95%</span>)</h4>
+                        <!-- Nouvelle section personnalisée -->
+                        <div id="custom-analysis" class="analysis-section hidden">
+                            <div class="analysis-container">
+                                <div class="analysis-main">
+                                    <div class="analysis-header">
+                                        <div class="analysis-header-left">
+                                            <i data-lucide="trending-up" class="analysis-icon"></i>
+                                            <h4 class="analysis-title">Greek Analysis</h4>
+                                        </div>
+                                        <div class="analysis-header-right">
+                                            <div class="explanation-container">
+                                                <ul class="explanation-list">
+                                                    <li>
+                                                        <label class="explanation-radio-item">
+                                                            <input type="radio" name="analysis-type" id="none-radio" value="none" checked>
+                                                            <span class="inline-radio-custom"></span>
+                                                        </label>
+                                                        <span class="bullet-point">•</span> 
+                                                        <strong>None :</strong> Standard display with a single curve
+                                                    </li>
+                                                    <li>
+                                                        <label class="explanation-radio-item">
+                                                            <input type="radio" name="analysis-type" id="volatility-radio" value="volatility">
+                                                            <span class="inline-radio-custom"></span>
+                                                        </label>
+                                                        <span class="bullet-point">•</span> 
+                                                        <strong>Volatility :</strong> Compare multiple volatilities (10%, 15%, 20%, etc.)
+                                                    </li>
+                                                    <li>
+                                                        <label class="explanation-radio-item">
+                                                            <input type="radio" name="analysis-type" id="maturity-radio" value="maturity">
+                                                            <span class="inline-radio-custom"></span>
+                                                        </label>
+                                                        <span class="bullet-point">•</span> 
+                                                        <strong>Maturity :</strong> Compare multiple maturities (0.1, 0.3, 0.5 years, etc.)
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                            
+                            <!-- Onglets -->
+                            <div class="analysis-tabs">
+                                <button class="analysis-tab active" data-tab="payoff">
+                                    <i data-lucide="trending-up"></i>
+                                    <span>Payoff</span>
+                                </button>
+                                <button class="analysis-tab" data-tab="delta">
+                                    <i data-lucide="trending-up"></i>
+                                    <span>Delta</span>
+                                </button>
+                                <button class="analysis-tab" data-tab="gamma">
+                                    <i data-lucide="activity"></i>
+                                    <span>Gamma</span>
+                                </button>
+                                <button class="analysis-tab" data-tab="theta">
+                                    <i data-lucide="clock"></i>
+                                    <span>Theta</span>
+                                </button>
+                                <button class="analysis-tab" data-tab="vega">
+                                    <i data-lucide="thermometer"></i>
+                                    <span>Vega</span>
+                                </button>
+                                <button class="analysis-tab" data-tab="rho">
+                                    <i data-lucide="percent"></i>
+                                    <span>Rho</span>
+                                </button>
                             </div>
-                            <div class="confidence-grid">
-                                <div class="confidence-card">
-                                    <span class="confidence-label">Lower Bound</span>
-                                    <span class="confidence-value" id="ci-lower">-</span>
+                            
+                            <!-- Contenu des onglets -->
+                            <div class="analysis-tab-content">
+                                <!-- Onglet Payoff -->
+                                <div id="tab-payoff" class="tab-panel active">
+                                    <div class="greek-chart-container">
+                                        <div class="greek-chart-header">
+                                            <h5 class="greek-chart-title">Payoff at maturity - European Call</h5>
+                                            <div class="greek-chart-subtitle" id="payoff-subtitle"></div>
+                                        </div>
+                                        <div class="greek-chart-wrapper">
+                                            <canvas id="payoff-chart"></canvas>
+                                        </div>
+                                        <div class="greek-chart-info">
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Option Price B&S:</span>
+                                                <span class="greek-value" id="payoff-bs-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Spot:</span>
+                                                <span class="greek-value" id="payoff-spot-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Strike:</span>
+                                                <span class="greek-value" id="payoff-strike-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Maturity:</span>
+                                                <span class="greek-value" id="payoff-time-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Risk Free Rate:</span>
+                                                <span class="greek-value" id="payoff-rf-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Volatility:</span>
+                                                <span class="greek-value" id="payoff-vol-value">-</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="confidence-card primary">
-                                    <span class="confidence-label">Estimated Price</span>
-                                    <span class="confidence-value" id="ci-mean">-</span>
+                                
+                                <!-- Onglet Delta -->
+                                <div id="tab-delta" class="tab-panel">
+                                    <div class="greek-chart-container">
+                                        <div class="greek-chart-header">
+                                            <h5 class="greek-chart-title">Delta - European Call</h5>
+                                            <div class="greek-chart-subtitle" id="delta-subtitle"></div>
+                                        </div>
+                                        <div class="greek-chart-wrapper">
+                                            <canvas id="delta-chart"></canvas>
+                                        </div>
+                                        <div class="greek-chart-info">
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Delta:</span>
+                                                <span class="greek-value" id="delta-bs-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Spot:</span>
+                                                <span class="greek-value" id="delta-spot-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Strike:</span>
+                                                <span class="greek-value" id="delta-strike-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Maturity:</span>
+                                                <span class="greek-value" id="delta-time-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Risk Free Rate:</span>
+                                                <span class="greek-value" id="delta-rf-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Volatility:</span>
+                                                <span class="greek-value" id="delta-vol-value">-</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="confidence-card">
-                                    <span class="confidence-label">Upper Bound</span>
-                                    <span class="confidence-value" id="ci-upper">-</span>
+                                
+                                <!-- Onglet Gamma -->
+                                <div id="tab-gamma" class="tab-panel">
+                                    <div class="greek-chart-container">
+                                        <div class="greek-chart-header">
+                                            <h5 class="greek-chart-title">Gamma - European Call</h5>
+                                            <div class="greek-chart-subtitle" id="gamma-subtitle"></div>
+                                        </div>
+                                        <div class="greek-chart-wrapper">
+                                            <canvas id="gamma-chart"></canvas>
+                                        </div>
+                                        <div class="greek-chart-info">
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Gamma:</span>
+                                                <span class="greek-value" id="gamma-bs-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Spot:</span>
+                                                <span class="greek-value" id="gamma-spot-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Strike:</span>
+                                                <span class="greek-value" id="gamma-strike-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Maturity:</span>
+                                                <span class="greek-value" id="gamma-time-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Risk Free Rate:</span>
+                                                <span class="greek-value" id="gamma-rf-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Volatility:</span>
+                                                <span class="greek-value" id="gamma-vol-value">-</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+                                
+                                <!-- Onglet Theta -->
+                                <div id="tab-theta" class="tab-panel">
+                                    <div class="greek-chart-container">
+                                        <div class="greek-chart-header">
+                                            <h5 class="greek-chart-title">Theta - European Call</h5>
+                                            <div class="greek-chart-subtitle" id="theta-subtitle"></div>
+                                        </div>
+                                        <div class="greek-chart-wrapper">
+                                            <canvas id="theta-chart"></canvas>
+                                        </div>
+                                        <div class="greek-chart-info">
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Theta:</span>
+                                                <span class="greek-value" id="theta-bs-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Spot:</span>
+                                                <span class="greek-value" id="theta-spot-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Strike:</span>
+                                                <span class="greek-value" id="theta-strike-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Maturity:</span>
+                                                <span class="greek-value" id="theta-time-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Risk Free Rate:</span>
+                                                <span class="greek-value" id="theta-rf-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Volatility:</span>
+                                                <span class="greek-value" id="theta-vol-value">-</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Onglet Vega -->
+                                <div id="tab-vega" class="tab-panel">
+                                    <div class="greek-chart-container">
+                                        <div class="greek-chart-header">
+                                            <h5 class="greek-chart-title">Vega - European Call</h5>
+                                            <div class="greek-chart-subtitle" id="vega-subtitle"></div>
+                                        </div>
+                                        <div class="greek-chart-wrapper">
+                                            <canvas id="vega-chart"></canvas>
+                                        </div>
+                                        <div class="greek-chart-info">
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Vega:</span>
+                                                <span class="greek-value" id="vega-bs-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Spot:</span>
+                                                <span class="greek-value" id="vega-spot-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Strike:</span>
+                                                <span class="greek-value" id="vega-strike-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Maturity:</span>
+                                                <span class="greek-value" id="vega-time-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Risk Free Rate:</span>
+                                                <span class="greek-value" id="vega-rf-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Volatility:</span>
+                                                <span class="greek-value" id="vega-vol-value">-</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Onglet Rho -->
+                                <div id="tab-rho" class="tab-panel">
+                                    <div class="greek-chart-container">
+                                        <div class="greek-chart-header">
+                                            <h5 class="greek-chart-title">Rho - European Call</h5>
+                                            <div class="greek-chart-subtitle" id="rho-subtitle"></div>
+                                        </div>
+                                        <div class="greek-chart-wrapper">
+                                            <canvas id="rho-chart"></canvas>
+                                        </div>
+                                        <div class="greek-chart-info">
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Rho:</span>
+                                                <span class="greek-value" id="rho-bs-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Spot:</span>
+                                                <span class="greek-value" id="rho-spot-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Strike:</span>
+                                                <span class="greek-value" id="rho-strike-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Maturity:</span>
+                                                <span class="greek-value" id="rho-time-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Risk Free Rate:</span>
+                                                <span class="greek-value" id="rho-rf-value">-</span>
+                                            </div>
+                                            <div class="greek-value-display">
+                                                <span class="greek-label">Volatility:</span>
+                                                <span class="greek-value" id="rho-vol-value">-</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                                </div>
+                                
                             </div>
                         </div>
 
@@ -487,6 +797,28 @@
                                      Monte Carlo Path Visualization
                                  </h4>
                                  <p class="call-put-chart-subtitle">Simulation of underlying asset price paths</p>
+                             </div>
+                             
+                             <!-- Intervalle de confiance -->
+                             <div id="confidence-interval" class="confidence-section hidden">
+                                 <div class="confidence-header">
+                                     <i data-lucide="shield-check" class="confidence-icon"></i>
+                                     <h4 class="confidence-title">Monte Carlo Confidence Interval (<span id="ci-level">95%</span>)</h4>
+                                 </div>
+                                 <div class="confidence-grid">
+                                     <div class="confidence-card">
+                                         <span class="confidence-label">Lower Bound</span>
+                                         <span class="confidence-value" id="ci-lower">-</span>
+                                     </div>
+                                     <div class="confidence-card primary">
+                                         <span class="confidence-label">Estimated Price</span>
+                                         <span class="confidence-value" id="ci-mean">-</span>
+                                     </div>
+                                     <div class="confidence-card">
+                                         <span class="confidence-label">Upper Bound</span>
+                                         <span class="confidence-value" id="ci-upper">-</span>
+                                     </div>
+                                 </div>
                              </div>
                                                            <div class="call-put-chart-container">
                                   <div class="call-put-monte-carlo-chart">
@@ -506,7 +838,7 @@
                                   </div>
                                   <!-- Bouton pour basculer la distribution sur petit écran -->
                                   <button id="toggle-distribution" class="toggle-distribution-btn" title="Toggle distribution">
-                                      <i data-lucide="bar-chart-3"></i>
+                                      <i data-lucide="bar-chart"></i>
                                   </button>
                               </div>
                               <div class="chart-note">
@@ -514,6 +846,7 @@
                                   <span class="note-text">The distribution on the right shows where exactly the Monte Carlo paths displayed in the main graph end.</span>
                               </div>
                          </div>
+
                     </div>
                 </main>
             </div>
@@ -527,11 +860,201 @@
     // Initialize Lucide icons
     lucide.createIcons();
     
+    // Vérifier que Chart.js est chargé
+    if (typeof Chart === 'undefined') {
+        console.error('❌ Chart.js n\'est pas chargé !');
+        showNotification('Erreur: Chart.js n\'est pas chargé. Les graphiques ne fonctionneront pas.', 'error');
+    } else {
+        console.log('✅ Chart.js chargé correctement, version:', Chart.version);
+    }
+    
+    // Diagnostic complet des éléments canvas
+    console.log('🔍 DIAGNOSTIC COMPLET:');
+    const canvasIds = ['payoff-chart', 'delta-chart', 'gamma-chart', 'theta-chart', 'vega-chart', 'rho-chart'];
+    canvasIds.forEach(id => {
+        const canvas = document.getElementById(id);
+        if (canvas) {
+            console.log(`✅ Canvas ${id} trouvé:`, {
+                width: canvas.width,
+                height: canvas.height,
+                style: canvas.style.cssText,
+                parent: canvas.parentElement?.tagName
+            });
+        } else {
+            console.error(`❌ Canvas ${id} NON TROUVÉ !`);
+        }
+    });
+    
     // Éléments DOM
     const optionsForm = document.getElementById('options-form');
     const resultsSection = document.getElementById('results-section');
     const confidenceInterval = document.getElementById('confidence-interval');
+    const customAnalysis = document.getElementById('custom-analysis');
     const progressBar = document.getElementById('calc-progress');
+    
+    // Gestion des onglets d'analyse
+    const analysisTabs = document.querySelectorAll('.analysis-tab');
+    const tabPanels = document.querySelectorAll('.tab-panel');
+    
+    // Initialiser les onglets d'analyse après la déclaration des variables
+    initializeAnalysisTabs();
+    
+    // Test des onglets
+    console.log('🔍 Test des onglets:');
+    console.log('- Nombre d\'onglets trouvés:', analysisTabs.length);
+    console.log('- Nombre de panneaux trouvés:', tabPanels.length);
+    analysisTabs.forEach((tab, index) => {
+        console.log(`- Onglet ${index}:`, tab.textContent.trim());
+    });
+    
+    // Test simple de création de graphique
+    window.testSimpleChart = function() {
+        console.log('🧪 Test de création de graphique simple...');
+        const canvas = document.getElementById('payoff-chart');
+        if (!canvas) {
+            console.error('❌ Canvas payoff-chart non trouvé pour le test');
+            return;
+        }
+        
+        // DÉTRUIRE TOUS LES GRAPHIQUES EXISTANTS SUR CE CANVAS
+        Chart.helpers.each(Chart.instances, function(instance) {
+            if (instance.canvas.id === 'payoff-chart') {
+                console.log('🗑️ Destruction du graphique existant sur payoff-chart');
+                instance.destroy();
+            }
+        });
+        
+        const ctx = canvas.getContext('2d');
+        try {
+            const testChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: [1, 2, 3, 4, 5],
+                    datasets: [{
+                        label: 'Test',
+                        data: [1, 2, 3, 2, 1],
+                        borderColor: 'red',
+                        backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            console.log('✅ Graphique de test créé avec succès');
+            return testChart;
+        } catch (error) {
+            console.error('❌ Erreur lors de la création du graphique de test:', error);
+            return null;
+        }
+    };
+    
+    // Fonction pour nettoyer tous les graphiques
+    window.cleanAllCharts = function() {
+        console.log('🧹 Nettoyage de tous les graphiques...');
+        let destroyed = 0;
+        Chart.helpers.each(Chart.instances, function(instance) {
+            console.log(`🗑️ Destruction du graphique sur canvas: ${instance.canvas.id}`);
+            instance.destroy();
+            destroyed++;
+        });
+        console.log(`✅ ${destroyed} graphiques détruits`);
+        return destroyed;
+    };
+    
+    // Test complet du système
+    window.testCompleteSystem = async function() {
+        console.log('🧪 TEST COMPLET DU SYSTÈME:');
+        
+        // 1. Test Chart.js
+        console.log('1️⃣ Test Chart.js:');
+        if (typeof Chart === 'undefined') {
+            console.error('❌ Chart.js non chargé');
+            return false;
+        } else {
+            console.log('✅ Chart.js chargé, version:', Chart.version);
+        }
+        
+        // 2. Test des canvas
+        console.log('2️⃣ Test des canvas:');
+        const canvasIds = ['payoff-chart', 'delta-chart', 'gamma-chart', 'theta-chart', 'vega-chart', 'rho-chart'];
+        let canvasOk = true;
+        canvasIds.forEach(id => {
+            const canvas = document.getElementById(id);
+            if (canvas) {
+                console.log(`✅ Canvas ${id} trouvé`);
+            } else {
+                console.error(`❌ Canvas ${id} manquant`);
+                canvasOk = false;
+            }
+        });
+        
+        // 3. Nettoyage des graphiques existants
+        console.log('3️⃣ Nettoyage des graphiques existants:');
+        cleanAllCharts();
+        
+        // 4. Test de création de graphique simple
+        console.log('4️⃣ Test création graphique simple:');
+        const testChart = testSimpleChart();
+        if (!testChart) {
+            console.error('❌ Impossible de créer un graphique simple');
+            return false;
+        }
+        
+        // 5. Test API
+        console.log('5️⃣ Test API Greeks:');
+        const apiResult = await testGreeksAPI();
+        if (!apiResult || !apiResult.success) {
+            console.error('❌ API Greeks ne fonctionne pas');
+            return false;
+        }
+        
+        console.log('✅ TOUS LES TESTS RÉUSSIS !');
+        return true;
+    };
+    
+    // Test de l'API Greeks (pour débogage)
+    window.testGreeksAPI = async function() {
+        console.log('🧪 Test de l\'API Greeks...');
+        try {
+            const response = await fetch('/api/greeks-curves', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    spotPrice: 100,
+                    strikePrice: 100,
+                    timeMaturity: 1,
+                    riskFreeRate: 0.05,
+                    volatility: 0.2,
+                    optionType: 'call'
+                })
+            });
+            const data = await response.json();
+            console.log('🧪 Test API réussi:', data);
+            
+            // Vérifier la structure des données
+            if (data.success && data.curves) {
+                console.log('✅ Structure des données correcte:');
+                console.log('- spot_prices:', data.curves.spot_prices?.length, 'éléments');
+                console.log('- delta:', data.curves.delta?.length, 'éléments');
+                console.log('- gamma:', data.curves.gamma?.length, 'éléments');
+                console.log('- theta:', data.curves.theta?.length, 'éléments');
+                console.log('- vega:', data.curves.vega?.length, 'éléments');
+                console.log('- rho:', data.curves.rho?.length, 'éléments');
+                console.log('- payoff:', data.curves.payoff?.length, 'éléments');
+                console.log('- option_price:', data.curves.option_price?.length, 'éléments');
+            } else {
+                console.error('❌ Structure des données incorrecte:', data);
+            }
+            
+            return data;
+        } catch (error) {
+            console.error('🧪 Test API échoué:', error);
+            return null;
+        }
+    };
     const chipsContainer = document.getElementById('calc-chips');
     const progressLabel = document.getElementById('progress-label');
     const timingLabel = document.getElementById('timing-label');
@@ -540,9 +1063,25 @@
     let progressTimer = null;
     let chipsTimer = null;
     
+    // Graphiques Greeks
+    let payoffChart = null;
+    let deltaChart = null;
+    let gammaChart = null;
+    let thetaChart = null;
+    let vegaChart = null;
+    let rhoChart = null;
+    
     // Gestion de la soumission du formulaire
     optionsForm.addEventListener('submit', function(e) {
         e.preventDefault();
+        
+        // Remettre les boutons radio sur "Aucun" par défaut
+        const noneRadio = document.getElementById('none-radio');
+        if (noneRadio) {
+            noneRadio.checked = true;
+            // Déclencher l'événement change pour mettre à jour l'affichage
+            noneRadio.dispatchEvent(new Event('change'));
+        }
         
         // Récupérer les valeurs du formulaire
         const formData = new FormData(this);
@@ -700,6 +1239,9 @@
             confidenceInterval.classList.remove('hidden');
         }
         
+        // Calculer et afficher l'analyse personnalisée
+        updateCustomAnalysis(result);
+        
         // Afficher la section des résultats
         resultsSection.classList.remove('hidden');
         
@@ -718,6 +1260,1373 @@
                 card.classList.add('animate-in');
             }, index * 100);
         });
+    }
+
+    // Initialisation des onglets d'analyse
+    function initializeAnalysisTabs() {
+        if (analysisTabs.length === 0) {
+            return;
+        }
+        
+        analysisTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                const targetTab = this.getAttribute('data-tab');
+                switchAnalysisTab(targetTab);
+            });
+        });
+        
+        // Recréer les icônes Lucide pour les nouveaux éléments
+        lucide.createIcons();
+    }
+    
+    // Changement d'onglet
+    function switchAnalysisTab(tabName) {
+        // Désactiver tous les onglets
+        analysisTabs.forEach(tab => tab.classList.remove('active'));
+        tabPanels.forEach(panel => panel.classList.remove('active'));
+        
+        // Activer l'onglet sélectionné
+        const activeTab = document.querySelector(`[data-tab="${tabName}"]`);
+        const activePanel = document.getElementById(`tab-${tabName}`);
+        
+        if (activeTab && activePanel) {
+            activeTab.classList.add('active');
+            activePanel.classList.add('active');
+        }
+    }
+
+    // Mise à jour de l'analyse personnalisée
+    function updateCustomAnalysis(result) {
+        try {
+            // Récupérer les prix Monte Carlo et Black-Scholes
+            let mcPrice = null;
+            let bsPrice = null;
+            
+            if (result.monteCarlo && result.monteCarlo.optionPrice) {
+                mcPrice = parseFloat(result.monteCarlo.optionPrice);
+            }
+            
+            if (result.blackScholes && result.blackScholes.optionPrice) {
+                bsPrice = parseFloat(result.blackScholes.optionPrice);
+            }
+            
+            // Calculer les différences si les deux prix sont disponibles
+            if (mcPrice !== null && bsPrice !== null && !isNaN(mcPrice) && !isNaN(bsPrice)) {
+                // Onglet Payoff
+                updatePayoffChart(result);
+                
+                // Onglets Greeks
+                updateGreekCharts(result);
+                
+                // Initialiser les boutons radio d'analyse
+                initializeAnalysisRadioButtons();
+                
+                // Afficher la section d'analyse
+                customAnalysis.classList.remove('hidden');
+                
+                // S'assurer que les onglets sont fonctionnels
+                setTimeout(() => {
+                    if (analysisTabs.length === 0) {
+                        // Re-sélectionner les éléments après affichage
+                        const newAnalysisTabs = document.querySelectorAll('.analysis-tab');
+                        
+                        if (newAnalysisTabs.length > 0) {
+                            newAnalysisTabs.forEach(tab => {
+                                tab.addEventListener('click', function() {
+                                    const targetTab = this.getAttribute('data-tab');
+                                    switchAnalysisTab(targetTab);
+                                });
+                            });
+                        }
+                    }
+                }, 100);
+            } else {
+                // Masquer la section si les données ne sont pas disponibles
+                customAnalysis.classList.add('hidden');
+            }
+        } catch (error) {
+            console.error('Erreur dans l\'analyse personnalisée:', error);
+            customAnalysis.classList.add('hidden');
+        }
+    }
+    
+    // Initialiser les boutons radio d'analyse
+    function initializeAnalysisRadioButtons() {
+        try {
+            const noneRadio = document.getElementById('none-radio');
+            const volatilityRadio = document.getElementById('volatility-radio');
+            const maturityRadio = document.getElementById('maturity-radio');
+            
+            if (noneRadio) {
+                noneRadio.addEventListener('change', function() {
+                    if (this.checked) {
+                        console.log('Aucun sélectionné');
+                        hideAllSubtitles();
+                        restoreOriginalGreeksCharts();
+                    }
+                });
+            }
+            
+            if (volatilityRadio) {
+                volatilityRadio.addEventListener('change', function() {
+                    if (this.checked) {
+                        console.log('Volatility sélectionné');
+                        showVolatilitySubtitles();
+                        calculateVolatilityAnalysis();
+                    }
+                });
+            }
+            
+            if (maturityRadio) {
+                maturityRadio.addEventListener('change', function() {
+                    if (this.checked) {
+                        console.log('Maturity sélectionné');
+                        showMaturitySubtitles();
+                        calculateMaturityAnalysis();
+                    }
+                });
+            }
+            
+        } catch (error) {
+            console.error('Erreur lors de l\'initialisation des boutons radio:', error);
+        }
+    }
+    
+    // Fonction pour afficher les sous-titres "Volatility"
+    function showVolatilitySubtitles() {
+        const subtitles = ['payoff-subtitle', 'delta-subtitle', 'gamma-subtitle', 'theta-subtitle', 'vega-subtitle', 'rho-subtitle'];
+        
+        // Couleurs correspondant aux différentes volatilités (même palette que les graphiques)
+        const volatilityColors = [
+            { value: '10%', color: '#FF6B6B' }, // Rouge
+            { value: '15%', color: '#4ECDC4' }, // Turquoise
+            { value: '20%', color: '#45B7D1' }, // Bleu
+            { value: '25%', color: '#96CEB4' }, // Vert
+            { value: '30%', color: '#FFEAA7' }, // Jaune
+            { value: '35%', color: '#DDA0DD' }, // Violet
+            { value: '40%', color: '#98D8C8' }  // Vert menthe
+        ];
+        
+        subtitles.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                // Créer le contenu avec titre et légende
+                element.innerHTML = `
+                    <span>Volatility Impact</span>
+                    <div class="volatility-legend">
+                        ${volatilityColors.map(item => `
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: ${item.color}"></div>
+                                <span>${item.value}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                element.style.display = 'flex';
+            }
+        });
+    }
+    
+    // Fonction pour afficher les sous-titres "Maturity"
+    function 
+    showMaturitySubtitles() {
+        const subtitles = ['payoff-subtitle', 'delta-subtitle', 'gamma-subtitle', 'theta-subtitle', 'vega-subtitle', 'rho-subtitle'];
+        
+        // Colors for different maturities (from 0.1 to T+1.0 by step of 0.2)
+        const maturityColors = [
+            { value: '0.1 years', color: '#FF6B6B' }, // Red
+            { value: '0.3 years', color: '#4ECDC4' }, // Turquoise
+            { value: '0.5 years', color: '#45B7D1' }, // Blue
+            { value: '0.7 years', color: '#96CEB4' }, // Green
+            { value: '0.9 years', color: '#FFEAA7' }, // Yellow
+            { value: '1.0 years', color: '#3b82f6' }, // Uniform blue (user maturity)
+            { value: '1.1 years', color: '#DDA0DD' }, // Purple
+            { value: '1.3 years', color: '#98D8C8' }, // Mint green
+            { value: '1.5 years', color: '#F7DC6F' }, // Golden yellow
+            { value: '1.7 years', color: '#BB8FCE' }, // Lavender
+            { value: '1.9 years', color: '#85C1E9' }  // Light blue
+        ];
+        
+        subtitles.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.innerHTML = `
+                    <span>Maturity Impact</span>
+                    <div class="volatility-legend">
+                        ${maturityColors.map(item => `
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: ${item.color}"></div>
+                                <span>${item.value}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                element.style.display = 'flex';
+            }
+        });
+    }
+    
+    // Fonction pour masquer tous les sous-titres
+    function hideAllSubtitles() {
+        const subtitles = ['payoff-subtitle', 'delta-subtitle', 'gamma-subtitle', 'theta-subtitle', 'vega-subtitle', 'rho-subtitle'];
+        subtitles.forEach(id => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = '';
+                element.style.display = 'none';
+            }
+        });
+    }
+    
+    // Mise à jour de l'onglet Payoff
+    function updatePayoffChart(result) {
+        // Récupérer les paramètres du formulaire pour les calculs
+        const spotPrice = parseFloat(document.getElementById('spot-price').value) || 100;
+        const strikePrice = parseFloat(document.getElementById('strike-price').value) || 100;
+        const timeMaturity = parseFloat(document.getElementById('time-maturity').value) || 1;
+        const riskFreeRate = parseFloat(document.getElementById('risk-free-rate').value) || 0.05;
+        const volatility = parseFloat(document.getElementById('volatility').value) || 0.2;
+        const optionType = document.getElementById('option-type').value || 'call';
+        
+        // Mettre à jour les valeurs affichées
+        const bsPrice = result.blackScholes?.optionPrice || 0;
+        document.getElementById('payoff-bs-value').textContent = parseFloat(bsPrice).toFixed(4);
+        
+        // Mettre à jour les paramètres utilisateur
+        updateUserParameters(spotPrice, strikePrice, timeMaturity, riskFreeRate, volatility);
+        
+        // Appeler l'API pour obtenir les courbes
+        fetchGreeksCurves(spotPrice, strikePrice, timeMaturity, riskFreeRate, volatility, optionType);
+    }
+    
+    // Mise à jour des paramètres utilisateur
+    function updateUserParameters(spotPrice, strikePrice, timeMaturity, riskFreeRate, volatility) {
+        // Mettre à jour les paramètres dans tous les onglets
+        const tabs = ['payoff', 'delta', 'gamma', 'theta', 'vega', 'rho'];
+        
+        tabs.forEach(tab => {
+            // Mettre à jour Spot
+            const spotElement = document.getElementById(`${tab}-spot-value`);
+            if (spotElement) spotElement.textContent = spotPrice.toFixed(2);
+            
+            // Mettre à jour Strike
+            const strikeElement = document.getElementById(`${tab}-strike-value`);
+            if (strikeElement) strikeElement.textContent = strikePrice.toFixed(2);
+            
+            // Mettre à jour Maturity
+            const timeElement = document.getElementById(`${tab}-time-value`);
+            if (timeElement) timeElement.textContent = timeMaturity.toFixed(2) + ' years';
+            
+            // Mettre à jour Risk Free Rate
+            const rfElement = document.getElementById(`${tab}-rf-value`);
+            if (rfElement) rfElement.textContent = (riskFreeRate * 100).toFixed(2) + '%';
+            
+            // Mettre à jour Volatility
+            const volElement = document.getElementById(`${tab}-vol-value`);
+            if (volElement) volElement.textContent = (volatility * 100).toFixed(2) + '%';
+        });
+    }
+    
+    // Mise à jour des graphiques Greeks
+    function updateGreekCharts(result) {
+        // Récupérer les paramètres du formulaire pour les calculs
+        const spotPrice = parseFloat(document.getElementById('spot-price').value) || 100;
+        const strikePrice = parseFloat(document.getElementById('strike-price').value) || 100;
+        const timeMaturity = parseFloat(document.getElementById('time-maturity').value) || 1;
+        const riskFreeRate = parseFloat(document.getElementById('risk-free-rate').value) || 0.05;
+        const volatility = parseFloat(document.getElementById('volatility').value) || 0.2;
+        const optionType = document.getElementById('option-type').value || 'call';
+        
+        // Mettre à jour les valeurs affichées
+        updateGreekValues(result);
+        
+        // Appeler l'API pour obtenir les courbes (déjà appelée dans updatePayoffChart)
+        // Les graphiques seront créés dans fetchGreeksCurves
+    }
+    
+    // Mise à jour des valeurs Greeks affichées
+    function updateGreekValues(result) {
+        // Delta
+        const deltaBS = result.blackScholes?.delta || 0;
+        document.getElementById('delta-bs-value').textContent = deltaBS.toFixed(4);
+        
+        // Gamma
+        const gammaBS = result.blackScholes?.gamma || 0;
+        document.getElementById('gamma-bs-value').textContent = gammaBS.toFixed(4);
+        
+        // Theta
+        const thetaBS = result.blackScholes?.theta || 0;
+        document.getElementById('theta-bs-value').textContent = thetaBS.toFixed(4);
+        
+        // Vega
+        const vegaBS = result.blackScholes?.vega || 0;
+        document.getElementById('vega-bs-value').textContent = vegaBS.toFixed(4);
+        
+        // Rho
+        const rhoBS = result.blackScholes?.rho || 0;
+        document.getElementById('rho-bs-value').textContent = rhoBS.toFixed(4);
+    }
+    
+    // Fonction pour récupérer les courbes des Greeks depuis l'API
+    async function fetchGreeksCurves(spotPrice, strikePrice, timeMaturity, riskFreeRate, volatility, optionType) {
+        try {
+            const response = await fetch('/api/greeks-curves', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    spotPrice: spotPrice,
+                    strikePrice: strikePrice,
+                    timeMaturity: timeMaturity,
+                    riskFreeRate: riskFreeRate,
+                    volatility: volatility,
+                    optionType: optionType
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                // Afficher seulement l'array Theta
+                console.log('🔍 ARRAY THETA:', data.curves.theta);
+                
+                // Créer tous les graphiques avec les données de l'API
+                createPayoffChartFromAPI(data.curves, strikePrice, spotPrice);
+                createDeltaChartFromAPI(data.curves, strikePrice, spotPrice);
+                createGammaChartFromAPI(data.curves, strikePrice, spotPrice);
+                createThetaChartFromAPI(data.curves, strikePrice, spotPrice);
+                createVegaChartFromAPI(data.curves, strikePrice, spotPrice);
+                createRhoChartFromAPI(data.curves, strikePrice, spotPrice);
+                console.log('🎯 Tous les graphiques créés');
+            } else {
+                console.error('❌ Erreur API Greeks:', data.error);
+                showNotification('Erreur lors du calcul des courbes: ' + data.error, 'error');
+            }
+        } catch (error) {
+            console.error('❌ Erreur lors de la récupération des courbes Greeks:', error);
+            showNotification('Erreur de connexion API: ' + error.message, 'error');
+        }
+    }
+    
+    // Fonction utilitaire pour configurer l'axe X avec la plage dynamique
+    function getXAxisConfig(strike, spot) {
+        const maxValue = Math.max(strike, spot);
+        const xMax = maxValue * 2;
+        
+        return {
+            type: 'linear',
+            min: 0,
+            max: xMax,
+            title: {
+                display: true,
+                text: 'Spot',
+                color: '#e5e7eb'
+            },
+            grid: { color: 'rgba(255,255,255,0.1)' },
+            ticks: { 
+                color: '#9ca3af',
+                callback: function(value) {
+                    return value < 0 ? '' : value;
+                }
+            }
+        };
+    }
+    
+    // Fonction utilitaire pour configurer les tooltips interactifs
+    function getTooltipConfig() {
+        return {
+            backgroundColor: 'rgba(17, 24, 39, 0.95)',
+            titleColor: '#f9fafb',
+            bodyColor: '#e5e7eb',
+            borderColor: '#374151',
+            borderWidth: 1,
+            cornerRadius: 8,
+            displayColors: true,
+            intersect: false,
+            mode: 'index',
+            callbacks: {
+                title: function(context) {
+                    return `Spot Price: ${context[0].parsed.x.toFixed(2)}`;
+                },
+                label: function(context) {
+                    const label = context.dataset.label || '';
+                    const value = context.parsed.y;
+                    return `${label}: ${value.toFixed(4)}`;
+                },
+                afterLabel: function(context) {
+                    // Ajouter des informations supplémentaires selon le type de graphique
+                    const chartId = context.chart.canvas.id;
+                    if (chartId.includes('payoff')) {
+                        return 'Payoff at maturity';
+                    } else if (chartId.includes('delta')) {
+                        return '';
+                    } else if (chartId.includes('gamma')) {
+                        return '';
+                    } else if (chartId.includes('theta')) {
+                        return '';
+                    } else if (chartId.includes('vega')) {
+                        return '';
+                    } else if (chartId.includes('rho')) {
+                        return '';
+                    }
+                    return '';
+                }
+            }
+        };
+    }
+    
+    // Fonction pour calculer le payoff d'une option
+    function calculatePayoff(S, K, optionType) {
+        if (optionType === 'call') {
+            return Math.max(0, S - K);
+        } else {
+            return Math.max(0, K - S);
+        }
+    }
+    
+    // Fonction pour calculer le prix d'option Black-Scholes
+    function calculateBlackScholesPrice(S, K, T, r, sigma, optionType) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        const d2 = d1 - sigma * Math.sqrt(T);
+        
+        if (optionType === 'call') {
+            return S * normalCDF(d1) - K * Math.exp(-r * T) * normalCDF(d2);
+        } else {
+            return K * Math.exp(-r * T) * normalCDF(-d2) - S * normalCDF(-d1);
+        }
+    }
+    
+    // Création du graphique Payoff avec les données de l'API
+    function createPayoffChartFromAPI(curves, strike, spotPrice) {
+        
+        const canvas = document.getElementById('payoff-chart');
+        if (!canvas) {
+            console.error('❌ Canvas payoff-chart non trouvé !');
+            return;
+        }
+        
+        const ctx = canvas.getContext('2d');
+        
+        // Détruire tous les graphiques existants sur ce canvas
+        Chart.helpers.each(Chart.instances, function(instance) {
+            if (instance.canvas.id === 'payoff-chart') {
+                console.log('🗑️ Destruction du graphique existant sur payoff-chart');
+                instance.destroy();
+            }
+        });
+        
+        if (payoffChart) payoffChart.destroy();
+        
+        try {
+            // Calculer le max dynamiquement basé sur les données
+            const maxPayoff = Math.max(...curves.payoff);
+            const maxOptionPrice = Math.max(...curves.option_price);
+            const maxValue = Math.max(maxPayoff, maxOptionPrice);
+            const yMax = Math.ceil(maxValue * 1.1); // 10% de marge
+            
+            payoffChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: curves.spot_prices,
+                datasets: [{
+                    label: 'Payoff at maturity',
+                    data: curves.payoff,
+                    borderColor: '#3b82f6', // Uniform blue
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0.5,
+                    pointHoverRadius: 3
+                }, {
+                    label: 'Option Price',
+                    data: curves.option_price,
+                    borderColor: '#3b82f6', // Uniform blue
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    borderDash: [5, 5],
+                    pointRadius: 0.5,
+                    pointHoverRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: getXAxisConfig(strike, spotPrice),
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Payoff / Premium',
+                            color: '#e5e7eb'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { 
+                            color: '#9ca3af',
+                            stepSize: 5,
+                            callback: function(value) {
+                                if (value < 0) return '';
+                                return value === 0 ? '0' : value;
+                            }
+                        },
+                        min: -yMax * 0.05,
+                        max: yMax
+                    }
+                },
+                plugins: {
+                    legend: { 
+                        display: true,
+                        labels: {
+                            color: '#e5e7eb',
+                            usePointStyle: true
+                        }
+                    },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+        
+            // Ajouter la ligne de strike
+            addStrikeLineToPayoff(payoffChart, strike);
+            
+            console.log('✅ Graphique Payoff créé avec succès');
+            console.log('📊 Données Payoff:', {
+                labels: curves.spot_prices?.length,
+                payoff: curves.payoff?.length,
+                option_price: curves.option_price?.length
+            });
+        } catch (error) {
+            console.error('❌ Erreur lors de la création du graphique Payoff:', error);
+        }
+    }
+    
+    // Fonction pour ajouter la ligne de strike au graphique payoff
+    function addStrikeLineToPayoff(chart, strike) {
+        // Ajouter une ligne verticale en pointillés au niveau du strike
+        if (!chart.options.plugins) {
+            chart.options.plugins = {};
+        }
+        if (!chart.options.plugins.annotation) {
+            chart.options.plugins.annotation = {
+                annotations: {}
+            };
+        }
+        
+        chart.options.plugins.annotation.annotations = {
+            strikeLine: {
+                type: 'line',
+                xMin: strike,
+                xMax: strike,
+                borderColor: '#ef4444',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                label: {
+                    content: `Strike: ${strike}`,
+                    enabled: true,
+                    position: 'start',
+                    backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                    color: 'white',
+                    font: {
+                        size: 12,
+                        weight: 'bold'
+                    }
+                }
+            }
+        };
+        
+        chart.update();
+    }
+    
+    // Création du graphique Delta avec les données de l'API
+    function createDeltaChartFromAPI(curves, strike, spotPrice) {
+        
+        const canvas = document.getElementById('delta-chart');
+        if (!canvas) {
+            console.error('❌ Canvas delta-chart non trouvé !');
+            return;
+        }
+        
+        const ctx = canvas.getContext('2d');
+        
+        // Détruire tous les graphiques existants sur ce canvas
+        Chart.helpers.each(Chart.instances, function(instance) {
+            if (instance.canvas.id === 'delta-chart') {
+                console.log('🗑️ Destruction du graphique existant sur delta-chart');
+                instance.destroy();
+            }
+        });
+        
+        if (deltaChart) deltaChart.destroy();
+        
+        try {
+            deltaChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: curves.spot_prices,
+                datasets: [{
+                    label: 'Delta',
+                    data: curves.delta,
+                    borderColor: '#3b82f6', // Uniform blue
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0.5,
+                    pointHoverRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: getXAxisConfig(strike, spotPrice),
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Delta',
+                            color: '#e5e7eb'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { 
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        },
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+        
+            addStrikeLine(deltaChart, strike);
+            
+            console.log('✅ Graphique Delta créé avec succès');
+            console.log('📊 Données Delta:', {
+                labels: curves.spot_prices?.length,
+                delta: curves.delta?.length,
+                first_delta: curves.delta?.[0],
+                last_delta: curves.delta?.[curves.delta?.length - 1]
+            });
+        } catch (error) {
+            console.error('❌ Erreur lors de la création du graphique Delta:', error);
+        }
+    }
+    
+    // Création du graphique Gamma avec les données de l'API
+    function createGammaChartFromAPI(curves, strike, spotPrice) {
+        console.log('🎨 Création graphique Gamma avec données:', {
+            spot_prices: curves.spot_prices?.length || 0,
+            gamma_values: curves.gamma?.length || 0,
+            first_gamma: curves.gamma?.[0],
+            last_gamma: curves.gamma?.[curves.gamma?.length - 1]
+        });
+        
+        const canvas = document.getElementById('gamma-chart');
+        if (!canvas) {
+            console.error('❌ Canvas gamma-chart non trouvé !');
+            return;
+        }
+        
+        const ctx = canvas.getContext('2d');
+        if (gammaChart) gammaChart.destroy();
+        
+        try {
+            gammaChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: curves.spot_prices,
+                datasets: [{
+                    label: 'Gamma',
+                    data: curves.gamma,
+                    borderColor: '#3b82f6', // Uniform blue
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0.5,
+                    pointHoverRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: getXAxisConfig(strike, spotPrice),
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Gamma',
+                            color: '#e5e7eb'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { 
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+        
+            addStrikeLine(gammaChart, strike);
+            
+            console.log('✅ Graphique Gamma créé avec succès');
+            console.log('📊 Données Gamma:', {
+                labels: curves.spot_prices?.length,
+                gamma: curves.gamma?.length,
+                first_gamma: curves.gamma?.[0],
+                last_gamma: curves.gamma?.[curves.gamma?.length - 1]
+            });
+        } catch (error) {
+            console.error('❌ Erreur lors de la création du graphique Gamma:', error);
+        }
+    }
+    
+    // Création du graphique Theta avec les données de l'API
+    function createThetaChartFromAPI(curves, strike, spotPrice) {
+        
+        const canvas = document.getElementById('theta-chart');
+        if (!canvas) {
+            console.error('❌ Canvas theta-chart non trouvé !');
+            return;
+        }
+        
+        const ctx = canvas.getContext('2d');
+        if (thetaChart) thetaChart.destroy();
+        
+        try {
+            thetaChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: curves.spot_prices,
+                datasets: [{
+                    label: 'Theta',
+                    data: curves.theta,
+                    borderColor: '#3b82f6', // Uniform blue
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0.5,
+                    pointHoverRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: getXAxisConfig(strike, spotPrice),
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Theta',
+                            color: '#e5e7eb'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { 
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+        
+            addStrikeLine(thetaChart, strike);
+            
+            console.log('✅ Graphique Theta créé avec succès');
+            console.log('📊 Données Theta:', {
+                labels: curves.spot_prices?.length,
+                theta: curves.theta?.length,
+                first_theta: curves.theta?.[0],
+                last_theta: curves.theta?.[curves.theta?.length - 1]
+            });
+        } catch (error) {
+            console.error('❌ Erreur lors de la création du graphique Theta:', error);
+        }
+    }
+    
+    // Création du graphique Vega avec les données de l'API
+    function createVegaChartFromAPI(curves, strike, spotPrice) {
+        console.log('🎨 Création graphique Vega avec données:', {
+            spot_prices: curves.spot_prices?.length || 0,
+            vega_values: curves.vega?.length || 0,
+            first_vega: curves.vega?.[0],
+            last_vega: curves.vega?.[curves.vega?.length - 1]
+        });
+        
+        const canvas = document.getElementById('vega-chart');
+        if (!canvas) {
+            console.error('❌ Canvas vega-chart non trouvé !');
+            return;
+        }
+        
+        const ctx = canvas.getContext('2d');
+        if (vegaChart) vegaChart.destroy();
+        
+        try {
+            vegaChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: curves.spot_prices,
+                datasets: [{
+                    label: 'Vega',
+                    data: curves.vega,
+                    borderColor: '#3b82f6', // Uniform blue
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0.5,
+                    pointHoverRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: getXAxisConfig(strike, spotPrice),
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Vega',
+                            color: '#e5e7eb'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { 
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+        
+            addStrikeLine(vegaChart, strike);
+            
+            console.log('✅ Graphique Vega créé avec succès');
+            console.log('📊 Données Vega:', {
+                labels: curves.spot_prices?.length,
+                vega: curves.vega?.length,
+                first_vega: curves.vega?.[0],
+                last_vega: curves.vega?.[curves.vega?.length - 1]
+            });
+        } catch (error) {
+            console.error('❌ Erreur lors de la création du graphique Vega:', error);
+        }
+    }
+    
+    // Création du graphique Rho avec les données de l'API
+    function createRhoChartFromAPI(curves, strike, spotPrice) {
+        console.log('🎨 Création graphique Rho avec données:', {
+            spot_prices: curves.spot_prices?.length || 0,
+            rho_values: curves.rho?.length || 0,
+            first_rho: curves.rho?.[0],
+            last_rho: curves.rho?.[curves.rho?.length - 1]
+        });
+        
+        const canvas = document.getElementById('rho-chart');
+        if (!canvas) {
+            console.error('❌ Canvas rho-chart non trouvé !');
+            return;
+        }
+        
+        const ctx = canvas.getContext('2d');
+        if (rhoChart) rhoChart.destroy();
+        
+        try {
+            rhoChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: curves.spot_prices,
+                datasets: [{
+                    label: 'Rho',
+                    data: curves.rho,
+                    borderColor: '#3b82f6', // Uniform blue
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0.5,
+                    pointHoverRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: getXAxisConfig(strike, spotPrice),
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Rho',
+                            color: '#e5e7eb'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { 
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+        
+            addStrikeLine(rhoChart, strike);
+            
+            console.log('✅ Graphique Rho créé avec succès');
+            console.log('📊 Données Rho:', {
+                labels: curves.spot_prices?.length,
+                rho: curves.rho?.length,
+                first_rho: curves.rho?.[0],
+                last_rho: curves.rho?.[curves.rho?.length - 1]
+            });
+        } catch (error) {
+            console.error('❌ Erreur lors de la création du graphique Rho:', error);
+        }
+    }
+    
+    // Fonction pour calculer Delta (Black-Scholes)
+    function calculateDelta(S, K, T, r, sigma, optionType) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        if (optionType === 'call') {
+            return normalCDF(d1);
+        } else {
+            return normalCDF(d1) - 1;
+        }
+    }
+    
+    // Fonction pour calculer Gamma (Black-Scholes)
+    function calculateGamma(S, K, T, r, sigma) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        return normalPDF(d1) / (S * sigma * Math.sqrt(T));
+    }
+    
+    // Fonction pour calculer Theta (Black-Scholes)
+    function calculateTheta(S, K, T, r, sigma, optionType) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        const d2 = d1 - sigma * Math.sqrt(T);
+        
+        const term1 = -(S * normalPDF(d1) * sigma) / (2 * Math.sqrt(T));
+        
+        let theta;
+        if (optionType === 'put') {
+            // Formule correcte pour les puts : term1 + r*K*exp(-r*T)*N(-d2)
+            const term2 = r * K * Math.exp(-r * T) * normalCDF(-d2);
+            theta = term1 + term2;
+        } else {
+            // Formule pour les calls : term1 - r*K*exp(-r*T)*N(d2)
+            const term2 = -r * K * Math.exp(-r * T) * normalCDF(d2);
+            theta = term1 + term2;
+        }
+        
+        // Conversion en sensibilité à un changement de 1 jour de trading (1/252)
+        // Pour être cohérent avec les calculs backend (Black-Scholes et Monte Carlo)
+        return theta * (1.0 / 252.0);
+    }
+    
+    // Fonction pour calculer Vega (Black-Scholes)
+    function calculateVega(S, K, T, r, sigma) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        return S * normalPDF(d1) * Math.sqrt(T);
+    }
+    
+    // Fonction pour calculer Rho (Black-Scholes)
+    function calculateRho(S, K, T, r, sigma, optionType) {
+        const d1 = (Math.log(S / K) + (r + 0.5 * sigma * sigma) * T) / (sigma * Math.sqrt(T));
+        const d2 = d1 - sigma * Math.sqrt(T);
+        
+        if (optionType === 'call') {
+            return K * T * Math.exp(-r * T) * normalCDF(d2);
+        } else {
+            return -K * T * Math.exp(-r * T) * normalCDF(-d2);
+        }
+    }
+    
+    // Fonctions utilitaires pour la distribution normale
+    function normalCDF(x) {
+        return 0.5 * (1 + erf(x / Math.sqrt(2)));
+    }
+    
+    function normalPDF(x) {
+        return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+    }
+    
+    function erf(x) {
+        // Approximation de la fonction d'erreur
+        const a1 =  0.254829592;
+        const a2 = -0.284496736;
+        const a3 =  1.421413741;
+        const a4 = -1.453152027;
+        const a5 =  1.061405429;
+        const p  =  0.3275911;
+        
+        const sign = x >= 0 ? 1 : -1;
+        x = Math.abs(x);
+        
+        const t = 1.0 / (1.0 + p * x);
+        const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+        
+        return sign * y;
+    }
+    
+    // Création du graphique Delta
+    function createDeltaChart(S, K, T, r, sigma, optionType) {
+        const ctx = document.getElementById('delta-chart').getContext('2d');
+        if (deltaChart) deltaChart.destroy();
+        
+        const spotRange = [];
+        const deltaValues = [];
+        
+        // Générer les points pour le graphique
+        for (let spot = 0; spot <= 200; spot += 2) {
+            spotRange.push(spot);
+            deltaValues.push(calculateDelta(spot, K, T, r, sigma, optionType));
+        }
+        
+        deltaChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: spotRange,
+                datasets: [{
+                    label: 'Delta',
+                    data: deltaValues,
+                    borderColor: '#3b82f6', // Uniform blue
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0.5,
+                    pointHoverRadius: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: getXAxisConfig(K, S),
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Delta',
+                            color: '#e5e7eb'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { 
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        },
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+        
+        // Ajouter la ligne de strike
+        addStrikeLine(deltaChart, K);
+    }
+    
+    // Création du graphique Gamma
+    function createGammaChart(S, K, T, r, sigma, optionType) {
+        const ctx = document.getElementById('gamma-chart').getContext('2d');
+        if (gammaChart) gammaChart.destroy();
+        
+        const spotRange = [];
+        const gammaValues = [];
+        
+        for (let spot = 0; spot <= 200; spot += 2) {
+            spotRange.push(spot);
+            gammaValues.push(calculateGamma(spot, K, T, r, sigma));
+        }
+        
+        gammaChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: spotRange,
+                datasets: [{
+                    label: 'Gamma',
+                    data: gammaValues,
+                    borderColor: '#000000',
+                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: getXAxisConfig(strike, spotPrice),
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Gamma',
+                            color: '#e5e7eb'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { 
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+        
+        addStrikeLine(gammaChart, K);
+    }
+    
+    // Fonction pour ajouter la ligne de strike
+    function addStrikeLine(chart, strike) {
+        // Ajouter une ligne verticale en pointillés au niveau du strike
+        if (!chart.options.plugins) {
+            chart.options.plugins = {};
+        }
+        if (!chart.options.plugins.annotation) {
+            chart.options.plugins.annotation = {
+                annotations: {}
+            };
+        }
+        
+        chart.options.plugins.annotation.annotations = {
+            strikeLine: {
+                type: 'line',
+                xMin: strike,
+                xMax: strike,
+                borderColor: '#ef4444',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                label: {
+                    content: `Strike: ${strike}`,
+                    enabled: true,
+                    position: 'start',
+                    backgroundColor: 'rgba(239, 68, 68, 0.8)',
+                    color: 'white',
+                    font: {
+                        size: 12,
+                        weight: 'bold'
+                    }
+                }
+            }
+        };
+        
+        chart.update();
+    }
+    
+    // Création des autres graphiques (Theta, Vega, Rho)
+    function createThetaChart(S, K, T, r, sigma, optionType) {
+        const ctx = document.getElementById('theta-chart').getContext('2d');
+        if (thetaChart) thetaChart.destroy();
+        
+        const spotRange = [];
+        const thetaValues = [];
+        
+        for (let spot = 0; spot <= 200; spot += 2) {
+            spotRange.push(spot);
+            thetaValues.push(calculateTheta(spot, K, T, r, sigma, optionType));
+        }
+        
+        thetaChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: spotRange,
+                datasets: [{
+                    label: 'Theta',
+                    data: thetaValues,
+                    borderColor: '#000000',
+                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: getXAxisConfig(strike, spotPrice),
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Theta',
+                            color: '#e5e7eb'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { 
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+        
+        addStrikeLine(thetaChart, K);
+    }
+    
+    function createVegaChart(S, K, T, r, sigma, optionType) {
+        const ctx = document.getElementById('vega-chart').getContext('2d');
+        if (vegaChart) vegaChart.destroy();
+        
+        const spotRange = [];
+        const vegaValues = [];
+        
+        for (let spot = 0; spot <= 200; spot += 2) {
+            spotRange.push(spot);
+            vegaValues.push(calculateVega(spot, K, T, r, sigma));
+        }
+        
+        vegaChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: spotRange,
+                datasets: [{
+                    label: 'Vega',
+                    data: vegaValues,
+                    borderColor: '#000000',
+                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: getXAxisConfig(strike, spotPrice),
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Vega',
+                            color: '#e5e7eb'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { 
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+        
+        addStrikeLine(vegaChart, K);
+    }
+    
+    function createRhoChart(S, K, T, r, sigma, optionType) {
+        const ctx = document.getElementById('rho-chart').getContext('2d');
+        if (rhoChart) rhoChart.destroy();
+        
+        const spotRange = [];
+        const rhoValues = [];
+        
+        for (let spot = 0; spot <= 200; spot += 2) {
+            spotRange.push(spot);
+            rhoValues.push(calculateRho(spot, K, T, r, sigma, optionType));
+        }
+        
+        rhoChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: spotRange,
+                datasets: [{
+                    label: 'Rho',
+                    data: rhoValues,
+                    borderColor: '#000000',
+                    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: getXAxisConfig(strike, spotPrice),
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Rho',
+                            color: '#e5e7eb'
+                        },
+                        grid: { color: 'rgba(255,255,255,0.1)' },
+                        ticks: { 
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: getTooltipConfig()
+                }
+            }
+        });
+        
+        addStrikeLine(rhoChart, K);
     }
 
     // Animation barre de progression
@@ -857,17 +2766,7 @@
                     },
                     plugins: { 
                         legend: { display: false },
-                        tooltip: {
-                            backgroundColor: 'rgba(17, 24, 39, 0.95)',
-                            titleColor: '#f9fafb',
-                            bodyColor: '#e5e7eb',
-                            borderColor: '#374151',
-                            borderWidth: 1,
-                            cornerRadius: 8,
-                            displayColors: false,
-                            titleFont: { size: isSmallScreen ? 12 : 14 },
-                            bodyFont: { size: isSmallScreen ? 11 : 13 }
-                        }
+                        tooltip: getTooltipConfig()
                     },
                     interaction: {
                         intersect: false,
@@ -999,7 +2898,7 @@
     const mobileMenuBtn = document.getElementById('mobile-menu-btn');
     const sidebar = document.querySelector('.sidebar');
     
-    if (mobileMenuBtn) {
+    if (mobileMenuBtn && sidebar) {
         mobileMenuBtn.addEventListener('click', function() {
             sidebar.classList.toggle('mobile-open');
         });
@@ -1007,7 +2906,7 @@
 
     // Fermer le menu mobile en cliquant à l'extérieur
     document.addEventListener('click', function(e) {
-        if (!sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+        if (sidebar && mobileMenuBtn && !sidebar.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
             sidebar.classList.remove('mobile-open');
         }
     });
@@ -1051,5 +2950,1070 @@
         });
     }
 </script>
+
+<!-- Styles pour les checkboxes en ligne -->
+<style>
+    /* Styles pour l'en-tête d'analyse avec checkboxes en ligne */
+    .analysis-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+    
+    .analysis-header-left {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    }
+    
+    .analysis-header-right {
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Styles pour les boutons radio en ligne */
+    .inline-radio-group {
+        display: flex;
+        gap: 1.5rem;
+        align-items: center;
+    }
+    
+    .inline-radio-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        cursor: pointer;
+        user-select: none;
+    }
+    
+    .inline-radio-item input[type="radio"] {
+        display: none;
+    }
+    
+    .inline-radio-custom {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #6b7280;
+        border-radius: 50%;
+        background-color: transparent;
+        position: relative;
+        transition: all 0.2s ease;
+    }
+    
+    .inline-radio-item input[type="radio"]:checked + .inline-radio-custom {
+        background-color: #10b981;
+        border-color: #10b981;
+    }
+    
+    .inline-radio-item input[type="radio"]:checked + .inline-radio-custom::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 8px;
+        height: 8px;
+        background-color: white;
+        border-radius: 50%;
+    }
+    
+    .inline-radio-label {
+        color: #e5e7eb;
+        font-size: 0.875rem;
+        font-weight: 500;
+    }
+    
+    .inline-radio-item:hover .inline-radio-custom {
+        border-color: #9ca3af;
+    }
+    
+    .inline-radio-item:hover .inline-radio-label {
+        color: #f3f4f6;
+    }
+    
+    /* Container pour les boutons radio avec rectangle */
+    .radio-container {
+        background: rgba(55, 65, 81, 0.4);
+        border: 1px solid rgba(75, 85, 99, 0.5);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        backdrop-filter: blur(4px);
+    }
+    
+    /* Container pour les explications avec rectangle */
+    .explanation-container {
+        background: rgba(55, 65, 81, 0.4);
+        border: 1px solid rgba(75, 85, 99, 0.5);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        margin-top: 0.75rem;
+        backdrop-filter: blur(4px);
+    }
+    
+    .explanation-title {
+        color: #e5e7eb;
+        font-weight: 600;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .explanation-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    
+    .explanation-list li {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.8rem;
+        line-height: 1.4;
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+    }
+    
+    .explanation-list li:hover {
+        background-color: rgba(75, 85, 99, 0.2);
+    }
+    
+    .explanation-radio-item {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        margin-right: 0.25rem;
+    }
+    
+    .explanation-radio-item input[type="radio"] {
+        display: none;
+    }
+    
+    .explanation-radio-item input[type="radio"]:checked + .inline-radio-custom {
+        background-color: #10b981;
+        border-color: #10b981;
+    }
+    
+    .explanation-radio-item input[type="radio"]:checked + .inline-radio-custom::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 8px;
+        height: 8px;
+        background-color: white;
+        border-radius: 50%;
+    }
+    
+    .bullet-point {
+        color: transparent;
+        font-weight: bold;
+        flex-shrink: 0;
+        margin-top: 0.1rem;
+        margin-right: 0.25rem;
+    }
+    
+    .explanation-list strong {
+        color: #e5e7eb;
+        font-weight: 600;
+    }
+    
+    .explanation-list li {
+        color: #9ca3af;
+    }
+
+
+
+
+</style>
+
+<!-- Plugin d'annotation pour Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+
+<script>
+    // Le plugin d'annotation s'enregistre automatiquement avec Chart.js v3+
+    
+    // Fonctions pour l'Analyse de Volatilité
+    
+    
+    async function calculateVolatilityAnalysis() {
+        try {
+            // Récupérer les paramètres du formulaire
+            const spotPrice = parseFloat(document.getElementById('spot-price').value) || 100;
+            const strikePrice = parseFloat(document.getElementById('strike-price').value) || 100;
+            const timeMaturity = parseFloat(document.getElementById('time-maturity').value) || 1;
+            const riskFreeRate = parseFloat(document.getElementById('risk-free-rate').value) || 0.05;
+            const volatility = parseFloat(document.getElementById('volatility').value) || 0.2;
+            const optionType = document.getElementById('option-type').value || 'call';
+            
+            // Calculer automatiquement la plage de volatilité
+            // Min: max(valeur_utilisateur - 0.10, 0.05)
+            // Max: valeur_utilisateur + 0.20
+            // Pas: 0.05
+            const minVolatility = Math.max(volatility - 0.10, 0.05);
+            const maxVolatility = volatility + 0.20;
+            const step = 0.05;
+            
+            // Générer les valeurs de volatilité
+            const volatilityValues = [];
+            for (let vol = minVolatility; vol <= maxVolatility; vol += step) {
+                volatilityValues.push(Math.round(vol * 1000) / 1000); // Arrondir à 3 décimales
+            }
+            
+            const numPoints = volatilityValues.length;
+            
+            console.log('Calcul de l\'analyse de volatilité avec les paramètres:', {
+                spotPrice, strikePrice, timeMaturity, riskFreeRate, volatility, optionType, 
+                minVolatility, maxVolatility, step, volatilityValues, numPoints
+            });
+            
+            // Appeler l'API
+            const response = await fetch('/api/volatility-sensitivity-matrix', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    spotPrice,
+                    strikePrice,
+                    timeMaturity,
+                    riskFreeRate,
+                    volatility,
+                    optionType,
+                    volatilityRange: (maxVolatility - minVolatility) / 2, // Pour compatibilité avec l'API
+                    numPoints
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                displayVolatilityAnalysisResults(data);
+            } else {
+                throw new Error(data.error || 'Erreur lors du calcul de l\'analyse de volatilité');
+            }
+            
+        } catch (error) {
+            console.error('Erreur lors du calcul de l\'analyse de volatilité:', error);
+            showNotification('Erreur lors du calcul de l\'analyse de volatilité: ' + error.message, 'error');
+        }
+    }
+    
+    async function calculateMaturityAnalysis() {
+        try {
+            // Récupérer les paramètres du formulaire
+            const spotPrice = parseFloat(document.getElementById('spot-price').value) || 100;
+            const strikePrice = parseFloat(document.getElementById('strike-price').value) || 100;
+            const timeMaturity = parseFloat(document.getElementById('time-maturity').value) || 1;
+            const riskFreeRate = parseFloat(document.getElementById('risk-free-rate').value) || 0.05;
+            const volatility = parseFloat(document.getElementById('volatility').value) || 0.2;
+            const optionType = document.getElementById('option-type').value || 'call';
+            
+            // Paramètres pour l'analyse de maturité
+            const maturityRange = 0.9; // 0.9 années
+            const numPoints = 6; // 6 points (de 0.1 à T+1.0 par pas de 0.2)
+            
+            console.log('🔍 Calcul de l\'analyse de maturité avec:', {
+                spotPrice, strikePrice, timeMaturity, riskFreeRate, volatility, optionType,
+                maturityRange, numPoints
+            });
+            
+            const response = await fetch('/api/maturity-sensitivity-matrix', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    spotPrice: spotPrice,
+                    strikePrice: strikePrice,
+                    timeMaturity: timeMaturity,
+                    riskFreeRate: riskFreeRate,
+                    volatility: volatility,
+                    optionType: optionType,
+                    maturityRange: maturityRange,
+                    numPoints: numPoints
+                })
+            });
+            
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                displayMaturityAnalysisResults(data);
+            } else {
+                throw new Error(data.error || 'Erreur lors du calcul de l\'analyse de maturité');
+            }
+            
+        } catch (error) {
+            console.error('Erreur lors du calcul de l\'analyse de maturité:', error);
+            showNotification('Erreur lors du calcul de l\'analyse de maturité: ' + error.message, 'error');
+        }
+    }
+    
+    function displayMaturityAnalysisResults(response) {
+        console.log('🔍 displayMaturityAnalysisResults - response:', response);
+        console.log('🔍 displayMaturityAnalysisResults - sensitivity_matrix:', response.sensitivity_matrix);
+        
+        // Afficher les courbes de maturité dans les onglets des Grecs
+        updateGreeksTabsWithMaturityCurves(response.sensitivity_matrix);
+        // S'assurer que toutes les courbes sont visibles
+        showAllMaturityCurves();
+    }
+    
+    function displayVolatilityAnalysisResults(response) {
+        // Afficher les courbes de volatilité dans les onglets des Grecs
+        updateGreeksTabsWithVolatilityCurves(response.sensitivity_matrix);
+        // S'assurer que toutes les courbes sont visibles
+        setTimeout(() => {
+            showAllVolatilityCurves();
+        }, 100);
+    }
+    
+    function restoreOriginalGreeksCharts() {
+        // Restaurer les courbes originales (une seule courbe par Greek)
+        const greeks = ['delta', 'gamma', 'theta', 'vega', 'rho'];
+        const userVolatility = parseFloat(document.getElementById('volatility').value) || 0.2;
+        const userMaturity = parseFloat(document.getElementById('time-maturity').value) || 1;
+        
+        greeks.forEach(greek => {
+            const canvas = document.getElementById(`${greek}-chart`);
+            if (canvas) {
+                const existingChart = Chart.getChart(canvas);
+                if (existingChart) {
+                    const datasets = existingChart.data.datasets;
+                    
+                    // Vérifier si c'est un graphique de volatilité ou de maturité
+                    const isVolatilityChart = datasets.some(dataset => dataset.label.includes('%'));
+                    const isMaturityChart = datasets.some(dataset => dataset.label.includes('years'));
+                    
+                    if (isVolatilityChart) {
+                        // Gérer les courbes de volatilité
+                        datasets.forEach((dataset, index) => {
+                            const labelVolatility = parseFloat(dataset.label.replace('%', '')) / 100;
+                            
+                            if (Math.abs(labelVolatility - userVolatility) < 0.001) {
+                                dataset.hidden = false;
+                            } else {
+                                dataset.hidden = true;
+                            }
+                        });
+                    } else if (isMaturityChart) {
+                        // Gérer les courbes de maturité
+                        datasets.forEach((dataset, index) => {
+                            const labelMaturity = parseFloat(dataset.label.replace(' years', ''));
+                            
+                            if (Math.abs(labelMaturity - userMaturity) < 0.01) {
+                                dataset.hidden = false;
+                            } else {
+                                dataset.hidden = true;
+                            }
+                        });
+                    } else {
+                        // Si ce n'est ni volatilité ni maturité, afficher toutes les courbes
+                        datasets.forEach(dataset => {
+                            dataset.hidden = false;
+                        });
+                    }
+                    
+                    existingChart.update();
+                }
+                
+                    // Supprimer la légende personnalisée
+                    const chartContainer = canvas.parentElement;
+                    if (chartContainer) {
+                        const customLegend = chartContainer.querySelector('.custom-legend');
+                        if (customLegend) {
+                            customLegend.remove();
+                        }
+                    }
+            }
+        });
+    }
+    
+    
+    function getGreekColor(greek) {
+        const colors = {
+            'delta': '#3B82F6',
+            'gamma': '#EF4444',
+            'theta': '#10B981',
+            'vega': '#F59E0B',
+            'rho': '#8B5CF6'
+        };
+        return colors[greek] || '#6B7280';
+    }
+    
+    function updateGreeksTabsWithOriginalData(greeksData, spotPrice, strikePrice, timeMaturity, riskFreeRate, volatility, optionType) {
+        // Mettre à jour les graphiques avec les données originales
+        const greeks = ['delta', 'gamma', 'theta', 'vega', 'rho'];
+        const greekNames = ['Delta (Δ)', 'Gamma (Γ)', 'Theta (Θ)', 'Vega (ν)', 'Rho (ρ)'];
+        
+        greeks.forEach((greek, index) => {
+            const canvas = document.getElementById(`${greek}-chart`);
+            if (canvas) {
+                // Détruire le graphique existant s'il y en a un
+                const existingChart = Chart.getChart(canvas);
+                if (existingChart) {
+                    existingChart.destroy();
+                }
+                
+                // Créer le graphique original avec les bonnes données
+                createOriginalGreekChartWithData(canvas, greek, greekNames[index], greeksData, spotPrice, strikePrice, timeMaturity, riskFreeRate, volatility, optionType);
+            }
+        });
+    }
+    
+    function createOriginalGreekChartWithData(canvas, greek, greekName, greeksData, spotPrice, strikePrice, timeMaturity, riskFreeRate, volatility, optionType) {
+        // Générer une plage de prix spot (même logique que les graphiques originaux)
+        const spotRange = [];
+        const minSpot = Math.max(spotPrice * 0.5, 10);
+        const maxSpot = spotPrice * 2;
+        const step = (maxSpot - minSpot) / 100;
+        
+        for (let s = minSpot; s <= maxSpot; s += step) {
+            spotRange.push(s);
+        }
+        
+        // Calculate Greek values for this range using the same logic as the API
+        const greekValues = spotRange.map(s => {
+            // Use the same calculation logic as in the API
+            const d1 = (Math.log(s / strikePrice) + (riskFreeRate + 0.5 * volatility * volatility) * timeMaturity) / (volatility * Math.sqrt(timeMaturity));
+            const d2 = d1 - volatility * Math.sqrt(timeMaturity);
+            
+            // Cumulative normal distribution function (approximation)
+            const normCDF = (x) => {
+                return 0.5 * (1 + erf(x / Math.sqrt(2)));
+            };
+            
+            const normPDF = (x) => {
+                return Math.exp(-0.5 * x * x) / Math.sqrt(2 * Math.PI);
+            };
+            
+            switch(greek) {
+                case 'delta':
+                    return optionType === 'call' ? normCDF(d1) : normCDF(d1) - 1;
+                case 'gamma':
+                    return normPDF(d1) / (s * volatility * Math.sqrt(timeMaturity));
+                case 'theta':
+                    const term1 = -s * normPDF(d1) * volatility / (2 * Math.sqrt(timeMaturity));
+                    const term2 = optionType === 'call' 
+                        ? -riskFreeRate * strikePrice * Math.exp(-riskFreeRate * timeMaturity) * normCDF(d2)
+                        : riskFreeRate * strikePrice * Math.exp(-riskFreeRate * timeMaturity) * normCDF(-d2);
+                    return (term1 + term2) / 252; // Convertir en jours de trading
+                case 'vega':
+                    return s * Math.sqrt(timeMaturity) * normPDF(d1) / 100; // Convertir en pourcentage
+                case 'rho':
+                    const rhoValue = optionType === 'call' 
+                        ? strikePrice * timeMaturity * Math.exp(-riskFreeRate * timeMaturity) * normCDF(d2)
+                        : -strikePrice * timeMaturity * Math.exp(-riskFreeRate * timeMaturity) * normCDF(-d2);
+                    return rhoValue / 100; // Convertir en pourcentage
+                default:
+                    return 0;
+            }
+        });
+        
+        // Créer le graphique
+        new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: spotRange.map(price => price.toFixed(0)),
+                datasets: [{
+                    label: greekName,
+                    data: greekValues,
+                    borderColor: getGreekColor(greek),
+                    backgroundColor: getGreekColor(greek) + '20',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: `${greekName} - European ${optionType.charAt(0).toUpperCase() + optionType.slice(1)}`,
+                        color: '#e5e7eb',
+                        font: {
+                            size: 16,
+                            weight: 'bold'
+                        }
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Prix Spot (S)',
+                            color: '#9ca3af'
+                        },
+                        ticks: {
+                            color: '#9ca3af'
+                        },
+                        grid: {
+                            color: '#374151'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: greekName,
+                            color: '#9ca3af'
+                        },
+                        ticks: {
+                            color: '#9ca3af'
+                        },
+                        grid: {
+                            color: '#374151'
+                        }
+                    }
+                }
+            }
+        });
+    }
+    
+    // Fonction d'erreur pour la distribution normale cumulative
+    function erf(x) {
+        // Approximation de la fonction d'erreur
+        const a1 =  0.254829592;
+        const a2 = -0.284496736;
+        const a3 =  1.421413741;
+        const a4 = -1.453152027;
+        const a5 =  1.061405429;
+        const p  =  0.3275911;
+        
+        const sign = x >= 0 ? 1 : -1;
+        x = Math.abs(x);
+        
+        const t = 1.0 / (1.0 + p * x);
+        const y = 1.0 - (((((a5 * t + a4) * t) + a3) * t + a2) * t + a1) * t * Math.exp(-x * x);
+        
+        return sign * y;
+    }
+    
+    
+    
+    
+    function updateGreeksTabsWithVolatilityCurves(sensitivityMatrix) {
+        const greeks = ['delta', 'gamma', 'theta', 'vega', 'rho'];
+        const greekNames = ['Delta (Δ)', 'Gamma (Γ)', 'Theta (Θ)', 'Vega (ν)', 'Rho (ρ)'];
+        const greekColors = ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6'];
+        
+        greeks.forEach((greek, index) => {
+            const canvas = document.getElementById(`${greek}-chart`);
+            if (canvas) {
+                // Nettoyer tous les événements de hover et récupérer le nouveau canvas
+                const newCanvas = clearAllHoverEvents(canvas);
+                
+                // Détruire le graphique existant s'il y en a un
+                const existingChart = Chart.getChart(newCanvas);
+                if (existingChart) {
+                    existingChart.destroy();
+                }
+                
+                // Créer le nouveau graphique avec les courbes de volatilité
+                createVolatilityChartForTab(newCanvas, greek, greekNames[index], greekColors[index], sensitivityMatrix);
+            }
+        });
+    }
+    
+    function showAllVolatilityCurves() {
+        // Afficher toutes les courbes de volatilité
+        const greeks = ['delta', 'gamma', 'theta', 'vega', 'rho'];
+        
+        greeks.forEach(greek => {
+            const canvas = document.getElementById(`${greek}-chart`);
+            if (canvas) {
+                const existingChart = Chart.getChart(canvas);
+                if (existingChart) {
+                    // Afficher toutes les courbes
+                    const datasets = existingChart.data.datasets;
+                    datasets.forEach(dataset => {
+                        dataset.hidden = false;
+                    });
+                    existingChart.update();
+                    
+                    // Ajouter l'animation de hover pour la volatilité
+                    addVolatilityHoverAnimation(canvas, existingChart);
+                }
+            }
+        });
+    }
+    
+    function updateGreeksTabsWithMaturityCurves(sensitivityMatrix) {
+        console.log('🔍 updateGreeksTabsWithMaturityCurves - sensitivityMatrix:', sensitivityMatrix);
+        
+        // Mettre à jour les onglets des Grecs avec les courbes de maturité
+        const greeks = ['delta', 'gamma', 'theta', 'vega', 'rho'];
+        const greekNames = ['Delta (Δ)', 'Gamma (Γ)', 'Theta (Θ)', 'Vega (ν)', 'Rho (ρ)'];
+        const greekColors = ['#3B82F6', '#EF4444', '#10B981', '#F59E0B', '#8B5CF6'];
+        
+        greeks.forEach((greek, index) => {
+            console.log(`🔍 Processing greek: ${greek} (${greekNames[index]})`);
+            const canvas = document.getElementById(`${greek}-chart`);
+            if (canvas) {
+                // Nettoyer tous les événements de hover et récupérer le nouveau canvas
+                const newCanvas = clearAllHoverEvents(canvas);
+                
+                // Détruire le graphique existant
+                const existingChart = Chart.getChart(newCanvas);
+                if (existingChart) {
+                    existingChart.destroy();
+                }
+                
+                // Créer le nouveau graphique avec les courbes de maturité
+                createMaturityChartForTab(newCanvas, greek, greekNames[index], greekColors[index], sensitivityMatrix);
+            }
+        });
+    }
+    
+    function showAllMaturityCurves() {
+        // Afficher toutes les courbes de maturité
+        const greeks = ['delta', 'gamma', 'theta', 'vega', 'rho'];
+        
+        greeks.forEach(greek => {
+            const canvas = document.getElementById(`${greek}-chart`);
+            if (canvas) {
+                const existingChart = Chart.getChart(canvas);
+                if (existingChart) {
+                    // Afficher toutes les courbes
+                    const datasets = existingChart.data.datasets;
+                    datasets.forEach(dataset => {
+                        dataset.hidden = false;
+                    });
+                    existingChart.update();
+                    
+                    // Ajouter l'animation de hover pour la maturité
+                    addMaturityHoverAnimation(canvas, existingChart);
+                }
+            }
+        });
+    }
+    
+    function createVolatilityChartForTab(canvas, greek, greekName, color, sensitivityMatrix) {
+        const volatilityValues = sensitivityMatrix.volatility_values;
+        const spotPrices = sensitivityMatrix.spot_prices;
+        const curvesByVolatility = sensitivityMatrix.curves_by_volatility;
+        
+        // Palette de couleurs fixe pour chaque volatilité (même que createVolatilityChart)
+        const colorPalette = [
+            '#FF6B6B', // Rouge
+            '#4ECDC4', // Turquoise
+            '#45B7D1', // Bleu
+            '#96CEB4', // Vert
+            '#FFEAA7', // Jaune
+            '#DDA0DD', // Violet
+            '#98D8C8', // Vert menthe
+            '#F7DC6F', // Jaune doré
+            '#BB8FCE', // Lavande
+            '#85C1E9'  // Bleu clair
+        ];
+        
+        // Récupérer la volatilité de l'utilisateur
+        const userVolatility = parseFloat(document.getElementById('volatility').value) || 0.2;
+        
+        // Prepare datasets
+        const datasets = [];
+        
+        volatilityValues.forEach((vol, volIndex) => {
+            const curves = curvesByVolatility[vol];
+            const volColor = colorPalette[volIndex % colorPalette.length];
+            
+            // Vérifier si cette courbe correspond à la volatilité de l'utilisateur
+            const isUserVolatility = Math.abs(vol - userVolatility) < 0.001; // Tolérance pour les erreurs de précision
+            
+            if (isUserVolatility) {
+                // Style de référence : bleu avec petits points (comme Delta "Aucun")
+                datasets.push({
+                    label: `${(vol * 100).toFixed(0)}%`,
+                    data: curves[greek],
+                    borderColor: '#3b82f6', // Uniform blue
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0.5, // Small points
+                    pointHoverRadius: 3
+                });
+            } else {
+                // Style standard pour les autres courbes de volatilité
+            datasets.push({
+                label: `${(vol * 100).toFixed(0)}%`,
+                data: curves[greek],
+                borderColor: volColor,
+                backgroundColor: volColor + '80', // Ajouter transparence
+                    borderWidth: 1,
+                fill: false,
+                tension: 0.1,
+                pointRadius: 0, // Pas de points sur les courbes
+                pointHoverRadius: 0 // Pas de points au survol
+            });
+            }
+        });
+        
+        
+        // Remove any existing legend (now in green subtitle)
+        const chartContainer = canvas.parentElement;
+        if (chartContainer) {
+            const existingLegend = chartContainer.querySelector('.custom-legend');
+            if (existingLegend) {
+                existingLegend.remove();
+            }
+        }
+        
+        // Créer le graphique
+        const chart = new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: spotPrices.map(price => price.toFixed(0)),
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: false
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltip: getTooltipConfig(),
+                    layout: {
+                        padding: {
+                            top: 20,
+                            right: 20,
+                            bottom: 20,
+                            left: 20
+                        }
+                    }
+                },
+                scales: {
+                    x: getXAxisConfig(parseFloat(document.getElementById('strike-price').value) || 100, parseFloat(document.getElementById('spot-price').value) || 100),
+                    y: {
+                        title: {
+                            display: true,
+                            text: greekName,
+                            color: '#9ca3af'
+                        },
+                        ticks: {
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        },
+                        grid: {
+                            color: '#374151'
+                        }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index'
+                }
+            }
+        });
+        
+        // Ajouter la ligne de strike (récupérer le strike depuis les paramètres du formulaire)
+        const strikePrice = parseFloat(document.getElementById('strike-price').value) || 100;
+        addStrikeLine(chart, strikePrice);
+    }
+    
+    function createMaturityChartForTab(canvas, greek, greekName, color, sensitivityMatrix) {
+        const maturityValues = sensitivityMatrix.maturity_values;
+        const spotPrices = sensitivityMatrix.spot_prices;
+        const curvesByMaturity = sensitivityMatrix.curves_by_maturity;
+        
+        // Fixed color palette for each maturity (from 0.1 to T+1.0 by step of 0.2)
+        const colorPalette = [
+            '#FF6B6B', // Red (0.1 years)
+            '#4ECDC4', // Turquoise (0.3 years)
+            '#45B7D1', // Blue (0.5 years)
+            '#96CEB4', // Green (0.7 years)
+            '#FFEAA7', // Yellow (0.9 years)
+            '#3b82f6', // Uniform blue (1.0 years - user maturity)
+            '#DDA0DD', // Purple (1.1 years)
+            '#98D8C8', // Mint green (1.3 years)
+            '#F7DC6F', // Golden yellow (1.5 years)
+            '#BB8FCE', // Lavender (1.7 years)
+            '#85C1E9'  // Light blue (1.9 years)
+        ];
+        
+        // Get user maturity
+        const userMaturity = parseFloat(document.getElementById('time-maturity').value) || 1;
+        
+        // Prepare datasets
+        const datasets = [];
+        
+        // Normaliser les maturityValues pour assurer la correspondance
+        const normalizedMaturityValues = maturityValues.map(m => parseFloat(m));
+        
+        normalizedMaturityValues.forEach((maturity, maturityIndex) => {
+            
+            // Normaliser la maturité pour la recherche (convertir en float)
+            const normalizedMaturity = parseFloat(maturity);
+            
+            // Essayer différentes représentations de la maturité
+            let curves = curvesByMaturity[maturity] || 
+                        curvesByMaturity[normalizedMaturity] ||
+                        curvesByMaturity[maturity.toString()] ||
+                        curvesByMaturity[normalizedMaturity.toString()] ||
+                        curvesByMaturity[normalizedMaturity.toFixed(1)] ||
+                        curvesByMaturity[normalizedMaturity.toFixed(1).toString()];
+            
+            // Si toujours pas trouvé, essayer avec différentes représentations
+            if (!curves) {
+                const maturityStr = maturity.toString();
+                const maturityFloat = parseFloat(maturity);
+                const maturityRounded = Math.round(maturityFloat * 10) / 10;
+                const maturityRoundedStr = maturityRounded.toString();
+                
+                // Essayer toutes les combinaisons possibles
+                curves = curvesByMaturity[maturityStr] || 
+                        curvesByMaturity[maturityFloat] || 
+                        curvesByMaturity[maturityRounded] ||
+                        curvesByMaturity[maturityRoundedStr] ||
+                        curvesByMaturity[String(maturityRounded)];
+                
+            }
+            
+            if (!curves || !curves[greek]) {
+                return; // Skip this maturity if data is missing
+            }
+            
+            const maturityColor = colorPalette[maturityIndex % colorPalette.length];
+            
+            // Check if this curve corresponds to user maturity (same logic as volatility)
+            const maturityRounded = Math.round(maturity * 10) / 10; // Round to 1 decimal
+            const userMaturityRounded = Math.round(userMaturity * 10) / 10; // Round to 1 decimal
+            const isUserMaturity = Math.abs(maturityRounded - userMaturityRounded) < 0.01; // Compare rounded values
+            
+            if (isUserMaturity) {
+                // Reference style: blue with small dots (like "None" maturity)
+                datasets.push({
+                    label: `${maturity.toFixed(1)} years`,
+                    data: curves[greek],
+                    borderColor: '#3b82f6', // Uniform blue
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0.5, // Small points
+                    pointHoverRadius: 3
+                });
+            } else {
+                // Standard style for other maturity curves
+                datasets.push({
+                    label: `${maturity.toFixed(1)} years`,
+                    data: curves[greek],
+                    borderColor: maturityColor,
+                    backgroundColor: maturityColor + '80', // Add transparency
+                    borderWidth: 1,
+                    fill: false,
+                    tension: 0.1,
+                    pointRadius: 0, // No points on curves
+                    pointHoverRadius: 0 // No points on hover
+                });
+            }
+        });
+        
+        
+        // Remove any existing legend (now in green subtitle)
+        const chartContainer = canvas.parentElement;
+        if (chartContainer) {
+            const existingLegend = chartContainer.querySelector('.custom-legend');
+            if (existingLegend) {
+                existingLegend.remove();
+            }
+        }
+        
+        // Créer le graphique
+        const chart = new Chart(canvas, {
+            type: 'line',
+            data: {
+                labels: spotPrices.map(price => price.toFixed(0)),
+                datasets: datasets
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: false
+                    },
+                    legend: {
+                        display: false
+                    },
+                    tooltip: getTooltipConfig(),
+                    layout: {
+                        padding: {
+                            top: 20,
+                            right: 20,
+                            bottom: 20,
+                            left: 20
+                        }
+                    }
+                },
+                scales: {
+                    x: getXAxisConfig(parseFloat(document.getElementById('strike-price').value) || 100, parseFloat(document.getElementById('spot-price').value) || 100),
+                    y: {
+                        title: {
+                            display: true,
+                            text: greekName,
+                            color: '#e5e7eb'
+                        },
+                        ticks: {
+                            color: '#9ca3af',
+                            callback: function(value) {
+                                return value.toFixed(4);
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        }
+                    }
+                },
+                elements: {
+                    line: {
+                        borderWidth: 2
+                    }
+                },
+                animation: {
+                    duration: 0 // Désactiver l'animation pour des mises à jour plus rapides
+                }
+            }
+        });
+        
+        // Ajouter la ligne de strike (récupérer le strike depuis les paramètres du formulaire)
+        const strikePrice = parseFloat(document.getElementById('strike-price').value) || 100;
+        addStrikeLine(chart, strikePrice);
+    }
+    
+    // Fonction pour nettoyer tous les événements de hover
+    function clearAllHoverEvents(canvas) {
+        if (!canvas || !canvas.parentNode) return canvas;
+        
+        // Cloner le canvas pour supprimer tous les événements
+        const newCanvas = canvas.cloneNode(true);
+        canvas.parentNode.replaceChild(newCanvas, canvas);
+        
+        // Mettre à jour l'ID du nouveau canvas
+        newCanvas.id = canvas.id;
+        
+        return newCanvas;
+    }
+    
+    // Fonction pour ajouter l'animation de hover pour la volatilité
+    function addVolatilityHoverAnimation(canvas, chart) {
+        // Ajouter les nouveaux événements
+        canvas.addEventListener('mousemove', handleVolatilityHover);
+        canvas.addEventListener('mouseleave', handleVolatilityMouseLeave);
+        
+        function handleVolatilityHover(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            // Obtenir les points proches du curseur
+            const points = chart.getElementsAtEventForMode(event, 'nearest', { intersect: false }, true);
+            
+            if (points.length > 0) {
+                const point = points[0];
+                const datasetIndex = point.datasetIndex;
+                const dataIndex = point.index;
+                
+                // Mettre en évidence la courbe survolée
+                chart.data.datasets.forEach((dataset, index) => {
+                    if (index === datasetIndex) {
+                        dataset.borderWidth = 3;
+                        dataset.pointRadius = 4;
+                        dataset.pointHoverRadius = 6;
+                    } else {
+                        dataset.borderWidth = 1;
+                        dataset.pointRadius = 0;
+                        dataset.pointHoverRadius = 0;
+                    }
+                });
+                
+                chart.update('none'); // Update without animation
+            }
+        }
+        
+        function handleVolatilityMouseLeave(event) {
+            // Restaurer l'état original de toutes les courbes
+            chart.data.datasets.forEach(dataset => {
+                dataset.borderWidth = 1;
+                dataset.pointRadius = 0;
+                dataset.pointHoverRadius = 0;
+            });
+            
+            chart.update('none'); // Update without animation
+        }
+    }
+    
+    // Fonction pour ajouter l'animation de hover pour la maturité
+    function addMaturityHoverAnimation(canvas, chart) {
+        // Ajouter les nouveaux événements
+        canvas.addEventListener('mousemove', handleMaturityHover);
+        canvas.addEventListener('mouseleave', handleMaturityMouseLeave);
+        
+        function handleMaturityHover(event) {
+            const rect = canvas.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+            
+            // Obtenir les points proches du curseur
+            const points = chart.getElementsAtEventForMode(event, 'nearest', { intersect: false }, true);
+            
+            if (points.length > 0) {
+                const point = points[0];
+                const datasetIndex = point.datasetIndex;
+                const dataIndex = point.index;
+                
+                // Mettre en évidence la courbe survolée
+                chart.data.datasets.forEach((dataset, index) => {
+                    if (index === datasetIndex) {
+                        dataset.borderWidth = 3;
+                        dataset.pointRadius = 4;
+                        dataset.pointHoverRadius = 6;
+                    } else {
+                        dataset.borderWidth = 1;
+                        dataset.pointRadius = 0;
+                        dataset.pointHoverRadius = 0;
+                    }
+                });
+                
+                chart.update('none'); // Update without animation
+            }
+        }
+        
+        function handleMaturityMouseLeave(event) {
+            // Restaurer l'état original de toutes les courbes
+            chart.data.datasets.forEach(dataset => {
+                dataset.borderWidth = 1;
+                dataset.pointRadius = 0;
+                dataset.pointHoverRadius = 0;
+            });
+            
+            chart.update('none'); // Update without animation
+        }
+    }
+</script>
+
 {% endblock %}
 

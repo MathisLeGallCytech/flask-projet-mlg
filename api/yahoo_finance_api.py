@@ -62,6 +62,92 @@ class YahooFinanceAPI:
             'BAYN.DE': 'Bayer AG',
             'BA': 'The Boeing Company',
         }
+        
+        # 20 paires de devises les plus importantes
+        self.forex = {
+            # Paires majeures (7)
+            'EURUSD=X': 'EUR/USD',
+            'GBPUSD=X': 'GBP/USD',
+            'USDJPY=X': 'USD/JPY',
+            'USDCHF=X': 'USD/CHF',
+            'AUDUSD=X': 'AUD/USD',
+            'USDCAD=X': 'USD/CAD',
+            'NZDUSD=X': 'NZD/USD',
+            
+            # Paires croisées EUR (4)
+            'EURGBP=X': 'EUR/GBP',
+            'EURJPY=X': 'EUR/JPY',
+            'EURCHF=X': 'EUR/CHF',
+            'EURAUD=X': 'EUR/AUD',
+            
+            # Paires croisées GBP (3)
+            'GBPJPY=X': 'GBP/JPY',
+            'GBPCHF=X': 'GBP/CHF',
+            'GBPAUD=X': 'GBP/AUD',
+            
+            # Paires croisées AUD (3)
+            'AUDCAD=X': 'AUD/CAD',
+            'AUDCHF=X': 'AUD/CHF',
+            'AUDJPY=X': 'AUD/JPY',
+            
+            # Paires croisées CAD (2)
+            'CADCHF=X': 'CAD/CHF',
+            'CADJPY=X': 'CAD/JPY',
+            
+            # Paires croisées NZD (1)
+            'NZDJPY=X': 'NZD/JPY'
+        }
+        
+        # Les 6 bonds clés (utilisant les symboles qui s'affichent actuellement)
+        self.rates = {
+            # US Treasury Yields (symboles officiels Yahoo Finance)
+            '^TNX': 'CBOE Interest Rate 10 Year',
+            '^IRX': '13 WEEK TREASURY BILL', 
+            '^FVX': 'Treasury Yield 5 Years',
+            '^TYX': 'Treasury Yield 30 Years',
+            
+            # Futures
+            '2YY=F': '2-Year Yield Futures',
+            'ZN=F': '10-Year T-Note Futures'
+        }
+        
+        # Les 30 cryptomonnaies principales (8 top + 22 autres)
+        self.crypto = {
+            # Top 8 cryptomonnaies par capitalisation boursière (2024)
+            'BTC-USD': 'Bitcoin',
+            'ETH-USD': 'Ethereum',
+            'XRP-USD': 'XRP',
+            'USDT-USD': 'Tether',
+            'BNB-USD': 'Binance Coin',
+            'SOL-USD': 'Solana',
+            'USDC-USD': 'USD Coin',
+            'DOGE-USD': 'Dogecoin',
+            
+            # 22 autres cryptomonnaies importantes (rang 9-30)
+            'ADA-USD': 'Cardano',           # #9
+            'TRX-USD': 'TRON',             # #10
+            'LINK-USD': 'Chainlink',       # #11
+            'DOT-USD': 'Polkadot',         # #12
+            'LTC-USD': 'Litecoin',         # #13
+            'UNI-USD': 'Uniswap',          # #14
+            'BCH-USD': 'Bitcoin Cash',     # #15
+            'AVAX-USD': 'Avalanche',       # #16
+            'SHIB-USD': 'Shiba Inu',       # #17
+            'MATIC-USD': 'Polygon',        # #18
+            'ATOM-USD': 'Cosmos',          # #19
+            'ETC-USD': 'Ethereum Classic', # #20
+            'XLM-USD': 'Stellar',          # #21
+            'HBAR-USD': 'Hedera',          # #22
+            'LEO-USD': 'UNUS SED LEO',     # #23
+            'CRO-USD': 'Cronos',           # #24
+            'TON-USD': 'Toncoin',          # #25
+            'DAI-USD': 'Dai',              # #26
+            'ENA-USD': 'Ethena',           # #27
+            'XMR-USD': 'Monero',           # #28
+            'AAVE-USD': 'Aave',            # #29
+            'PEPE-USD': 'Pepe'             # #30
+        }
+        
 
     def get_quote(self, symbol):
         """Récupère les données de cotation pour un symbole"""
@@ -112,52 +198,57 @@ class YahooFinanceAPI:
             return None
 
     def get_market_data(self):
-        """Récupère les données de marché pour tous les indices et actions"""
+        """Récupère les données de marché pour tous les indices, actions, forex, taux d'intérêt et cryptomonnaies"""
         market_data = {
             'indices': {},
             'stocks': {},
+            'forex': {},
+            'rates': {},
+            'crypto': {},
             'timestamp': datetime.now().isoformat()
         }
         
         # Récupérer les indices en parallèle
         import concurrent.futures
         
-        def fetch_quote(symbol, name, is_index=True):
+        def fetch_quote(symbol, name, category='stocks'):
             quote = self.get_quote(symbol)
             if quote:
-                if is_index:
-                    return ('indices', name, {
-                        'symbol': symbol,
-                        'name': name,
-                        'displayName': name,
-                        'price': quote['price'],
-                        'change': quote['change'],
-                        'change_percent': quote['change_percent'],
-                        'volume': quote['volume']
-                    })
-                else:
-                    return ('stocks', symbol, {
-                        'symbol': symbol,
-                        'name': name,
-                        'price': quote['price'],
-                        'change': quote['change'],
-                        'change_percent': quote['change_percent'],
-                        'volume': quote['volume']
-                    })
+                return (category, symbol, {
+                    'symbol': symbol,
+                    'name': name,
+                    'displayName': name,
+                    'price': quote['price'],
+                    'change': quote['change'],
+                    'change_percent': quote['change_percent'],
+                    'volume': quote['volume']
+                })
             return None
         
-        # Récupération parallèle avec ThreadPoolExecutor
-        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        # Récupération parallèle avec ThreadPoolExecutor (réduire le nombre de workers)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
             # Soumettre toutes les tâches
             futures = []
             
             # Indices
             for name, symbol in self.indices.items():
-                futures.append(executor.submit(fetch_quote, symbol, name, True))
+                futures.append(executor.submit(fetch_quote, symbol, name, 'indices'))
             
             # Actions
             for symbol, name in self.stocks.items():
-                futures.append(executor.submit(fetch_quote, symbol, name, False))
+                futures.append(executor.submit(fetch_quote, symbol, name, 'stocks'))
+            
+            # Forex
+            for symbol, name in self.forex.items():
+                futures.append(executor.submit(fetch_quote, symbol, name, 'forex'))
+            
+            # Taux d'intérêt
+            for symbol, name in self.rates.items():
+                futures.append(executor.submit(fetch_quote, symbol, name, 'rates'))
+            
+            # Cryptomonnaies
+            for symbol, name in self.crypto.items():
+                futures.append(executor.submit(fetch_quote, symbol, name, 'crypto'))
             
             # Collecter les résultats
             for future in concurrent.futures.as_completed(futures):
@@ -167,6 +258,35 @@ class YahooFinanceAPI:
                     market_data[category][key] = data
         
         return market_data
+
+    def get_crypto_data(self):
+        """Récupère les données de cryptomonnaies avec les top 8 cryptos par capitalisation"""
+        market_data = self.get_market_data()
+        
+        # Séparer les top 8 cryptomonnaies par capitalisation boursière pour l'affichage principal
+        # Classées par ordre décroissant de capitalisation boursière (2024)
+        top_crypto_symbols = [
+            'BTC-USD',    # Bitcoin - #1 - $2.2T
+            'ETH-USD',    # Ethereum - #2 - $520B
+            'XRP-USD',    # XRP - #3 - $177B
+            'USDT-USD',   # Tether - #4 - $168B
+            'BNB-USD',    # Binance Coin - #5 - $122B
+            'SOL-USD',    # Solana - #6 - $116B
+            'USDC-USD',   # USD Coin - #7 - $72B
+            'DOGE-USD'    # Dogecoin - #8 - $36B (remplace ADA qui est #9)
+        ]
+        top_crypto = {}
+        
+        for symbol in top_crypto_symbols:
+            if symbol in market_data['crypto']:
+                top_crypto[symbol] = market_data['crypto'][symbol]
+        
+        
+        return {
+            'crypto': market_data['crypto'],
+            'top_crypto': top_crypto,
+            'timestamp': market_data['timestamp']
+        }
 
     def get_chart_data(self, symbol, timeframe="1mo", start=None, end=None):
         """Récupère les données de graphique pour un symbole"""

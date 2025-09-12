@@ -15,7 +15,7 @@ Toute la documentation du projet se trouve dans le dossier [`docs/`](docs/).
 ### 🎯 Fonctionnalités Principales
 
 - **Surface de volatilité 3D interactive** avec Plotly.js et contrôles avancés
-- **APIs multi-sources** (Finnhub, Polygon.io, Yahoo Finance, Alpha Vantage)
+- **APIs multi-sources** (Tradier, Yahoo Finance)
 - **Graphiques interactifs** avec Chart.js et Plotly.js optimisés
 - **Monitoring des APIs** en temps réel avec indicateurs de statut
 - **Interface Flask** moderne et responsive avec Tailwind CSS
@@ -28,6 +28,13 @@ Toute la documentation du projet se trouve dans le dossier [`docs/`](docs/).
 - **Gestion mémoire** avancée avec monitoring et nettoyage automatique
 
 ### 🆕 Améliorations Récentes
+
+#### Nettoyage et Optimisation du Projet (Janvier 2025)
+- **Suppression des fichiers de test** : Nettoyage complet des 32 fichiers de test obsolètes
+- **Suppression des exports temporaires** : Nettoyage du dossier `data_exports` (12 fichiers, 6.7 MB)
+- **Renommage "Tweet Analysis"** : Section "Volatility Analysis" renommée en "Tweet Analysis" (en développement)
+- **Structure optimisée** : Projet allégé et optimisé pour le déploiement Render
+- **Code corrigé** : Correction des erreurs de syntaxe dans `app.py`
 
 #### Corrections des Graphiques (Décembre 2024)
 - **Graphiques responsifs** : Adaptation optimale à toutes les tailles d'écran
@@ -64,10 +71,11 @@ source venv/bin/activate
 # Installer les dépendances
 pip install -r requirements.txt
 
-# Configuration des APIs (optionnel)
-# Créer un fichier .env avec vos clés API :
-# FINNHUB_API_KEY=votre_clé_finnhub
-# POLYGON_API_KEY=votre_clé_polygon
+# Configuration des APIs (requis)
+# Créer un fichier .env.local avec vos clés API :
+# TRADIER_API_KEY=votre_clé_tradier
+# 
+# Obtenez votre clé gratuite sur: https://developer.tradier.com/
 
 # Lancer l'application
 python app.py
@@ -131,7 +139,6 @@ FINNHUB_API_KEY=votre_clé_finnhub
 
 # APIs optionnelles
 POLYGON_API_KEY=votre_clé_polygon
-ALPHA_VANTAGE_API_KEY=votre_clé_alpha_vantage
 
 # Configuration de l'application
 FLASK_ENV=development

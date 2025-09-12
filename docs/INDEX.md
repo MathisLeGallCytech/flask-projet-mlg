@@ -22,6 +22,14 @@ Ce document sert d'index complet pour naviguer dans toute la documentation du pr
 - Performance et optimisation
 - Pages principales et de debug
 
+### [README_RECENT_UPDATES.md](README_RECENT_UPDATES.md)
+**Mises à jour récentes (Janvier 2025)**
+- Nettoyage et optimisation du projet
+- Suppression des fichiers de test et exports temporaires
+- Renommage "Tweet Analysis"
+- Corrections de code
+- Documentation mise à jour
+
 ## 🎯 Fonctionnalités Avancées
 
 ### [README_CALL_PUT_CALCULATIONS.md](README_CALL_PUT_CALCULATIONS.md)
@@ -218,8 +226,6 @@ flaskProjectMathisLeGall/
 │   ├── yahoo_finance_api.py        # Données de marché
 │   ├── finnhub_implied_volatility.py  # Volatilité implicite
 │   ├── finnhub_volatility_smile.py    # Smile de volatilité
-│   ├── polygon_options_api.py         # Données d'options avancées
-│   └── alpha_vantage_api.py           # Données alternatives
 ├── models/                         # Modèles de calcul
 │   ├── options_pricing.py          # Calculs d'options
 │   ├── risk_metrics.py             # Métriques de risque
