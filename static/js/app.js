@@ -167,8 +167,10 @@ function initApp() {
     if (currentPage === 'volatility_surface') {
         initVolatilitySmileListeners();
         initTermStructureListeners();
-        // Ne pas charger automatiquement les symboles - attendre que l'utilisateur clique
-        console.log('Page de volatilité implicite chargée - prête pour les interactions utilisateur');
+        // Charger automatiquement les symboles au chargement de la page
+        loadPopularSymbols();
+        loadTermPopularSymbols();
+        console.log('Page de volatilité implicite chargée - symboles chargés automatiquement');
     }
 }
 
@@ -1268,12 +1270,8 @@ function initVolatilitySmileListeners() {
     // Event listener pour l'ajout de ticker
     const symbolSelect = document.getElementById('smile-ticker-select');
     if (symbolSelect) {
-        // Charger les symboles seulement quand l'utilisateur clique sur le select
-        symbolSelect.addEventListener('focus', function() {
-            if (this.children.length <= 1) { // Seulement si pas encore chargé
-                loadPopularSymbols();
-            }
-        });
+        // Les symboles sont maintenant chargés automatiquement au chargement de la page
+        // Pas besoin de les recharger au focus
         
         symbolSelect.addEventListener('change', function() {
             const symbol = this.value;
@@ -1312,12 +1310,8 @@ function initTermStructureListeners() {
     // Event listener pour l'ajout de ticker
     const symbolSelect = document.getElementById('term-ticker-select');
     if (symbolSelect) {
-        // Charger les symboles seulement quand l'utilisateur clique sur le select
-        symbolSelect.addEventListener('focus', function() {
-            if (this.children.length <= 1) { // Seulement si pas encore chargé
-                loadTermPopularSymbols();
-            }
-        });
+        // Les symboles sont maintenant chargés automatiquement au chargement de la page
+        // Pas besoin de les recharger au focus
         
         symbolSelect.addEventListener('change', function() {
             const symbol = this.value;
