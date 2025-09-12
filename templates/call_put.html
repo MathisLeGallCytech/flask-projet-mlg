@@ -487,6 +487,9 @@
                                         <div class="analysis-header-left">
                                             <i data-lucide="trending-up" class="analysis-icon"></i>
                                             <h4 class="analysis-title">Greek Analysis</h4>
+                                            <button id="explanation-toggle" class="explanation-toggle-btn" onclick="toggleExplanation()">
+                                                <i data-lucide="chevron-down" class="toggle-icon"></i>
+                                            </button>
                                         </div>
                                         <div class="analysis-header-right">
                                             <div class="explanation-container">
@@ -859,6 +862,20 @@
 <script>
     // Initialize Lucide icons
     lucide.createIcons();
+    
+    // Fonction pour toggle l'explanation-container sur mobile
+    function toggleExplanation() {
+        const container = document.querySelector('.explanation-container');
+        const button = document.getElementById('explanation-toggle');
+        
+        if (container.classList.contains('visible')) {
+            container.classList.remove('visible');
+            button.classList.remove('expanded');
+        } else {
+            container.classList.add('visible');
+            button.classList.add('expanded');
+        }
+    }
     
     // Vérifier que Chart.js est chargé
     if (typeof Chart === 'undefined') {
@@ -3126,7 +3143,531 @@
         color: #9ca3af;
     }
 
+    /* Bouton toggle pour explanation-container - Masqué par défaut */
+    .explanation-toggle-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: #9ca3af;
+        cursor: pointer;
+        padding: 0.25rem;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+        margin-left: 0.5rem;
+    }
 
+    .explanation-toggle-btn:hover {
+        background: rgba(75, 85, 99, 0.3);
+        color: #e5e7eb;
+    }
+
+    .explanation-toggle-btn .toggle-icon {
+        width: 16px;
+        height: 16px;
+        transition: transform 0.2s ease;
+    }
+
+    .explanation-toggle-btn.expanded .toggle-icon {
+        transform: rotate(180deg);
+    }
+
+    /* Masquer le bouton sur desktop */
+    @media (min-width: 769px) {
+        .explanation-toggle-btn {
+            display: none !important;
+        }
+    }
+
+    /* Styles pour les onglets d'analyse */
+    .analysis-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+    }
+
+    .analysis-tab {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+        background: #374151;
+        border: 1px solid #4b5563;
+        border-radius: 8px;
+        color: #9ca3af;
+        font-size: 0.875rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        flex: 1;
+        min-width: 0;
+        justify-content: center;
+    }
+
+    .analysis-tab:hover {
+        background: #4b5563;
+        border-color: #6b7280;
+        color: #e5e7eb;
+    }
+
+    .analysis-tab.active {
+        background: #1d4ed8;
+        border-color: #3b82f6;
+        color: #ffffff;
+    }
+
+    .analysis-tab i {
+        width: 16px;
+        height: 16px;
+        flex-shrink: 0;
+    }
+
+    .analysis-tab span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Media queries responsive - Approche agressive */
+    @media screen and (max-width: 768px) {
+        /* Afficher le bouton toggle sur mobile */
+        .explanation-toggle-btn {
+            display: block !important;
+        }
+        
+        /* Masquer l'explanation-container par défaut sur mobile */
+        .explanation-container {
+            display: none;
+        }
+        
+        .explanation-container.visible {
+            display: block;
+        }
+        
+        /* Amélioration de la disposition des onglets sur mobile */
+        .analysis-tabs {
+            display: flex;
+            overflow-x: auto;
+            gap: 0.4rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            flex-wrap: nowrap;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .analysis-tab {
+            flex: 0 0 auto;
+            min-width: 80px;
+            padding: 0.6rem 0.8rem;
+            font-size: 0.8rem;
+            gap: 0.4rem;
+        }
+        
+        .analysis-tab i {
+            width: 14px;
+            height: 14px;
+        }
+        
+        .analysis-tab span {
+            font-size: 0.75rem;
+        }
+        
+        /* Ajustements pour Monte Carlo sur tablette */
+        .confidence-section {
+            margin-bottom: 1rem !important;
+        }
+        
+        .confidence-title {
+            font-size: 0.9rem !important;
+        }
+        
+        .confidence-card {
+            padding: 0.5rem 0.75rem !important;
+        }
+        
+        .confidence-label {
+            font-size: 0.75rem !important;
+        }
+        
+        .confidence-value {
+            font-size: 0.9rem !important;
+        }
+        
+        /* Augmenter légèrement la hauteur du graphique sur tablette */
+        .call-put-monte-carlo-chart {
+            height: 250px !important;
+            min-height: 250px !important;
+        }
+        
+        .call-put-chart-container {
+            height: 300px !important;
+            min-height: 300px !important;
+        }
+        
+        .paths-distribution-bar {
+            height: 250px !important;
+        }
+        
+        /* Forcer la responsivité de tous les conteneurs parents */
+        .dashboard-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+        
+        .content-area {
+            padding: 0.5rem !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+        
+        .main-content-area {
+            gap: 1rem !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+        
+        /* Centrer les sections spécifiques */
+        .page-header,
+        .options-form-container,
+        .results-section,
+        .analysis-section {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            text-align: center !important;
+        }
+        
+        .page-header .header-content,
+        .options-form-container .form-header,
+        .results-section .results-header {
+            text-align: center !important;
+            align-items: center !important;
+        }
+        
+        .page-header .header-left,
+        .form-header {
+            text-align: center !important;
+            width: 100% !important;
+        }
+        
+        .analysis-section {
+            padding: 1rem !important;
+            margin-bottom: 1rem !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+        }
+        
+        .analysis-container {
+            gap: 0.5rem !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+        }
+        
+        .analysis-main {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Forcer tous les éléments à respecter la largeur du conteneur */
+        .call-put-chart-container,
+        .call-put-monte-carlo-chart,
+        .confidence-section,
+        .confidence-grid,
+        .confidence-card {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        .analysis-header {
+            flex-direction: column !important;
+            align-items: stretch !important;
+            gap: 0.5rem !important;
+            margin-bottom: 1rem !important;
+        }
+        
+        .analysis-header-left {
+            width: 100% !important;
+        }
+        
+        .analysis-header-right {
+            width: 100% !important;
+            flex-shrink: 1 !important;
+            min-width: 0 !important;
+        }
+        
+        .explanation-container {
+            padding: 0.5rem !important;
+            margin-top: 0.5rem !important;
+            font-size: 0.8rem !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+        }
+        
+        .explanation-list {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-wrap: break-word !important;
+        }
+        
+        .explanation-list li {
+            font-size: 0.75rem !important;
+            margin-bottom: 0.5rem !important;
+            line-height: 1.4 !important;
+            padding: 0.25rem !important;
+            gap: 0.4rem !important;
+            flex-wrap: wrap !important;
+            align-items: center !important;
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        
+        .explanation-radio-item {
+            margin-right: 0.4rem !important;
+            flex-shrink: 0 !important;
+        }
+        
+        .bullet-point {
+            margin: 0 0.3rem !important;
+            flex-shrink: 0 !important;
+        }
+    }
+    
+    @media screen and (max-width: 480px) {
+        /* Forcer la responsivité sur mobile */
+        .dashboard-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+        
+        .content-area {
+            padding: 0.25rem !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+        
+        .main-content-area {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+        }
+        
+        /* Centrer les sections spécifiques sur mobile */
+        .page-header,
+        .options-form-container,
+        .results-section,
+        .analysis-section {
+            width: 100% !important;
+            max-width: 100% !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            text-align: center !important;
+        }
+        
+        .page-header .header-content,
+        .options-form-container .form-header,
+        .results-section .results-header {
+            text-align: center !important;
+            align-items: center !important;
+        }
+        
+        .page-header .header-left,
+        .form-header {
+            text-align: center !important;
+            width: 100% !important;
+        }
+        
+        .analysis-section {
+            padding: 0.5rem !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+        }
+        
+        .analysis-container {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+        }
+        
+        .analysis-main {
+            width: 100% !important;
+            max-width: 100% !important;
+            overflow-x: hidden !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Forcer tous les éléments à respecter la largeur sur mobile */
+        .call-put-chart-container,
+        .call-put-monte-carlo-chart,
+        .confidence-section,
+        .confidence-grid,
+        .confidence-card,
+        .page-header,
+        .results-section,
+        .metrics-grid,
+        .metric-card {
+            width: 100% !important;
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+            overflow-x: hidden !important;
+        }
+        
+        .explanation-container {
+            padding: 0.3rem !important;
+            margin-top: 0.3rem !important;
+            font-size: 0.7rem !important;
+        }
+        
+        .explanation-list li {
+            font-size: 0.65rem !important;
+            margin-bottom: 0.3rem !important;
+            line-height: 1.3 !important;
+            padding: 0.15rem !important;
+            gap: 0.3rem !important;
+        }
+        
+        .explanation-radio-item {
+            margin-right: 0.3rem !important;
+        }
+        
+        .bullet-point {
+            margin: 0 0.2rem !important;
+        }
+        
+        .explanation-list li strong {
+            word-break: break-word !important;
+            font-size: 0.65rem !important;
+        }
+        
+        /* Amélioration supplémentaire pour très petits écrans */
+        .analysis-tabs {
+            gap: 0.3rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .analysis-tab {
+            min-width: 70px;
+            padding: 0.5rem 0.6rem;
+            font-size: 0.75rem;
+        }
+        
+        .analysis-tab i {
+            width: 12px;
+            height: 12px;
+        }
+        
+        .analysis-tab span {
+            font-size: 0.7rem;
+        }
+        
+        /* Ajustements pour Monte Carlo sur mobile */
+        .confidence-section {
+            margin-bottom: 0.75rem !important;
+        }
+        
+        .confidence-header {
+            margin-bottom: 0.5rem !important;
+        }
+        
+        .confidence-title {
+            font-size: 0.8rem !important;
+        }
+        
+        .confidence-grid {
+            gap: 0.4rem !important;
+        }
+        
+        .confidence-card {
+            padding: 0.4rem 0.6rem !important;
+        }
+        
+        .confidence-label {
+            font-size: 0.7rem !important;
+        }
+        
+        .confidence-value {
+            font-size: 0.8rem !important;
+        }
+        
+        /* Augmenter la hauteur du graphique Monte Carlo */
+        .call-put-monte-carlo-chart {
+            height: 300px !important;
+            min-height: 300px !important;
+        }
+        
+        .call-put-chart-container {
+            height: 350px !important;
+            min-height: 350px !important;
+        }
+        
+        .paths-distribution-bar {
+            height: 300px !important;
+        }
+        
+        /* Règle globale pour empêcher tout débordement sur mobile */
+        * {
+            max-width: 100% !important;
+            box-sizing: border-box !important;
+        }
+        
+        /* Forcer les canvas et graphiques à s'adapter */
+        canvas {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+        
+        /* Forcer les tableaux à s'adapter */
+        table {
+            width: 100% !important;
+            max-width: 100% !important;
+            table-layout: fixed !important;
+        }
+        
+        /* Forcer les images à s'adapter */
+        img {
+            max-width: 100% !important;
+            height: auto !important;
+        }
+    }
 
 
 </style>

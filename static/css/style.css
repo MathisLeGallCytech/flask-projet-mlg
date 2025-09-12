@@ -11434,19 +11434,32 @@ nav a.active {
     color: white;
 }
 
-/* Responsive pour le menu déroulant */
+/* Responsive pour le menu déroulant - Tablettes et petits écrans */
 @media (max-width: 1024px) {
     .dropdown-menu {
         position: relative;
-        opacity: 1;
-        visibility: visible;
-        transform: none;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-10px);
         box-shadow: none;
         border: none;
         background: #374151;
         margin-top: 0;
         border-radius: 0;
-        max-height: none;
+        max-height: 0;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    
+    .dropdown-menu.show {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        max-height: 200px;
+    }
+    
+    .dropdown-toggle {
+        display: flex;
     }
     
     .dropdown-item .nav-link {
@@ -11458,11 +11471,23 @@ nav a.active {
 @media (max-width: 768px) {
     .dropdown-menu {
         background: #4b5563;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .dropdown-menu.show {
+        max-height: 150px;
+    }
+    
+    .dropdown-item {
+        width: 100%;
     }
     
     .dropdown-item .nav-link {
         padding: 0.35rem 0.625rem;
         font-size: 0.8rem;
+        width: 100%;
+        justify-content: flex-start;
     }
 }
 

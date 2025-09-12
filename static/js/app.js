@@ -288,7 +288,6 @@ function initVolatilitySurface() {
     console.log('Surface de volatilité initialisée');
 }
 
-
 // Fonction pour gérer le menu déroulant
 function toggleDropdown(event) {
     event.preventDefault();
@@ -333,6 +332,7 @@ document.addEventListener('click', function(event) {
         });
     }
 });
+
 
 // ===== LOGIQUE POUR VOLATILITY SMILES (TRADIER) =====
 
