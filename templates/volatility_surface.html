@@ -118,9 +118,31 @@
                         <!-- Tradier API Information -->
                         <div class="api-warning-card">
                             <div class="warning-content">
-                                <div class="warning-title">📊 Tradier API - Real-time Data</div>
+                                <div class="warning-title">
+                                    📊 Tradier API - Real-time Data
+                                </div>
                                 <div class="warning-text">
                                     This surface uses the Tradier API for real-time options data. Data is calculated using Black-Scholes model for implied volatility. Loading times are typically under 10 seconds.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Progress Bar Card -->
+                        <div id="progress-card" class="progress-card" style="display: block;">
+                            <div class="progress-content">
+                                <div class="progress-header">
+                                    <div class="progress-indicator">
+                                        <div class="progress-dot"></div>
+                                        <span class="progress-text">Loading Tickers...</span>
+                                    </div>
+                                </div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar">
+                                        <div id="progress-fill" class="progress-fill"></div>
+                                    </div>
+                                    <div class="progress-percentage">
+                                        <span id="progress-text">0%</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -175,8 +197,8 @@
                                     <h3>Add Tickers</h3>
                                 </div>
                                 <div class="ticker-input-group">
-                                    <select id="smile-ticker-select" class="modern-select">
-                                        <option value="">Choose a ticker to add...</option>
+                                    <select id="smile-ticker-select" class="modern-select" disabled>
+                                        <option value="">Chargement des tickers...</option>
                                         <option value="AAPL">AAPL - Apple Inc.</option>
                                         <option value="MSFT">MSFT - Microsoft Corp.</option>
                                         <option value="GOOGL">GOOGL - Alphabet Inc.</option>
@@ -326,8 +348,8 @@
                                     <h3>Add Tickers</h3>
                                 </div>
                                 <div class="ticker-input-group">
-                                    <select id="term-structure-ticker-select" class="modern-select">
-                                        <option value="">Choose a ticker to add...</option>
+                                    <select id="term-structure-ticker-select" class="modern-select" disabled>
+                                        <option value="">Chargement des tickers...</option>
                                         <option value="AAPL">AAPL - Apple Inc.</option>
                                         <option value="MSFT">MSFT - Microsoft Corp.</option>
                                         <option value="GOOGL">GOOGL - Alphabet Inc.</option>
@@ -471,19 +493,11 @@
                                             <i data-lucide="building-2" class="field-icon"></i>
                                             Symbol
                                         </label>
-                                        <select id="vs-symbol-select" class="form-input">
-                                            <option value="SPY">SPY - SPDR S&P 500 ETF (Recommended)</option>
-                                            <option value="QQQ">QQQ - Invesco QQQ Trust</option>
-                                            <option value="IWM">IWM - iShares Russell 2000 ETF</option>
-                                            <option value="AAPL">AAPL - Apple Inc.</option>
-                                            <option value="MSFT">MSFT - Microsoft Corp.</option>
-                                            <option value="GOOGL">GOOGL - Alphabet Inc.</option>
-                                            <option value="AMZN">AMZN - Amazon.com Inc.</option>
-                                            <option value="TSLA">TSLA - Tesla Inc.</option>
-                                            <option value="META">META - Meta Platforms Inc.</option>
-                                            <option value="NVDA">NVDA - NVIDIA Corp.</option>
-                                            <option value="__custom__">Custom...</option>
-                                        </select>
+                                        <div class="symbol-select-container">
+                                            <select id="vs-symbol-select" class="form-input" disabled>
+                                                <option value="">Chargement des tickers...</option>
+                                            </select>
+                                        </div>
                                         <div id="vs-custom-wrap" class="hidden">
                                             <input type="text" id="vs-symbol" class="form-input" placeholder="Enter a symbol (ex: AAPL)">
                                         </div>
@@ -907,6 +921,7 @@
     // Mettre à jour le select de symboles pour la volatilité 3D (utilise les données globales)
     function updateVolatility3DSymbolSelect() {
         const selectSymbol = document.getElementById('vs-symbol-select');
+        
         if (!selectSymbol) {
             console.warn('⚠️ Select vs-symbol-select non trouvé');
             return;
@@ -928,19 +943,45 @@
                 selectSymbol.appendChild(option);
             });
             
+            // Ajouter l'option personnalisée
+            const customOption = document.createElement('option');
+            customOption.value = '__custom__';
+            customOption.textContent = 'Custom...';
+            selectSymbol.appendChild(customOption);
+            
             // Définir le premier ticker comme valeur par défaut
             selectSymbol.value = globalAvailableTickers[0].symbol;
+            
+            // Activer tous les selects et masquer les spinners
+            const allTickerSelects = [
+                'vs-symbol-select',
+                'smile-ticker-select', 
+                'term-structure-ticker-select'
+            ];
+            
+            allTickerSelects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (select) {
+                    select.disabled = false;
+                    // Recharger les options pour les autres selects
+                    if (selectId !== 'vs-symbol-select') {
+                        updateTickerDropdown();
+                        updateTermStructureTickerDropdown();
+                    }
+                }
+            });
+            
+            
+            
+            // La barre de progression sera masquée par completeProgressBar()
+            
+            console.log(`✅ ${globalAvailableTickers.length} symboles mis à jour pour la volatilité 3D (source unifiée)`);
         } else {
             console.warn('⚠️ Aucun ticker global disponible pour la volatilité 3D');
+            // En cas d'erreur, garder le select désactivé
+            selectSymbol.disabled = true;
+            selectSymbol.innerHTML = '<option value="">Erreur de chargement des tickers</option>';
         }
-        
-        // Ajouter l'option personnalisée
-        const customOption = document.createElement('option');
-        customOption.value = '__custom__';
-        customOption.textContent = 'Custom...';
-        selectSymbol.appendChild(customOption);
-        
-        console.log(`✅ ${globalAvailableTickers.length} symboles mis à jour pour la volatilité 3D (source unifiée)`);
         }
     
     // Fonction legacy pour compatibilité (utilise maintenant la fonction unifiée)
@@ -993,9 +1034,111 @@
     
     // Fonction pour charger les symboles Tradier
     async function loadTradierSymbols() {
-        // Utiliser la fonction globale unifiée au lieu d'un appel API séparé
-        await loadGlobalAvailableTickers();
-        updateVolatility3DSymbolSelect();
+        const progressCard = document.getElementById('progress-card');
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        
+        // Désactiver tous les selects de tickers
+        const allTickerSelects = [
+            'vs-symbol-select',
+            'smile-ticker-select', 
+            'term-structure-ticker-select'
+        ];
+        
+        allTickerSelects.forEach(selectId => {
+            const select = document.getElementById(selectId);
+            if (select) {
+                select.disabled = true;
+                select.innerHTML = '<option value="">Chargement des tickers...</option>';
+            }
+        });
+        
+        
+        // La barre de progression est déjà démarrée et visible
+        
+        try {
+            // Utiliser la fonction globale unifiée au lieu d'un appel API séparé
+            await loadGlobalAvailableTickers();
+            
+            // Finaliser la progression
+            completeProgressBar();
+            
+            updateVolatility3DSymbolSelect();
+        } catch (error) {
+            console.error('Erreur lors du chargement des tickers:', error);
+            // En cas d'erreur, afficher un message d'erreur
+            if (selectSymbol) {
+                selectSymbol.innerHTML = '<option value="">Erreur de chargement des tickers</option>';
+                selectSymbol.disabled = true;
+            }
+            
+            
+            // Masquer la barre de progression en cas d'erreur
+            if (progressInterval) {
+                clearInterval(progressInterval);
+                progressInterval = null;
+            }
+            const progressCard = document.getElementById('progress-card');
+            if (progressCard) {
+                progressCard.style.display = 'none';
+            }
+        }
+    }
+    
+    // Variables globales pour la barre de progression
+    let progressInterval = null;
+    let currentProgress = 0;
+    
+    // Fonction pour démarrer la barre de progression
+    function startProgressBar() {
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        
+        if (!progressFill || !progressText) return;
+        
+        // Réinitialiser la progression
+        currentProgress = 0;
+        progressFill.style.width = '0%';
+        progressText.textContent = '0%';
+    }
+    
+    // Fonction pour mettre à jour la barre de progression
+    function updateProgressBar(progress) {
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        
+        if (!progressFill || !progressText) return;
+        
+        currentProgress = Math.min(progress, 100);
+        progressFill.style.width = currentProgress + '%';
+        progressText.textContent = Math.round(currentProgress) + '%';
+    }
+    
+    // Fonction pour finaliser la barre de progression
+    function completeProgressBar() {
+        const progressFill = document.getElementById('progress-fill');
+        const progressText = document.getElementById('progress-text');
+        
+        if (!progressFill || !progressText) return;
+        
+        // Arrêter l'intervalle
+        if (progressInterval) {
+            clearInterval(progressInterval);
+            progressInterval = null;
+        }
+        
+        // Finaliser à 100%
+        currentProgress = 100;
+        progressFill.style.width = '100%';
+        progressText.textContent = '100%';
+        
+        // Masquer la barre après un court délai
+        setTimeout(() => {
+            const progressCard = document.getElementById('progress-card');
+            if (progressCard) {
+                progressCard.style.display = 'none';
+            }
+        }, 500);
     }
     
     // Fonction pour mettre à jour le select avec les symboles Tradier (utilise maintenant la fonction unifiée)
@@ -5508,13 +5651,18 @@
         // Pré-vérifier TOUS les tickers disponibles pour identifier ceux sans options
         console.log(`🔍 Pré-vérification de TOUS les tickers (${globalAvailableTickers.length} tickers, sans erreurs 404)...`);
         
+        // Démarrer la barre de progression
+        startProgressBar();
+        
         // Valider tous les tickers en parallèle (par lots de 5 pour éviter la surcharge)
         const batchSize = 5;
         const allTickers = globalAvailableTickers.map(t => t.symbol);
+        const totalBatches = Math.ceil(allTickers.length / batchSize);
         
         for (let i = 0; i < allTickers.length; i += batchSize) {
             const batch = allTickers.slice(i, i + batchSize);
-            console.log(`📦 Validation du lot ${Math.floor(i/batchSize) + 1}/${Math.ceil(allTickers.length/batchSize)}: [${batch.join(', ')}]`);
+            const currentBatch = Math.floor(i/batchSize) + 1;
+            console.log(`📦 Validation du lot ${currentBatch}/${totalBatches}: [${batch.join(', ')}]`);
             
             // Valider le lot en parallèle
             const promises = batch.map(async (ticker) => {
@@ -5527,6 +5675,10 @@
             
             await Promise.all(promises);
             
+            // Mettre à jour la barre de progression
+            const progress = Math.round((currentBatch / totalBatches) * 90); // 90% max pendant la vérification
+            updateProgressBar(progress);
+            
             // Petite pause entre les lots pour éviter la surcharge
             if (i + batchSize < allTickers.length) {
                 await new Promise(resolve => setTimeout(resolve, 100));
@@ -5538,8 +5690,16 @@
         
         // Synchroniser toutes les sections
         synchronizeTickers();
+        
+        // Finaliser la progression
+        completeProgressBar();
+        
+        // Charger les tickers avec animation
+        loadTradierSymbols();
     }).catch(error => {
         console.error('❌ Erreur lors du chargement initial des tickers:', error);
+        // En cas d'erreur, essayer quand même de charger les tickers
+        loadTradierSymbols();
     });
      
     }); // Fermeture de DOMContentLoaded
@@ -5619,6 +5779,146 @@
         font-size: 0.7rem !important;
     }
 }
+
+/* Styles pour l'animation de chargement des tickers */
+.symbol-select-container {
+    position: relative;
+}
+
+
+/* Désactiver le select pendant le chargement */
+.form-input:disabled,
+.modern-select:disabled {
+    background-color: #374151;
+    color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+
+
+/* Styles pour la barre de progression */
+.progress-card {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 16px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.progress-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.progress-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.progress-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.progress-dot {
+    width: 8px;
+    height: 8px;
+    background: #3b82f6;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.progress-text {
+    font-size: 0.875rem;
+    color: #e5e7eb;
+    font-weight: 500;
+}
+
+.progress-bar-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.progress-bar {
+    flex: 1;
+    height: 8px;
+    background: #374151;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #1d4ed8);
+    border-radius: 4px;
+    width: 0%;
+    transition: width 0.3s ease;
+    position: relative;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    animation: shimmer 2s infinite;
+}
+
+.progress-percentage {
+    min-width: 40px;
+    text-align: right;
+}
+
+.progress-percentage span {
+    font-size: 0.875rem;
+    color: #9ca3af;
+    font-weight: 600;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translateX(-100%);
+    }
+    100% {
+        transform: translateX(100%);
+    }
+}
+
+/* Responsive pour mobile */
+@media screen and (max-width: 768px) {
+    .progress-card {
+        padding: 12px;
+        margin-top: 12px;
+    }
+    
+    .progress-text {
+        font-size: 0.8rem;
+    }
+    
+    .progress-percentage span {
+        font-size: 0.8rem;
+    }
+}
+
 </style>
 
 {% endblock %} 
