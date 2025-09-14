@@ -176,11 +176,21 @@ class YahooFinanceAPI:
                 indicators = result.get('indicators', {})
                 quote = indicators.get('quote', [{}])[0]
                 
-                if timestamp and quote.get('close'):
+                # Pour les données forex, utiliser regularMarketPrice des métadonnées
+                # Pour les autres instruments, utiliser les données de close
+                current_price = None
+                
+                # Essayer d'abord regularMarketPrice (pour forex)
+                if meta.get('regularMarketPrice'):
+                    current_price = meta['regularMarketPrice']
+                # Sinon, essayer les données de close (pour actions/indices)
+                elif timestamp and quote.get('close'):
                     current_price = quote['close'][-1]
-                    previous_close = meta.get('previousClose', current_price)
+                
+                if current_price:
+                    previous_close = meta.get('previousClose', meta.get('chartPreviousClose', current_price))
                     
-                    if current_price and previous_close:
+                    if previous_close:
                         change = current_price - previous_close
                         change_percent = (change / previous_close) * 100 if previous_close != 0 else 0
                         

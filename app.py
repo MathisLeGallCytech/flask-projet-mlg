@@ -283,13 +283,13 @@ def run_async(coro):
 
 # Fonction alternative synchrone pour éviter les problèmes asyncio
 def run_sync_fallback(func, *args, **kwargs):
-    """Fonction de fallback synchrone pour éviter les problèmes asyncio"""
+    """Fonction de fallback synchrone pour éviter les prcurrencies il faut s moi ce qui?oblèmes asyncio"""
     try:
         return func(*args, **kwargs)
     except Exception as e:
         print(f"⚠️ Erreur dans run_sync_fallback: {e}")
         raise e 
-        
+
 # Fonction asynchrone pour récupérer les expirations
 async def get_expirations_async(symbol: str):
     """Récupère les expirations de manière asynchrone"""
@@ -806,6 +806,9 @@ def api_market_data():
                 'error': 'Impossible de récupérer les données via Yahoo Finance.',
                 'indices': {},
                 'stocks': {},
+                'forex': {},
+                'rates': {},
+                'crypto': {},
                 'timestamp': datetime.now().isoformat()
             })
             
