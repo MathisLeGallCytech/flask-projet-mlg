@@ -4811,6 +4811,7 @@ nav a.active {
     margin-bottom: 0.875rem;
     width: 100%;
     box-sizing: border-box;
+    flex-shrink: 0; /* Empêche la section de se rétrécir */
 }
 
 .confidence-header {
@@ -5587,19 +5588,45 @@ nav a.active {
 /* Responsive design pour le graphique call-put */
 @media (max-width: 768px) {
     .call-put-chart-section {
-        height: 80vh; /* Hauteur optimisée pour mobile */
+        height: 95vh; /* Hauteur augmentée pour inclure la chart-note */
         padding: 1.25rem;
         margin-top: 1.5rem;
+        min-height: 650px; /* Hauteur minimale pour s'assurer que tout rentre */
     }
     
     .call-put-chart-container {
         padding: 0.75rem;
         gap: 0.75rem; /* Espacement équilibré */
+        flex: 1; /* Permet au conteneur de prendre l'espace restant */
+        min-height: 0; /* Permet au conteneur de se rétrécir si nécessaire */
+        height: 400px; /* Hauteur fixe pour le conteneur du graphique */
+    }
+    
+    /* Optimisation de l'intervalle de confiance sur tablette */
+    .confidence-section {
+        padding: 0.5rem 1rem; /* Padding réduit */
+        margin-bottom: 0.75rem;
+    }
+    
+    .confidence-grid {
+        gap: 0.5rem; /* Espacement réduit entre les cartes */
+    }
+    
+    .confidence-card {
+        padding: 0.5rem 0.75rem; /* Padding réduit pour les cartes */
+    }
+    
+    /* Optimisation de la chart-note sur tablette */
+    .chart-note {
+        margin-top: 0.5rem; /* Marge réduite */
+        padding: 0.5rem 0.75rem; /* Padding réduit */
+        font-size: 0.8rem; /* Police plus petite */
     }
     
     .call-put-monte-carlo-chart {
         flex: 1;
         min-width: 0; /* Permet au graphique de se rétrécir */
+        height: 100%; /* Utilise toute la hauteur du conteneur */
     }
     
     .paths-distribution-bar {
@@ -5634,9 +5661,10 @@ nav a.active {
 
 @media (max-width: 480px) {
     .call-put-chart-section {
-        height: 85vh; /* Plus d'espace vertical sur très petits écrans */
+        height: 100vh; /* Hauteur maximale pour inclure la chart-note */
         padding: 0.75rem;
         margin-top: 1rem;
+        min-height: 700px; /* Hauteur minimale pour très petits écrans */
     }
     
     .call-put-chart-container {
@@ -5644,11 +5672,52 @@ nav a.active {
         gap: 0.25rem; /* Espacement minimal */
         padding: 0.5rem;
         position: relative; /* Pour le bouton de basculement */
+        flex: 1; /* Permet au conteneur de prendre l'espace restant */
+        min-height: 0; /* Permet au conteneur de se rétrécir si nécessaire */
+        height: 450px; /* Hauteur augmentée pour mobile */
+    }
+    
+    /* Optimisation de l'intervalle de confiance sur mobile */
+    .confidence-section {
+        padding: 0.4rem 0.75rem; /* Padding encore plus réduit */
+        margin-bottom: 0.5rem;
+    }
+    
+    .confidence-header {
+        margin-bottom: 0.4rem;
+    }
+    
+    .confidence-title {
+        font-size: 0.85rem; /* Taille de police réduite */
+    }
+    
+    .confidence-grid {
+        gap: 0.3rem; /* Espacement minimal entre les cartes */
+    }
+    
+    .confidence-card {
+        padding: 0.4rem 0.6rem; /* Padding minimal pour les cartes */
+    }
+    
+    .confidence-label {
+        font-size: 0.7rem; /* Labels plus petits */
+    }
+    
+    .confidence-value {
+        font-size: 0.8rem; /* Valeurs plus petites */
+    }
+    
+    /* Optimisation de la chart-note sur mobile */
+    .chart-note {
+        margin-top: 0.4rem; /* Marge encore plus réduite */
+        padding: 0.4rem 0.6rem; /* Padding minimal */
+        font-size: 0.75rem; /* Police très petite */
     }
     
     .call-put-monte-carlo-chart {
         flex: 1;
         min-width: 0; /* Permet au graphique de se rétrécir */
+        height: 100%; /* Utilise toute la hauteur du conteneur */
     }
     
     .paths-distribution-bar {
@@ -5712,14 +5781,61 @@ nav a.active {
 /* Ajout d'un breakpoint pour les écrans très étroits */
 @media (max-width: 360px) {
     .call-put-chart-section {
-        height: 80vh;
+        height: 100vh; /* Hauteur maximale pour les écrans très étroits */
         padding: 0.5rem;
+        min-height: 750px; /* Hauteur minimale pour les écrans très étroits */
     }
     
     .call-put-chart-container {
         gap: 0.125rem;
         padding: 0.25rem;
         position: relative;
+        flex: 1; /* Permet au conteneur de prendre l'espace restant */
+        min-height: 0; /* Permet au conteneur de se rétrécir si nécessaire */
+        height: 500px; /* Hauteur maximale pour très petits écrans */
+    }
+    
+    /* Optimisation maximale de l'intervalle de confiance sur écrans très étroits */
+    .confidence-section {
+        padding: 0.3rem 0.5rem; /* Padding minimal */
+        margin-bottom: 0.4rem;
+    }
+    
+    .confidence-header {
+        margin-bottom: 0.3rem;
+    }
+    
+    .confidence-title {
+        font-size: 0.75rem; /* Taille de police très réduite */
+    }
+    
+    .confidence-grid {
+        gap: 0.2rem; /* Espacement minimal */
+    }
+    
+    .confidence-card {
+        padding: 0.3rem 0.5rem; /* Padding minimal */
+    }
+    
+    .confidence-label {
+        font-size: 0.65rem; /* Labels très petits */
+    }
+    
+    .confidence-value {
+        font-size: 0.75rem; /* Valeurs très petites */
+    }
+    
+    /* Optimisation maximale de la chart-note sur écrans très étroits */
+    .chart-note {
+        margin-top: 0.3rem; /* Marge minimale */
+        padding: 0.3rem 0.5rem; /* Padding minimal */
+        font-size: 0.7rem; /* Police très petite */
+    }
+    
+    .call-put-monte-carlo-chart {
+        flex: 1;
+        min-width: 0; /* Permet au graphique de se rétrécir */
+        height: 100%; /* Utilise toute la hauteur du conteneur */
     }
     
     .paths-distribution-bar {
@@ -6881,13 +6997,14 @@ nav a.active {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-top: 1rem;
+    margin-top: 0.75rem; /* Réduit pour éviter le débordement */
     padding: 0.75rem 1rem;
     background: rgba(59, 130, 246, 0.1);
     border: 1px solid rgba(59, 130, 246, 0.2);
     border-radius: 8px;
     font-size: 0.875rem;
     color: #93c5fd;
+    flex-shrink: 0; /* Empêche la note de se rétrécir */
 }
 
 .note-icon {
