@@ -1959,39 +1959,72 @@
         
         // Gestionnaire pour redimensionner le graphique quand la fenêtre change
         let resizeTimeout;
-        window.addEventListener('resize', function() {
+        let lastWidth = window.innerWidth;
+        let lastHeight = window.innerHeight;
+        
+        function handle3DResize() {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(function() {
-                if (plotDiv && plotDiv.data && typeof layout !== 'undefined' && layout.margin) {
-                    adjustMarginsForScreenSize();
-                    Plotly.relayout(plotDiv, {
-                        'margin.r': layout.margin.r,
-                        'margin.l': layout.margin.l,
-                        'margin.t': layout.margin.t,
-                        'margin.b': layout.margin.b,
-                        'title.font.size': layout.title.font.size,
-                        'scene.xaxis.titlefont.size': layout.scene.xaxis.titlefont.size,
-                        'scene.xaxis.tickfont.size': layout.scene.xaxis.tickfont.size,
-                        'scene.yaxis.titlefont.size': layout.scene.yaxis.titlefont.size,
-                        'scene.yaxis.tickfont.size': layout.scene.yaxis.tickfont.size,
-                        'scene.zaxis.titlefont.size': layout.scene.zaxis.titlefont.size,
-                        'scene.zaxis.tickfont.size': layout.scene.zaxis.tickfont.size,
-                        'legend.font.size': layout.legend && layout.legend.font ? layout.legend.font.size : 12
-                    });
+                const currentWidth = window.innerWidth;
+                const currentHeight = window.innerHeight;
+                
+                // Vérifier si la taille a vraiment changé
+                if (currentWidth !== lastWidth || currentHeight !== lastHeight) {
+                    console.log(`Redimensionnement 3D détecté: ${lastWidth}x${lastHeight} -> ${currentWidth}x${currentHeight}`);
                     
-                    // Masquer la barre de couleur sur mobile via CSS
-                    const responsiveSizes3D = getResponsiveSizes3D();
-                    if (responsiveSizes3D.isMobile) {
-                        const colorbars = plotDiv.querySelectorAll('.colorbar');
-                        colorbars.forEach(colorbar => {
-                            colorbar.style.display = 'none';
-                            colorbar.style.visibility = 'hidden';
-                            colorbar.style.width = '0';
-                            colorbar.style.height = '0';
-                        });
+                    if (plotDiv && plotDiv.data && typeof layout !== 'undefined' && layout.margin) {
+                        try {
+                            // Ajuster les marges selon la nouvelle taille
+                            adjustMarginsForScreenSize();
+                            
+                            // Forcer le redimensionnement du graphique
+                            Plotly.Plots.resize(plotDiv);
+                            
+                            // Mettre à jour les marges et tailles de police
+                            Plotly.relayout(plotDiv, {
+                                'margin.r': layout.margin.r,
+                                'margin.l': layout.margin.l,
+                                'margin.t': layout.margin.t,
+                                'margin.b': layout.margin.b,
+                                'title.font.size': layout.title.font.size,
+                                'scene.xaxis.titlefont.size': layout.scene.xaxis.titlefont.size,
+                                'scene.xaxis.tickfont.size': layout.scene.xaxis.tickfont.size,
+                                'scene.yaxis.titlefont.size': layout.scene.yaxis.titlefont.size,
+                                'scene.yaxis.tickfont.size': layout.scene.yaxis.tickfont.size,
+                                'scene.zaxis.titlefont.size': layout.scene.zaxis.titlefont.size,
+                                'scene.zaxis.tickfont.size': layout.scene.zaxis.tickfont.size,
+                                'legend.font.size': layout.legend && layout.legend.font ? layout.legend.font.size : 12
+                            });
+                            
+                            // Masquer la barre de couleur sur mobile via CSS
+                            const responsiveSizes3D = getResponsiveSizes3D();
+                            if (responsiveSizes3D.isMobile) {
+                                const colorbars = plotDiv.querySelectorAll('.colorbar');
+                                colorbars.forEach(colorbar => {
+                                    colorbar.style.display = 'none';
+                                    colorbar.style.visibility = 'hidden';
+                                    colorbar.style.width = '0';
+                                    colorbar.style.height = '0';
+                                });
+                            }
+                            
+                            console.log('Graphique 3D redimensionné avec succès');
+                        } catch (error) {
+                            console.warn('Erreur lors du redimensionnement 3D:', error);
+                        }
                     }
+                    
+                    // Mettre à jour les dimensions
+                    lastWidth = currentWidth;
+                    lastHeight = currentHeight;
                 }
-            }, 250);
+            }, 200);
+        }
+        
+        window.addEventListener('resize', handle3DResize);
+        window.addEventListener('orientationchange', () => {
+            // Délai supplémentaire pour l'orientation change
+            setTimeout(handle3DResize, 400);
         });
         
         // Les statistiques sont maintenant affichées dans la section debug

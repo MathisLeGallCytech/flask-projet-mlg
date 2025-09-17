@@ -138,12 +138,77 @@ function handleAjaxError(error) {
     showAlert('Une erreur est survenue. Veuillez réessayer.', 'error');
 }
 
+// Fonction pour initialiser la gestion du redimensionnement responsive
+function initResponsiveHandling() {
+    let resizeTimeout;
+    let lastWidth = window.innerWidth;
+    let lastHeight = window.innerHeight;
+    
+    // Fonction de redimensionnement optimisée
+    function handleResize() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+            const currentWidth = window.innerWidth;
+            const currentHeight = window.innerHeight;
+            
+            // Vérifier si la taille a vraiment changé
+            if (currentWidth !== lastWidth || currentHeight !== lastHeight) {
+                console.log(`Redimensionnement détecté: ${lastWidth}x${lastHeight} -> ${currentWidth}x${currentHeight}`);
+                
+                // Forcer le redimensionnement des graphiques Plotly
+                forcePlotlyResize();
+                
+                // Mettre à jour les dimensions
+                lastWidth = currentWidth;
+                lastHeight = currentHeight;
+            }
+        }, 150); // Délai de 150ms pour éviter les appels trop fréquents
+    }
+    
+    // Écouter les événements de redimensionnement
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', () => {
+        // Délai supplémentaire pour l'orientation change
+        setTimeout(handleResize, 300);
+    });
+    
+    console.log('Gestion du redimensionnement responsive initialisée');
+}
+
+// Fonction pour forcer le redimensionnement des graphiques Plotly
+function forcePlotlyResize() {
+    // Redimensionner tous les graphiques Plotly
+    const plotlyElements = document.querySelectorAll('.js-plotly-plot');
+    plotlyElements.forEach(element => {
+        if (window.Plotly && element.data) {
+            try {
+                Plotly.Plots.resize(element);
+                console.log('Graphique Plotly redimensionné:', element.id || 'sans-id');
+            } catch (error) {
+                console.warn('Erreur lors du redimensionnement Plotly:', error);
+            }
+        }
+    });
+    
+    // Redimensionner les conteneurs de graphiques
+    const chartContainers = document.querySelectorAll('.chart-container, .volatility-3d-chart-container');
+    chartContainers.forEach(container => {
+        // Forcer le recalcul des styles
+        container.style.width = '100%';
+        container.style.maxWidth = '100%';
+        container.style.boxSizing = 'border-box';
+    });
+}
+
 // Fonction pour initialiser l'application
 function initApp() {
     console.log('Application Flask initialisée');
     
     // Initialiser les icônes Lucide
     initLucideIcons();
+    
+    // Initialiser la gestion du redimensionnement
+    initResponsiveHandling();
     
     // Code d'initialisation spécifique à chaque page
     const currentPage = document.body.dataset.page;

@@ -6441,6 +6441,9 @@ nav a.active {
     margin-bottom: 2rem;
     min-height: 400px;
     position: relative;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .chart-container canvas {
@@ -6655,6 +6658,10 @@ nav a.active {
     
     .chart-container {
         min-height: 300px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        padding: 1rem;
     }
     
     .risk-metrics-table {
@@ -8250,6 +8257,37 @@ nav a.active {
     .stats-grid {
         grid-template-columns: 1fr;
     }
+    
+    .chart-container {
+        padding: 0.75rem;
+        min-height: 250px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .volatility-3d-chart-container {
+        padding: 0.75rem;
+        margin: 1rem 0;
+        min-height: 500px;
+    }
+}
+
+/* Media query pour les très petits écrans */
+@media (max-width: 320px) {
+    .chart-container {
+        padding: 0.5rem;
+        min-height: 200px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    .volatility-3d-chart-container {
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        min-height: 400px;
+    }
 }
 
 /* ===== STYLES SPÉCIFIQUES POUR LE GRAPHIQUE 3D DE SURFACE DE VOLATILITÉ ===== */
@@ -8266,6 +8304,9 @@ nav a.active {
     overflow: visible;
     z-index: 1;
     min-height: 900px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 /* Styles responsifs pour le conteneur principal */
@@ -8274,6 +8315,9 @@ nav a.active {
         padding: 1.5rem;
         margin: 2rem 0;
         min-height: 700px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 }
 
@@ -8282,6 +8326,9 @@ nav a.active {
         padding: 1rem;
         margin: 1.5rem 0;
         min-height: 600px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 }
 
@@ -8290,6 +8337,21 @@ nav a.active {
         padding: 0.75rem;
         margin: 1rem 0;
         min-height: 500px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+}
+
+/* Media query pour les très petits écrans (orientation portrait) */
+@media (max-width: 320px) {
+    .volatility-3d-chart-container {
+        padding: 0.5rem;
+        margin: 0.5rem 0;
+        min-height: 450px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 }
 
@@ -8510,10 +8572,15 @@ nav a.active {
                 min-height: 400px;
                 height: 400px;
                 margin-top: 0.5rem;
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
             }
             
             .volatility-3d-plot-container .js-plotly-plot {
                 max-height: 400px !important;
+                width: 100% !important;
+                max-width: 100% !important;
             }
             
             /* Masquer la barre de couleur sur mobile */
@@ -8530,6 +8597,24 @@ nav a.active {
             .volatility-3d-plot-container .plotly .scene {
                 width: 100% !important;
                 height: 100% !important;
+            }
+        }
+
+        /* Media query pour les très petits écrans */
+        @media (max-width: 320px) {
+            .volatility-3d-plot-container {
+                min-height: 350px;
+                height: 350px;
+                margin-top: 0.25rem;
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            
+            .volatility-3d-plot-container .js-plotly-plot {
+                max-height: 350px !important;
+                width: 100% !important;
+                max-width: 100% !important;
             }
         }
 
